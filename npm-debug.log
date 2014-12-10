@@ -1,0 +1,100 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'loadsh',
+1 verbose cli   '--save' ]
+2 info using npm@2.0.0
+3 info using node@v0.11.14
+4 warn package.json NOOOCL@0.0.1 No description
+5 warn package.json NOOOCL@0.0.1 No repository field.
+6 warn package.json NOOOCL@0.0.1 No README data
+7 verbose readDependencies using package.json deps
+8 verbose cache add [ 'loadsh', null ]
+9 verbose cache add spec="loadsh" args=["loadsh",null]
+10 verbose parsed spec { raw: 'loadsh',
+10 verbose parsed spec   scope: null,
+10 verbose parsed spec   name: 'loadsh',
+10 verbose parsed spec   rawSpec: '',
+10 verbose parsed spec   spec: '*',
+10 verbose parsed spec   type: 'range' }
+11 verbose parsed spec { raw: 'loadsh',
+11 verbose parsed spec   scope: null,
+11 verbose parsed spec   name: 'loadsh',
+11 verbose parsed spec   rawSpec: '',
+11 verbose parsed spec   spec: '*',
+11 verbose parsed spec   type: 'range' }
+12 verbose addNamed [ 'loadsh', '*' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile a031e391-loadsh loadsh@*
+15 verbose lock loadsh@* /home/gabor/.npm/a031e391-loadsh.lock
+16 silly addNameRange { name: 'loadsh', range: '*', hasData: false }
+17 verbose mapToRegistry name loadsh
+18 verbose mapToRegistry uri https://registry.npmjs.org/loadsh
+19 verbose request on initialization, where is /loadsh
+20 verbose request after pass 1, where is /loadsh
+21 verbose request url raw /loadsh
+22 verbose request resolving registry [ 'https://registry.npmjs.org/', './loadsh' ]
+23 verbose request after pass 2, where is https://registry.npmjs.org/loadsh
+24 verbose request no auth needed
+25 info attempt registry request try #1 at 21:50:24
+26 verbose request id 9d08719522a30b3c
+27 http request GET https://registry.npmjs.org/loadsh
+28 http 404 https://registry.npmjs.org/loadsh
+29 verbose headers { date: 'Wed, 10 Dec 2014 20:50:25 GMT',
+29 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+29 verbose headers   'content-type': 'application/json',
+29 verbose headers   'cache-control': 'max-age=0',
+29 verbose headers   'content-length': '52',
+29 verbose headers   'accept-ranges': 'bytes',
+29 verbose headers   via: '1.1 varnish',
+29 verbose headers   age: '0',
+29 verbose headers   'x-served-by': 'cache-fra1222-FRA',
+29 verbose headers   'x-cache': 'MISS',
+29 verbose headers   'x-cache-hits': '0',
+29 verbose headers   'x-timer': 'S1418244625.009378,VS0,VE106',
+29 verbose headers   connection: 'close' }
+30 silly registry.get cb [ 404,
+30 silly registry.get   { date: 'Wed, 10 Dec 2014 20:50:25 GMT',
+30 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+30 silly registry.get     'content-type': 'application/json',
+30 silly registry.get     'cache-control': 'max-age=0',
+30 silly registry.get     'content-length': '52',
+30 silly registry.get     'accept-ranges': 'bytes',
+30 silly registry.get     via: '1.1 varnish',
+30 silly registry.get     age: '0',
+30 silly registry.get     'x-served-by': 'cache-fra1222-FRA',
+30 silly registry.get     'x-cache': 'MISS',
+30 silly registry.get     'x-cache-hits': '0',
+30 silly registry.get     'x-timer': 'S1418244625.009378,VS0,VE106',
+30 silly registry.get     connection: 'close' } ]
+31 silly lockFile a031e391-loadsh loadsh@*
+32 silly lockFile a031e391-loadsh loadsh@*
+33 verbose stack Error: 404 Not Found: loadsh
+33 verbose stack     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:259:14)
+33 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:198:65)
+33 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:236:22)
+33 verbose stack     at Request.emit (events.js:110:17)
+33 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1142:14)
+33 verbose stack     at Request.emit (events.js:129:20)
+33 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1096:12)
+33 verbose stack     at IncomingMessage.emit (events.js:129:20)
+33 verbose stack     at _stream_readable.js:907:16
+33 verbose stack     at process._tickCallback (node.js:372:11)
+34 verbose statusCode 404
+35 verbose pkgid loadsh
+36 verbose cwd /home/gabor/git/NOOOCL
+37 error Linux 3.13.0-37-generic
+38 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "loadsh" "--save"
+39 error node v0.11.14
+40 error npm  v2.0.0
+41 error code E404
+42 error 404 Not Found: loadsh
+42 error 404
+42 error 404 'loadsh' is not in the npm registry.
+42 error 404 You should bug the author to publish it (or use the name yourself!)
+42 error 404 It was specified as a dependency of 'NOOOCL'
+42 error 404
+42 error 404 Note that you can also install from a
+42 error 404 tarball, folder, http url, or git url.
+43 verbose exit [ 1, true ]
