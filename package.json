@@ -4,7 +4,10 @@
   "dependencies": {
     "bridjs": "^0.1.8-2",
     "lodash": "^2.4.1",
-    "nodecl": "^0.1.2-1",
+    "nodecl": "git+https://github.com/unbornchikken/nodecl.git#unbornchikken",
     "weak": "^0.3.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.1"
   }
 }
