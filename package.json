@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "ffi": "^1.2.7",
+    "ref": "^0.3.2",
+    "ref-struct": "^1.0.0",
     "weak": "^0.3.3"
   },
   "devDependencies": {
