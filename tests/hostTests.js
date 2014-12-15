@@ -41,7 +41,7 @@ describe('CLHost', function () {
             assert.notEqual(all.length, 0);
             _.forEach(all, function (device) {
                 var info = {
-                    deviceType: device.deviceType,
+                    DeviceType: device.DeviceType,
                     vendorID: device.vendorID,
                     maxComputeUnits: device.maxComputeUnits,
                     maxWorkItemDimensions: device.maxWorkItemDimensions,
@@ -78,8 +78,8 @@ describe('CLHost', function () {
                     littleEndian: device.littleEndian,
                     available: device.available,
                     compilerAvailable: device.compilerAvailable,
-                    deviceExecCapabilities: device.deviceExecCapabilities,
-                    commandQueueProperties: device.commandQueueProperties,
+                    DeviceExecCapabilities: device.DeviceExecCapabilities,
+                    CommandQueueProperties: device.CommandQueueProperties,
                     name: device.name,
                     vendor: device.vendor,
                     driverVersion: device.driverVersion,
@@ -89,8 +89,8 @@ describe('CLHost', function () {
                     extensions: device.extensions
                 };
 
-                assert(info.deviceType === device.cl.DEVICE_TYPE_GPU ||
-                    info.deviceType === device.cl.DEVICE_TYPE_CPU);
+                assert(info.DeviceType === device.cl.defs.DEVICE_TYPE_GPU ||
+                    info.DeviceType === device.cl.defs.DEVICE_TYPE_CPU);
             });
         });
     });
