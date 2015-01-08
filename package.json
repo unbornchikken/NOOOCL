@@ -2,6 +2,7 @@
   "name": "NOOOCL",
   "version": "0.0.1",
   "dependencies": {
+    "bluebird": "^2.6.2",
     "ffi": "^1.2.7",
     "lodash": "^2.4.1",
     "ref": "^0.3.2",
