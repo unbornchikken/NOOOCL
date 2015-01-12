@@ -15,7 +15,7 @@ describe('CLContext', function() {
         assert(_.isArray(devices));
         assert.notEqual(devices.length, 0);
         var context = new CLContext(devices);
-        checkContext(context);
+        checkContext(context, devices);
     });
 
     it('should construct from type', function() {
@@ -31,8 +31,16 @@ describe('CLContext', function() {
 
 // Helpers
 
-function checkContext(context) {
+function checkContext(context, devices) {
     var formats = context.supportedImageFormats(context.cl.defs.MEM_ALLOC_HOST_PTR, context.cl.defs.MEM_OBJECT_IMAGE2D);
     assert(_.isArray(formats));
     assert(formats.length ? true : false);
+    if (devices) {
+        assert.equal(context.numDevices, devices.length);
+        var ctxDevices = context.devices;
+        assert(_.isArray(ctxDevices));
+        assert.equal(devices.length, ctxDevices.length);
+        var props = context.contextProperties;
+        assert(props === null || _.isArray(props));
+    }
 }

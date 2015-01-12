@@ -53,6 +53,9 @@ describe('CLContext', function() {
                 assert.equal(buildOptions, '-cl-fast-relaxed-math');
                 assert(_.isString(buildLog));
                 assert(buildLog.length > 0);
+                var buildLogs = program.getBuildLogs();
+                assert(_.isString(buildLogs));
+                assert.equal(buildLogs, buildLog);
             }).nodeify(done);
     });
 });
