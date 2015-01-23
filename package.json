@@ -5,10 +5,10 @@
     "bluebird": "^2.8.2",
     "ffi": "^1.2.7",
     "lodash": "^2.4.1",
-    "ref": "^0.3.5",
+    "ref": "^1.0.0",
     "ref-array": "^1.1.0",
     "ref-struct": "^1.0.0",
-    "underscore.string": "^2.4.0",
+    "underscore.string": "^3.0.1",
     "weak": "^0.3.3"
   },
   "devDependencies": {
