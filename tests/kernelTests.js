@@ -8,6 +8,7 @@ var CLContext = nooocl.CLContext;
 var ref = require('ref');
 var ArrayType = require('ref-array');
 var CLKernel = nooocl.CLKernel;
+var NDRange = nooocl.NDRange;
 
 var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
@@ -49,6 +50,8 @@ describe('CLKernel', function() {
             assert(_.isArray(kernels));
             assert.equal(1, kernels.length);
             assert.equal(kernel.name, kernels[0].name);
+            var func = kernel.bind(queue, new NDRange(3), null, new NDRange(1));
+            func(src, dst, {'uint': 1});
         }).nodeify(done);
     });
 });
