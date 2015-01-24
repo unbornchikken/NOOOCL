@@ -9,6 +9,7 @@ var ref = require('ref');
 var ArrayType = require('ref-array');
 var CLKernel = nooocl.CLKernel;
 var NDRange = nooocl.NDRange;
+var Promise = require('bluebird');
 
 var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
