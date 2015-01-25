@@ -53,26 +53,47 @@ describe('CLKernel', function() {
             assert(_.isArray(kernels));
             assert.equal(1, kernels.length);
             assert.equal(kernel.name, kernels[0].name);
+
+            var assertValues = function() {
+                var out = {};
+                return queue.enqueueMapBuffer(true, dst, host.cl.defs.MAP_READ | host.cl.defs.MAP_WRITE, 0, dst.size, out).promise
+                    .then(function () {
+                        var buffer = ref.reinterpret(out.ptr, dst.size, 0);
+                        var v1 = ref.types.float.get(buffer, 0).toFixed(2);
+                        var v2 = dstArray[0].toFixed(2);
+                        assert.equal(v1, v2);
+                        assert.equal(v1, 3.3);
+                        dstArray[0] = 0.0;
+
+                        v1 = ref.types.float.get(buffer, 1 * ref.types.float.size).toFixed(2);
+                        v2 = dstArray[1].toFixed(2);
+                        assert.equal(v1, v2);
+                        assert.equal(v1, 4.4);
+                        dstArray[1] = 0.0;
+
+                        v1 = ref.types.float.get(buffer, 2 * ref.types.float.size).toFixed(2);
+                        v2 = dstArray[2].toFixed(2);
+                        assert.equal(v1, v2);
+                        assert.equal(v1, 5.5);
+                        dstArray[2] = 0.0;
+
+                        queue.enqueueUnmapMemory(false, dst, out.ptr);
+                    });
+            };
+
+            // Test bind:
             var func = kernel.bind(queue, new NDRange(3), null, new NDRange(1));
-            func(src, dst, {'uint': 1});
-            var out = {};
-            return queue.enqueueMapBuffer(true, dst, host.cl.defs.MAP_READ, 0, dst.size, out).promise
+            func(src, dst, { 'uint': 1 });
+
+            return assertValues()
                 .then(function() {
-                    var buffer = ref.reinterpret(out.ptr, dst.size, 0);
-                    var v1 = ref.types.float.get(buffer, 0).toFixed(2);
-                    var v2 = dstArray[0].toFixed(2);
-                    assert.equal(v1, v2);
-                    assert.equal(v1, 3.3);
+                    // Test direct call:
+                    kernels[0].setArg(0, src);
+                    kernels[0].setArg(1, dst);
+                    kernels[0].setArg(2, 1, 'uint');
+                    queue.enqueueNDRangeKernel(false, kernels[0],new NDRange(3), null, new NDRange(1));
 
-                    v1 = ref.types.float.get(buffer, 1 * ref.types.float.size).toFixed(2);
-                    v2 = dstArray[1].toFixed(2);
-                    assert.equal(v1, v2);
-                    assert.equal(v1, 4.4);
-
-                    v1 = ref.types.float.get(buffer, 2 * ref.types.float.size).toFixed(2);
-                    v2 = dstArray[2].toFixed(2);
-                    assert.equal(v1, v2);
-                    assert.equal(v1, 5.5);
+                    return assertValues();
                 });
         }).nodeify(done);
     });
