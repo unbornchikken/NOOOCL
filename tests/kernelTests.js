@@ -15,7 +15,7 @@ var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
     "{" +
     "uint idx = get_global_id(0);" +
-    "dst[idx] = src[idx + begin];" +
+    "dst[idx - 1] = src[idx + begin];" +
     "}";
 
 describe('CLKernel', function() {
@@ -26,16 +26,18 @@ describe('CLKernel', function() {
         var context = ctx.context;
         var device = ctx.device;
         var FloatArray = new ArrayType('float');
-        var srcBuffer = new FloatArray(5);
-        var dstBuffer = new FloatArray(3);
-        for (i = 0; i < srcBuffer.length; i++) {
-            srcBuffer[i] = i * 1.1;
+        var srcArray = new FloatArray(5);
+        var dstArray = new FloatArray(3);
+        for (i = 0; i < srcArray.length; i++) {
+            srcArray[i] = (i + 1) * 1.1;
         }
-        for (i = 0; i < dstBuffer.length; i++) {
-            dstBuffer[i] = 0.0;
+        for (i = 0; i < dstArray.length; i++) {
+            dstArray[i] = 0.0;
         }
-        var src = CLBuffer.wrap(context, srcBuffer);
-        var dst = CLBuffer.wrap(context, dstBuffer);
+        var src = CLBuffer.wrap(context, srcArray);
+        var dst = CLBuffer.wrap(context, dstArray);
+        assert.equal(srcArray.length * ref.types.float.size, src.size);
+        assert.equal(dstArray.length * ref.types.float.size, dst.size);
         var queue = new CLCommandQueue(context, device);
         var program = context.createProgram(copyMemKernel);
         program.build().then(function() {
@@ -53,6 +55,25 @@ describe('CLKernel', function() {
             assert.equal(kernel.name, kernels[0].name);
             var func = kernel.bind(queue, new NDRange(3), null, new NDRange(1));
             func(src, dst, {'uint': 1});
+            var out = {};
+            return queue.enqueueMapBuffer(true, dst, host.cl.defs.MAP_READ, 0, dst.size, out).promise
+                .then(function() {
+                    var buffer = ref.reinterpret(out.ptr, dst.size, 0);
+                    var v1 = ref.types.float.get(buffer, 0).toFixed(2);
+                    var v2 = dstArray[0].toFixed(2);
+                    assert.equal(v1, v2);
+                    assert.equal(v1, 3.3);
+
+                    v1 = ref.types.float.get(buffer, 1 * ref.types.float.size).toFixed(2);
+                    v2 = dstArray[1].toFixed(2);
+                    assert.equal(v1, v2);
+                    assert.equal(v1, 4.4);
+
+                    v1 = ref.types.float.get(buffer, 2 * ref.types.float.size).toFixed(2);
+                    v2 = dstArray[2].toFixed(2);
+                    assert.equal(v1, v2);
+                    assert.equal(v1, 5.5);
+                });
         }).nodeify(done);
     });
 });
