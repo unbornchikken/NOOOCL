@@ -10,6 +10,7 @@ var ArrayType = require('ref-array');
 var CLKernel = nooocl.CLKernel;
 var NDRange = nooocl.NDRange;
 var Promise = require('bluebird');
+var testHelpers = require('./testHelpers');
 
 var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
@@ -22,7 +23,7 @@ describe('CLKernel', function() {
     it('should do NDRange calls', function(done) {
         var i;
         var host = CLHost.createV11();
-        var ctx = createContext(host);
+        var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
         var FloatArray = new ArrayType('float');
@@ -98,20 +99,3 @@ describe('CLKernel', function() {
         }).nodeify(done);
     });
 });
-
-// helpers
-function createContext(host) {
-    assert(_.isObject(host));
-    var platforms = host.getPlatforms();
-    assert(_.isArray(platforms));
-    assert.notEqual(platforms.length, 0);
-    var devices = platforms[0].allDevices();
-    assert(_.isArray(devices));
-    assert.notEqual(devices.length, 0);
-    var device = devices[0];
-    var context = new CLContext(device);
-    return {
-        device: device,
-        context: context
-    };
-}

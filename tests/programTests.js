@@ -3,6 +3,7 @@ var nooocl = require('../');
 var CLHost = nooocl.CLHost;
 var _ = require('lodash');
 var CLContext = nooocl.CLContext;
+var testHelpers = require('./testHelpers');
 
 var source = 'kernel void foo(global float* data) { }';
 
@@ -11,7 +12,7 @@ var badSource = 'da shit';
 describe('CLContext', function() {
     it('should build and get kernel from string source', function(done) {
         var host = CLHost.createV11();
-        var ctx = createContext(host);
+        var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
         var program = context.createProgram(source);
@@ -39,7 +40,7 @@ describe('CLContext', function() {
 
     it('should fail by building a fucked up string source', function(done) {
         var host = CLHost.createV11();
-        var ctx = createContext(host);
+        var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
         var program = context.createProgram(badSource);
@@ -66,7 +67,7 @@ describe('CLContext', function() {
 
     it("should support binaries", function(done) {
         var host = CLHost.createV11();
-        var ctx = createContext(host);
+        var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
         var program = context.createProgram(source);
@@ -93,20 +94,3 @@ describe('CLContext', function() {
             }).nodeify(done);
     });
 });
-
-// helpers
-function createContext(host) {
-    assert(_.isObject(host));
-    var platforms = host.getPlatforms();
-    assert(_.isArray(platforms));
-    assert.notEqual(platforms.length, 0);
-    var devices = platforms[0].allDevices();
-    assert(_.isArray(devices));
-    assert.notEqual(devices.length, 0);
-    var device = devices[0];
-    var context = new CLContext(device);
-    return {
-        device: device,
-        context: context
-    };
-}

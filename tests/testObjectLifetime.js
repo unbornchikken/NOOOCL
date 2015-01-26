@@ -1,0 +1,26 @@
+var testHelpers = require('./testHelpers');
+var nooocl = require('../');
+var CLHost = nooocl.CLHost;
+var CLBuffer = nooocl.CLBuffer;
+var assert = require('assert');
+
+describe('NOOOCL', function() {
+    it('should call release on gc collect', function() {
+        var host = CLHost.createV11();
+        var context, bufferHandle;
+        var createStuff = function () {
+            var ctx = testHelpers.createContext(host);
+            context = ctx.context;
+            var device = ctx.device;
+            var buffer = new CLBuffer(context, context.cl.defs.MEM_ALLOC_HOST_PTR, 10);
+            bufferHandle = buffer.handle;
+            assert.equal(2, testHelpers.getContextRefCount(host, context.handle));
+            assert.equal(1, testHelpers.getMemRefCount(host, bufferHandle));
+        };
+        createStuff();
+        assert.equal(2, testHelpers.getContextRefCount(host, context.handle));
+        assert.equal(1, testHelpers.getMemRefCount(host, bufferHandle));
+        global.gc();
+        assert.equal(1, testHelpers.getContextRefCount(host, context.handle)); // aka: The buffer has been released for sure.
+    });
+});

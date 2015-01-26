@@ -7,12 +7,13 @@ var CLCommandQueue = nooocl.CLCommandQueue;
 var CLContext = nooocl.CLContext;
 var ref = require('ref');
 var ArrayType = require('ref-array');
+var testHelpers = require('./testHelpers');
 
 describe('CLBuffer', function () {
     it('can copy contents of two node.js buffer through OpenCL', function (done) {
         try {
             var host = CLHost.createV11();
-            var ctx = createContext(host);
+            var ctx = testHelpers.createContext(host);
             var context = ctx.context;
             var device = ctx.device;
             var srcBuffer = new Buffer(5);
@@ -52,7 +53,7 @@ describe('CLBuffer', function () {
     it('supports sub buffers', function (done) {
         try {
             var host = CLHost.createV11();
-            var ctx = createContext(host);
+            var ctx = testHelpers.createContext(host);
             var context = ctx.context;
             var device = ctx.device;
             var srcBuffer = new Buffer(5);
@@ -87,7 +88,7 @@ describe('CLBuffer', function () {
 
     it('supports mapping of host array', function(done) {
         var host = CLHost.createV11();
-        var ctx = createContext(host);
+        var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
         var srcBuffer = new Buffer(5);
@@ -133,20 +134,3 @@ describe('CLBuffer', function () {
             .nodeify(done);
     });
 });
-
-// helpers
-function createContext(host) {
-    assert(_.isObject(host));
-    var platforms = host.getPlatforms();
-    assert(_.isArray(platforms));
-    assert.notEqual(platforms.length, 0);
-    var devices = platforms[0].allDevices();
-    assert(_.isArray(devices));
-    assert.notEqual(devices.length, 0);
-    var device = devices[0];
-    var context = new CLContext(device);
-    return {
-        device: device,
-        context: context
-    };
-}
