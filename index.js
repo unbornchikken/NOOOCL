@@ -8,5 +8,7 @@ module.exports = {
     CLUserEvent: require('./lib/clUserEvent'),
     NDRange: require('./lib/ndRange'),
     CLKernel: require('./lib/clKernel'),
-    LocalSize: require('./lib/localSize')
+    CLImage2D: require('./lib/clImage2D'),
+    CLImage3D: require('./lib/clImage3D'),
+    CLSampler: require('./lib/clSampler')
 };
