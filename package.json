@@ -12,6 +12,7 @@
     "weak": "^0.3.3"
   },
   "devDependencies": {
+    "jpeg-js": "^0.1.1",
     "mocha": "^2.0.1"
   }
 }
