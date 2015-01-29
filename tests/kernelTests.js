@@ -57,7 +57,7 @@ describe('CLKernel', function() {
 
             var assertValues = function() {
                 var out = {};
-                return queue.enqueueMapBuffer(true, dst, host.cl.defs.MAP_READ | host.cl.defs.MAP_WRITE, 0, dst.size, out).promise
+                return queue.waitable().enqueueMapBuffer(dst, host.cl.defs.MAP_READ | host.cl.defs.MAP_WRITE, 0, dst.size, out).promise
                     .then(function () {
                         var buffer = ref.reinterpret(out.ptr, dst.size, 0);
                         var v1 = ref.types.float.get(buffer, 0).toFixed(2);
@@ -78,7 +78,7 @@ describe('CLKernel', function() {
                         assert.equal(v1, 5.5);
                         dstArray[2] = 0.0;
 
-                        queue.enqueueUnmapMemory(false, dst, out.ptr);
+                        queue.enqueueUnmapMemory(dst, out.ptr);
                     });
             };
 
@@ -92,7 +92,7 @@ describe('CLKernel', function() {
                     kernels[0].setArg(0, src);
                     kernels[0].setArg(1, dst);
                     kernels[0].setArg(2, 1, 'uint');
-                    queue.enqueueNDRangeKernel(false, kernels[0],new NDRange(3), null, new NDRange(1));
+                    queue.enqueueNDRangeKernel(kernels[0],new NDRange(3), null, new NDRange(1));
 
                     return assertValues();
                 });

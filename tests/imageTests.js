@@ -41,11 +41,11 @@ describe('CLImage2D', function () {
                         }
                         var kernel = program.createKernel('toGray');
                         kernel.setArgs(src, dst);
-                        queue.enqueueNDRangeKernel(false, kernel, new NDRange(inputImage.width, inputImage.height), null, null);
+                        queue.enqueueNDRangeKernel(kernel, new NDRange(inputImage.width, inputImage.height), null, null);
                         var out = {};
                         var origin = new NDRange(0, 0, 0);
                         var region = new NDRange(inputImage.width, inputImage.height, 1);
-                        return queue.enqueueMapImage(true, dst, host.cl.defs.MAP_READ, origin, region, out).promise
+                        return queue.waitable().enqueueMapImage(dst, host.cl.defs.MAP_READ, origin, region, out).promise
                             .then(function () {
                                 assert(out.ptr ? true : false);
                                 assert.equal(out.rowPitch, inputImage.width * 4);
@@ -61,7 +61,7 @@ describe('CLImage2D', function () {
 
                                 return fs.writeFileAsync(path.join(cd, 'out.jpg'), jpegData.data, 'binary').then(
                                     function () {
-                                        return queue.enqueueUnmapMemory(true, dst, out.ptr).promise;
+                                        return queue.waitable().enqueueUnmapMemory(dst, out.ptr).promise;
                                     });
                             });
                     });
