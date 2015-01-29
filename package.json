@@ -1,6 +1,7 @@
 {
   "name": "NOOOCL",
-  "version": "0.0.1",
+  "version": "0.9.0",
+  "description": "Node.js Object Oriented OpenCL Bindings",
   "dependencies": {
     "bluebird": "^2.8.2",
     "ffi": "^1.2.7",
