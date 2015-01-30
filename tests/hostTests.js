@@ -89,8 +89,8 @@ describe('CLHost', function () {
                     extensions: device.extensions
                 };
 
-                assert(info.DeviceType === device.cl.defs.DEVICE_TYPE_GPU ||
-                    info.DeviceType === device.cl.defs.DEVICE_TYPE_CPU);
+                assert(info.DeviceType === device.cl.defs.CL_DEVICE_TYPE_GPU ||
+                    info.DeviceType === device.cl.defs.CL_DEVICE_TYPE_CPU);
             });
         });
     });

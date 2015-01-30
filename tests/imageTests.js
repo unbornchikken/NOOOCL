@@ -25,8 +25,8 @@ describe('CLImage2D', function () {
             var device = ctx.device;
             var queue = new CLCommandQueue(context, device);
             var format = new (host.cl.types.ImageFormat)({
-                imageChannelOrder: host.cl.defs.RGBA,
-                imageChannelDataType: host.cl.defs.UNSIGNED_INT8
+                imageChannelOrder: host.cl.defs.CL_RGBA,
+                imageChannelDataType: host.cl.defs.CL_UNSIGNED_INT8
             });
             var src = CLImage2D.wrapReadOnly(context, format, inputImage.width, inputImage.height, inputImage.data);
             var outputData = new Buffer(inputImage.data.length);
@@ -45,7 +45,7 @@ describe('CLImage2D', function () {
                         var out = {};
                         var origin = new NDRange(0, 0, 0);
                         var region = new NDRange(inputImage.width, inputImage.height, 1);
-                        return queue.waitable().enqueueMapImage(dst, host.cl.defs.MAP_READ, origin, region, out).promise
+                        return queue.waitable().enqueueMapImage(dst, host.cl.defs.CL_MAP_READ, origin, region, out).promise
                             .then(function () {
                                 assert(out.ptr ? true : false);
                                 assert.equal(out.rowPitch, inputImage.width * 4);

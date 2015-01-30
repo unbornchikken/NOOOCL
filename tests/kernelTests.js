@@ -57,7 +57,7 @@ describe('CLKernel', function() {
 
             var assertValues = function() {
                 var out = {};
-                return queue.waitable().enqueueMapBuffer(dst, host.cl.defs.MAP_READ | host.cl.defs.MAP_WRITE, 0, dst.size, out).promise
+                return queue.waitable().enqueueMapBuffer(dst, host.cl.defs.CL_MAP_READ | host.cl.defs.CL_MAP_WRITE, 0, dst.size, out).promise
                     .then(function () {
                         var buffer = ref.reinterpret(out.ptr, dst.size, 0);
                         var v1 = ref.types.float.get(buffer, 0).toFixed(2);

@@ -23,8 +23,8 @@ describe('CLBuffer', function () {
             srcBuffer[2] = 13;
             srcBuffer[3] = 14;
             srcBuffer[4] = 15;
-            var srcCLBuffer = new CLBuffer(context, host.cl.defs.MEM_COPY_HOST_PTR, srcBuffer.length, srcBuffer);
-            var dstCLBuffer = new CLBuffer(context, host.cl.defs.MEM_ALLOC_HOST_PTR, srcBuffer.length, null);
+            var srcCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_COPY_HOST_PTR, srcBuffer.length, srcBuffer);
+            var dstCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, srcBuffer.length, null);
             queue.enqueueCopyBuffer(srcCLBuffer, dstCLBuffer, 0, 0, srcBuffer.length).promise
                 .then(function () {
                     var destBuffer = new Buffer(srcBuffer.length);
@@ -63,10 +63,10 @@ describe('CLBuffer', function () {
             srcBuffer[2] = 13;
             srcBuffer[3] = 14;
             srcBuffer[4] = 15;
-            var srcCLBuffer = new CLBuffer(context, host.cl.defs.MEM_COPY_HOST_PTR, srcBuffer.length, srcBuffer);
+            var srcCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_COPY_HOST_PTR, srcBuffer.length, srcBuffer);
             var srcCLSubBuffer = srcCLBuffer.createSubBuffer(0, 0, 3);
             assert.equal(srcCLSubBuffer.size, 3);
-            var dstCLBuffer = new CLBuffer(context, host.cl.defs.MEM_ALLOC_HOST_PTR, srcCLSubBuffer.size, null);
+            var dstCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, srcCLSubBuffer.size, null);
             queue.enqueueCopyBuffer(srcCLSubBuffer, dstCLBuffer, 0, 0, srcCLSubBuffer.size);
             var destBuffer = new Buffer(dstCLBuffer.size);
             destBuffer.fill(0);
@@ -98,9 +98,9 @@ describe('CLBuffer', function () {
         srcBuffer[2] = 13;
         srcBuffer[3] = 14;
         srcBuffer[4] = 15;
-        var srcCLBuffer = new CLBuffer(context, host.cl.defs.MEM_USE_HOST_PTR, srcBuffer.length, srcBuffer);
+        var srcCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_USE_HOST_PTR, srcBuffer.length, srcBuffer);
         var out = {};
-        queue.enqueueMapBuffer(srcCLBuffer, host.cl.defs.MAP_READ | host.cl.defs.MAP_WRITE, 1, 3, out).promise
+        queue.enqueueMapBuffer(srcCLBuffer, host.cl.defs.CL_MAP_READ | host.cl.defs.CL_MAP_WRITE, 1, 3, out).promise
             .then(function() {
                 var buffer = ref.reinterpret(out.ptr, 3, 0);
 

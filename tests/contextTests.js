@@ -24,7 +24,7 @@ describe('CLContext', function() {
         var platforms = host.getPlatforms();
         assert(_.isArray(platforms));
         assert.notEqual(platforms.length, 0);
-        var context = new CLContext(platforms[0], host.cl.defs.DEVICE_TYPE_CPU);
+        var context = new CLContext(platforms[0], host.cl.defs.CL_DEVICE_TYPE_CPU);
         checkContext(context);
     });
 });
@@ -32,7 +32,7 @@ describe('CLContext', function() {
 // Helpers
 
 function checkContext(context, devices) {
-    var formats = context.supportedImageFormats(context.cl.defs.MEM_ALLOC_HOST_PTR, context.cl.defs.MEM_OBJECT_IMAGE2D);
+    var formats = context.supportedImageFormats(context.cl.defs.CL_MEM_ALLOC_HOST_PTR, context.cl.defs.CL_MEM_OBJECT_IMAGE2D);
     assert(_.isArray(formats));
     assert(formats.length ? true : false);
     if (devices) {
