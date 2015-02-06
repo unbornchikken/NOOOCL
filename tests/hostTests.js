@@ -41,7 +41,7 @@ describe('CLHost', function () {
             assert.notEqual(all.length, 0);
             _.forEach(all, function (device) {
                 var info = {
-                    DeviceType: device.DeviceType,
+                    deviceType: device.deviceType,
                     vendorID: device.vendorID,
                     maxComputeUnits: device.maxComputeUnits,
                     maxWorkItemDimensions: device.maxWorkItemDimensions,
