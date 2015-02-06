@@ -6,6 +6,10 @@ var assert = require('assert');
 
 describe('NOOOCL', function() {
     it('should call release on gc collect', function() {
+        if (!global.gc) {
+            console.warn('Please enable GC for unit tests.');
+            return;
+        }
         var host = CLHost.createV11();
         var context, bufferHandle;
         var createStuff = function () {
