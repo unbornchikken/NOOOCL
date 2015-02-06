@@ -7,9 +7,7 @@ Node.js Object Oriented OpenCL Bindings
 
 This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications. Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref and co](https://www.npmjs.com/package/ref).
 
-## Usage
-
-### 1. Install
+## Install
 
 NPM:
 
@@ -33,7 +31,9 @@ var CLImage3D = nooocl.CLImage3D;
 var CLSampler = nooocl.CLSampler;
 ```
 
-### 2. Basics
+## Tutorial
+
+### 1. Basics
 
 The OpenCL goodness is available through a CLHost instance.
 
@@ -48,15 +48,17 @@ You will get an exception if there is no compatible OpenCL platform available.
 
 CLHost and all of CL* class instances share this common, important properties:
 
-- cl.version: version of the OpenCL platform
-- cl.defs.*: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/defs.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/defs.js).
-- cl.imports: this is where OpenCL C API is imported with ffi, you can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
+- **cl.version**: version of the OpenCL platform
+- **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/defs.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/defs.js).
+- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, you can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
 
 Example:
 
 ```javascript
 var hostVersion = host.cl.version;
+
 var someOpenCLValue = host.cl.defs.CL_MEM_COPY_HOST_PTR;
+
 var err = host.cl.imports.clEnqueueNDRangeKernel(
     queue.handle,
     kernel.handle,
@@ -82,6 +84,7 @@ For each platform you can access its information in JS properties:
 
 ```javascript
 var platform = host.getPlatforms()[0]; // First platform
+
 var info = {
     name: platform.name,
     vendor: platform.vendor,
@@ -97,9 +100,13 @@ You can query available devices:
 
 ```javascript
 var all = platform.allDevices();
+
 var cpus = platform.cpuDevices();
+
 var gpus = platform.gpuDevices();
+
 var accels = platform.accelDevices();
+
 var gpusAndCpus =
     platform.getDevices(
         platform.cl.defs.CL_DEVICE_TYPE_GPU |
@@ -137,3 +144,61 @@ context = new CLContext(gpusAndCpus);
 // Create context for a platform's devices:
 context = new CLContext(platform, platform.cl.defs.CL_DEVICE_TYPE_GPU);
 ```
+
+#### The Queue
+
+The last thing that you need in every OpenCL application is the command queue. You can create a queue for a device by calling CLCommandQueue class' constructor:
+
+```javascript
+// The last two parameters are optional, their defaults are false:
+var queue = new CLCommandQueue(context, cpuDevice, isOutOfOrder, isProfilingEnabled);
+```
+
+CLCommandQueue implements every clEnqueue* method but names modified slightly, like: clEnqueueMarker becomes enqueueMarker, clEnqueueNDRangeKernel becomes enqueueNDRangeKernel, and so on.
+Please see the API docs further details.
+
+The queue has two modes. Waitable and non waitable. A queue initially is non waitable.
+If the queue is non waitable its enqueue* methods return undefined, if waitable enqueue* methods return a CLEvent instance which have a _promise_ property of type [bluebird promise](https://www.npmjs.com/package/bluebird).
+You can switch modes by calling waitable method, which accepts an optional boolean parameter. When its true, the result queue will be waitable, if false, the result queue will be non waitable. Default value is true.
+
+Example:
+
+```javascript
+var queue = new CLCommandQueue(context, device); // It's non waitable.
+
+// Fire and forget a kernel:
+queue.enqueueNDRangeKernel(kernel, new NDRange(10));
+
+// Read its result asynchronously:
+queue.waitable().enqueueReadBuffer(openCLBuffer, 0, size_in_bytes, destNodeJSBuffer).promise
+  .then(function () {
+     // Data is copied into host's destNodeJSBuffer from the device
+  });
+```
+
+Please note *there is no synchronous operations in NOOOCL*, because those kill the event loop.
+
+### 2. Memory
+
+NOOOCL uses [standard Node.js Buffer](http://nodejs.org/api/buffer.html) for memory pointers. Raw memory operations, like reinterpreting are implemented by using [ref and co](https://www.npmjs.com/package/ref).
+
+#### Allocate
+
+OpenCL runtime can allocate memory if requested.
+
+```javascript
+var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, size_in_bytes_here);
+```
+
+You can copy data into this buffer, and copy data from it into Node.js memory.
+
+```javascript
+```
+
+#### Copy
+
+#### Use
+
+#### Images
+
+.... in progress ....

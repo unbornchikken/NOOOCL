@@ -24,7 +24,7 @@ describe('CLBuffer', function () {
             srcBuffer[3] = 14;
             srcBuffer[4] = 15;
             var srcCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_COPY_HOST_PTR, srcBuffer.length, srcBuffer);
-            var dstCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, srcBuffer.length, null);
+            var dstCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, srcBuffer.length);
             queue.enqueueCopyBuffer(srcCLBuffer, dstCLBuffer, 0, 0, srcBuffer.length).promise
                 .then(function () {
                     var destBuffer = new Buffer(srcBuffer.length);
