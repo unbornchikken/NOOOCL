@@ -57,14 +57,25 @@ Example:
 ```javascript
 var hostVersion = host.cl.version;
 var someOpenCLValue = host.cl.defs.CL_MEM_COPY_HOST_PTR;
-var err = host.cl.imports.clEnqueueNDRangeKernel(queue.handle, kernel.handle, 1, null, global.size, null, 0, null, null);
+var err = host.cl.imports.clEnqueueNDRangeKernel(
+    queue.handle,
+    kernel.handle,
+    1,
+    null,
+    global.size,
+    null,
+    0,
+    null,
+    null);
 ```
 
 Then you can access to supported platforms:
 
 ```javascript
 var count = host.platformsCount;
-var allPlatforms = host.getPlatforms(); // you will get an array filled with instances of nooocl.CLPlatform class
+
+// you will get an array filled with instances of nooocl.CLPlatform class
+var allPlatforms = host.getPlatforms();
 ```
 
 For each platform you can access its information in JS properties:
@@ -89,15 +100,22 @@ var all = platform.allDevices();
 var cpus = platform.cpuDevices();
 var gpus = platform.gpuDevices();
 var accels = platform.accelDevices();
-var gpusAndCpus = platform.getDevices(platform.cl.defs.CL_DEVICE_TYPE_GPU | platform.cl.defs.CL_DEVICE_TYPE_CPU);
+var gpusAndCpus =
+    platform.getDevices(
+        platform.cl.defs.CL_DEVICE_TYPE_GPU |
+        platform.cl.defs.CL_DEVICE_TYPE_CPU);
 ```
 
 You will get an array of nooocl.CLDevice class instances. CLDevice can provide all OpenCL device information in simple JavaScript properties, for example:
 
 ```javascript
 var cpuDevice = platform.cpuDevices()[0];
-var maxComputeUnits = cpuDevice.maxComputeUnits; // You get the value of CL_DEVICE_MAX_COMPUTE_UNITS
-var maxWorkItemSizes = cpuDevice.maxWorkItemSizes; // You get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]
+
+// You get the value of CL_DEVICE_MAX_COMPUTE_UNITS:
+var maxComputeUnits = cpuDevice.maxComputeUnits;
+
+// You get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]:
+var maxWorkItemSizes = cpuDevice.maxWorkItemSizes;
 ```
 
 Please see the API docs or [NOOOCL/tests/hostTests.js](https://github.com/unbornchikken/NOOOCL/blob/master/tests/hostTests.js) unit test for complete list of available device info properties.
@@ -110,7 +128,10 @@ var cpuDevice = platform.cpuDevices()[0];
 context = new CLContext(cpuDevice);
 
 // Create context for multiple devices:
-var gpusAndCpus = platform.getDevices(platform.cl.defs.CL_DEVICE_TYPE_GPU | platform.cl.defs.CL_DEVICE_TYPE_CPU);
+var gpusAndCpus =
+    platform.getDevices(
+        platform.cl.defs.CL_DEVICE_TYPE_GPU |
+        platform.cl.defs.CL_DEVICE_TYPE_CPU);
 context = new CLContext(gpusAndCpus);
 
 // Create context for a platform's devices:
