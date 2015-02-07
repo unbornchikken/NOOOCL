@@ -205,7 +205,7 @@ queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, destBuffe
     .then(function () {
         //destBuffer holds the data
 
-        // setting some values at the Node.js side
+        // setting some values at Node.js side
         ref.types.float.set(destBuffer, 0, 1.1);
         ref.types.float.set(destBuffer, 1 * ref.types.float.size, 1.1);
 
