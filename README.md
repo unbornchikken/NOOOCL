@@ -35,6 +35,8 @@ var CLSampler = nooocl.CLSampler;
 
 ### 1. Basics
 
+#### Host
+
 The OpenCL goodness is available through a CLHost instance.
 
 ```javascript
@@ -71,6 +73,8 @@ var err = host.cl.imports.clEnqueueNDRangeKernel(
     null);
 ```
 
+#### Platforms
+
 Then you can access to supported platforms:
 
 ```javascript
@@ -95,6 +99,9 @@ var info = {
 ```
 
 CLPlatform and all CL* class instances except CLHost share the *handle* property, which holds the value of cl_platform_id, cl_command_queue, cl_kernel, etc, OpenCL native handles.
+These handles will be automatically released during garbage collection, rr they can be released explicitly by calling release method.
+
+#### Devices
 
 You can query available devices:
 
@@ -193,6 +200,18 @@ var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, siz
 You can copy data into this buffer, and copy data from it into Node.js memory.
 
 ```javascript
+var destBuffer = new Buffer(openCLBuffer.size);
+queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, destBuffer).promise
+    .then(function () {
+        //destBuffer holds the data
+
+        // setting some values at the Node.js side
+        ref.types.float.set(destBuffer, 0, 1.1);
+        ref.types.float.set(destBuffer, 1 * ref.types.float.size, 1.1);
+
+        // copy data back to OpenCL memory:
+        queue.enqueueWriteBuffer(openCLBuffer, 0, openCLBuffer.size, destBuffer);
+    });
 ```
 
 #### Copy
