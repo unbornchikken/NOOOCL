@@ -22,6 +22,9 @@
     "parallel",
     "native"
   ],
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
   "dependencies": {
     "bluebird": "^2.8.2",
     "ffi": "^1.2.7",
