@@ -23,7 +23,7 @@
     "native"
   ],
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/mocha/bin/mocha ./tests"
   },
   "dependencies": {
     "bluebird": "^2.8.2",
