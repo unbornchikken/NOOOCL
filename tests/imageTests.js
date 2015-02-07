@@ -59,7 +59,7 @@ describe('CLImage2D', function () {
 
                                 var jpegData = jpeg.encode(outputImage, 85);
 
-                                return fs.writeFileAsync(path.join(cd, 'out.jpg'), jpegData.data, 'binary').then(
+                                return fs.writeFileAsync(path.join(cd, 'out.jpg'), jpegData.data, 'binary').finally(
                                     function () {
                                         return queue.waitable().enqueueUnmapMemory(dst, out.ptr).promise;
                                     });
