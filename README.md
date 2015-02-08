@@ -177,10 +177,14 @@ var queue = new CLCommandQueue(context, device); // It's non waitable.
 queue.enqueueNDRangeKernel(kernel, new NDRange(10));
 
 // Read its result asynchronously:
-queue.waitable().enqueueReadBuffer(openCLBuffer, 0, size_in_bytes, destNodeJSBuffer).promise
-  .then(function () {
-     // Data is copied into host's destNodeJSBuffer from the device
-  });
+queue.waitable().enqueueReadBuffer(
+    openCLBuffer,
+    0,
+    size_in_bytes,
+    destNodeJSBuffer).promise
+    .then(function () {
+        // Data is copied into host's destNodeJSBuffer from the device
+    });
 ```
 
 Please note *there is no synchronous operations in NOOOCL*, because those kill the event loop.
@@ -194,14 +198,21 @@ NOOOCL uses [standard Node.js Buffer](http://nodejs.org/api/buffer.html) for mem
 OpenCL runtime can allocate memory if requested.
 
 ```javascript
-var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_ALLOC_HOST_PTR, size_in_bytes_here);
+var openCLBuffer = new CLBuffer(
+    context,
+    host.cl.defs.CL_MEM_ALLOC_HOST_PTR,
+    size_in_bytes_here);
 ```
 
 You can copy data into this buffer, and copy data from it into Node.js memory.
 
 ```javascript
 var destBuffer = new Buffer(openCLBuffer.size);
-queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, destBuffer).promise
+queue.waitable().enqueueReadBuffer(
+    openCLBuffer,
+    0,
+    openCLBuffer.size,
+    destBuffer).promise
     .then(function () {
         //destBuffer holds the data
 
@@ -224,9 +235,18 @@ var nodeBuffer = new Buffer(float.size * 3);
 float.set(nodeBuffer, 0, 1.1);
 float.set(nodeBuffer, float.size, 2.2);
 float.set(nodeBuffer, float.size * 2, 3.3);
-var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_COPY_HOST_PTR, nodeBuffer.length, nodeBuffer);
+var openCLBuffer = new CLBuffer(
+    context,
+    host.cl.defs.CL_MEM_COPY_HOST_PTR,
+    nodeBuffer.length,
+    nodeBuffer);
 var otherBuffer = new Buffer(nodeBuffer.length);
-queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, otherBuffer).promise
+queue.waitable().enqueueReadBuffer(
+    openCLBuffer,
+    0,
+    openCLBuffer.
+    size,
+    otherBuffer).promise
     .then(function () {
         // OpenCL buffer's data are copied to otherBuffer, check;
         for (var i = 0; i < otherBuffer.length; i++) {
@@ -246,7 +266,12 @@ float.set(nodeBuffer, 0, 1.1);
 float.set(nodeBuffer, float.size, 2.2);
 float.set(nodeBuffer, float.size * 2, 3.3);
 
-var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_USE_HOST_PTR, nodeBuffer.length, nodeBuffer);
+var openCLBuffer = new CLBuffer(
+    context,
+    host.cl.defs.CL_MEM_USE_HOST_PTR,
+    nodeBuffer.length,
+    nodeBuffer);
+
 // We can use the following shortcut syntax instead of the above constructor call:
 // var openCLBuffer = CLBuffer.wrap(context, nodeBuffer);
 
@@ -263,7 +288,9 @@ queue.enqueueMapBuffer(
         // since we've requested the pointer from byte offset float.size,
         // and OpenCL uses nodeBuffer's memory as host side pointer,
         // then the following assertion holds:
-        assert.equal(ref.address(out.ptr), ref.address(nodeBuffer) + float.size);
+        assert.equal(
+            ref.address(out.ptr),
+            ref.address(nodeBuffer) + float.size);
 
         // We should reinterpret result ptr to a usable sized buffer with ref:
         var mappedBuffer = ref.reinterpret(out.ptr, 2 * float.size, 1 * float.size);
