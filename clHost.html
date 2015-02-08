@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><title>clHost</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clHost"><meta name="groc-project-path" content="lib/clHost.js"><meta name="groc-github-url" content="https://github.com/unbornchikken/NOOOCL"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/unbornchikken/NOOOCL/blob/master/lib/clHost.js">lib/clHost.js</a></div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><p>License: <a href="../LICENSE">MIT</a></p>
+<p>Copyright (c) 2014 Gábor Mező aka <a href="https://github.com/unbornchikken">unbornchikken</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="clhost-class">CLHost class</h1>
+<p>This is the entry point of interacting OpenCL runtime in NOOOCL.</p>
+<p><strong>base:</strong> Object</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><a href="#supportedversions">supportedVersions (static)</a></li>
+<li><a href="#version">version</a></li>
+<li><a href="#cl">cl</a></li>
+<li><a href="#platformscount">platformsCount</a></li>
+</ul>
+<p><strong>Methods:</strong></p>
+<ul>
+<li><a href="#constructor">constructor</a></li>
+<li><a href="#createv11">createV11 (static)</a></li>
+<li><a href="#createv12">createV12 (static)</a></li>
+<li><a href="#getplatforms">getPlatforms</a></li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-pi">
+'use strict'</span>;
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+<span class="hljs-keyword">var</span> CL11 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./cl11'</span>);
+<span class="hljs-keyword">var</span> CL12 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./cl12'</span>);
+<span class="hljs-keyword">var</span> CLPlatform = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clPlatform'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="constructor">constructor</h2>
+<p><strong>arguments:</strong></p>
+<ul>
+<li><strong>version:</strong> version of the OpenCL runtime, can be number value of 1.1 or 1.2.</li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLHost</span><span class="hljs-params">(version)</span> </span>{
+    assert(_.contains(_.values(CLHost.supportedVersions), version), <span class="hljs-string">'Argument "version" is invalid or not supported.'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="version">version</h2>
+<p>version of the OpenCL runtime, can be number value of 1.1 or 1.2.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">this</span>.version = version;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="cl">cl</h2>
+<p>instance of the <a href="cl11.html">CL11</a> or <a href="cl12.html">CL12</a> class, depending the version of the OpenCL runtime.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">this</span>.cl = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">switch</span> (version) {
+        <span class="hljs-keyword">case</span> CLHost.supportedVersions.cl11:
+            <span class="hljs-keyword">this</span>.cl = <span class="hljs-keyword">new</span> CL11();
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> CLHost.supportedVersions.cl12:
+            <span class="hljs-keyword">this</span>.cl = <span class="hljs-keyword">new</span> CL12();
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">default</span> :
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Unknown version: '</span> + version);
+    }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="supportedversions">supportedVersions</h2>
+<p>Object defining the supported OpenCL runtime versions of the NOOOCL library</p></div></div><div class="code"><div class="wrapper">CLHost.supportedVersions = {
+    cl11: <span class="hljs-number">1.1</span>,
+    cl12: <span class="hljs-number">1.2</span>
+};
+
+<span class="hljs-built_in">Object</span>.defineProperties(CLHost.prototype, {
+    _nPlatformsCount: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">var</span> num = ref.alloc(<span class="hljs-string">'uint'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><em>OpenCL API:</em> <a href="https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetPlatformIDs.html">clGetPlatformIDs</a></p></div></div><div class="code"><div class="wrapper">            <span class="hljs-keyword">var</span> err = <span class="hljs-keyword">this</span>.cl.imports.clGetPlatformIDs(<span class="hljs-number">0</span>, <span class="hljs-literal">null</span>, num);
+
+            <span class="hljs-keyword">this</span>.cl.checkError(err);
+            <span class="hljs-keyword">return</span> num;
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="platformscount">platformsCount</h2>
+<p>Number of OpenCL platforms available.</p></div></div><div class="code"><div class="wrapper">    platformsCount: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._nPlatformsCount.deref();
+        }
+    }
+});</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="createv11">createV11</h2>
+<p>Creates a host instance for the OpenCL 1.1 runtime.</p></div></div><div class="code"><div class="wrapper">CLHost.createV11 = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CLHost(CLHost.supportedVersions.cl11);
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="createv12">createV12</h2>
+<p>Creates a host instance for the OpenCL 1.2 runtime if is it supported by the actual hardware.</p></div></div><div class="code"><div class="wrapper">CLHost.createV12 = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CLHost(CLHost.supportedVersions.cl12);
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="getplatforms">getPlatforms</h2>
+<p>Returns OpenCL platforms available.</p>
+<p><strong>Result:</strong></p>
+<p>Array of <a href="clPlatform.html">CLPlatform</a> instances.</p></div></div><div class="code"><div class="wrapper">CLHost.prototype.getPlatforms = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> i;
+    <span class="hljs-keyword">var</span> count = <span class="hljs-keyword">this</span>._nPlatformsCount;
+    <span class="hljs-keyword">var</span> nCount = count.deref();
+    <span class="hljs-keyword">var</span> plaformIds = <span class="hljs-keyword">new</span> (<span class="hljs-keyword">this</span>.cl.types.PlatformIdArray)(nCount);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><em>OpenCL API:</em> <a href="https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetPlatformIDs.html">clGetPlatformIDs</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">var</span> err = <span class="hljs-keyword">this</span>.cl.imports.clGetPlatformIDs(plaformIds.length, plaformIds, count);
+
+    <span class="hljs-keyword">this</span>.cl.checkError(err);
+    <span class="hljs-keyword">var</span> platforms = [];
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; nCount; i++) {
+        platforms.push(<span class="hljs-keyword">new</span> CLPlatform(<span class="hljs-keyword">this</span>.cl, plaformIds[i]));
+    }
+    <span class="hljs-keyword">return</span> platforms;
+};
+
+<span class="hljs-built_in">module</span>.exports = CLHost;</div></div></div></div></body></html>

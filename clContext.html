@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en"><head><title>clContext</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clContext"><meta name="groc-project-path" content="lib/clContext.js"><meta name="groc-github-url" content="https://github.com/unbornchikken/NOOOCL"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/unbornchikken/NOOOCL/blob/master/lib/clContext.js">lib/clContext.js</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> CLWrapper = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clWrapper'</span>);
+<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+<span class="hljs-keyword">var</span> CLPlatform = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clPlatform'</span>);
+<span class="hljs-keyword">var</span> CLDevice = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clDevice'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> clUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clUtils'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLContext</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> CLPlatform) {
+        CLContext2.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+    }
+    <span class="hljs-keyword">else</span> {
+        CLContext1.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLContext1</span><span class="hljs-params">(devices, properties)</span> </span>{
+    <span class="hljs-keyword">var</span> isArray = _.isArray(devices);
+    <span class="hljs-keyword">var</span> deviceCount = isArray ? devices.length : <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">var</span> firstDevice = isArray ? devices[<span class="hljs-number">0</span>] : devices;
+    <span class="hljs-keyword">if</span> (!(firstDevice <span class="hljs-keyword">instanceof</span> CLDevice)) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">'Arguments unknown.'</span>);
+    }
+    <span class="hljs-keyword">var</span> cl = firstDevice.cl;
+    <span class="hljs-keyword">var</span> deviceArray = <span class="hljs-keyword">new</span> (cl.types.DeviceIdArray)(deviceCount);
+    <span class="hljs-keyword">if</span> (isArray) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; deviceCount; i++) {
+            deviceArray[i] = clUtils.toHandle(devices[i]);
+        }
+    }
+    <span class="hljs-keyword">else</span> {
+        deviceArray[<span class="hljs-number">0</span>] = clUtils.toHandle(devices);
+    }
+
+    <span class="hljs-keyword">var</span> err = ref.alloc(cl.types.ErrorCode);
+    <span class="hljs-keyword">var</span> handle = cl.imports.clCreateContext(<span class="hljs-literal">null</span>, deviceCount, deviceArray, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, err);
+
+    cl.checkError(err);
+
+    CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLContext2</span><span class="hljs-params">(platform, deviceType, properties)</span> </span>{
+    <span class="hljs-keyword">var</span> cl = platform.cl;
+
+    deviceType = deviceType || cl.defs.CL_DEVICE_TYPE_ALL;
+
+    <span class="hljs-keyword">var</span> propArray = createPropArray(cl, properties, platform);
+
+    <span class="hljs-keyword">var</span> err = ref.alloc(cl.types.ErrorCode);
+    <span class="hljs-keyword">var</span> handle = cl.imports.clCreateContextFromType(propArray, deviceType, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, err);
+
+    cl.checkError(err);
+
+    CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
+}
+
+util.inherits(CLContext, CLWrapper);
+
+<span class="hljs-built_in">Object</span>.defineProperties(CLContext.prototype, {
+    _classInfoFunction: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'clGetContextInfo'</span>;
+        }
+    },
+    numDevices: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_CONTEXT_NUM_DEVICES);
+        }
+    },
+    devices: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getArrayInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceId, <span class="hljs-keyword">this</span>.cl.defs.CL_CONTEXT_DEVICES);
+        }
+    },
+    contextProperties: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getArrayInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_CONTEXT_PROPERTIES);
+        }
+    }
+});
+
+CLContext.prototype.createReleaseMethod = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> handle = <span class="hljs-keyword">this</span>.handle;
+    <span class="hljs-keyword">var</span> cl = <span class="hljs-keyword">this</span>.cl;
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        cl.imports.clReleaseContext(handle);
+    };
+};
+
+CLContext.prototype.createProgram = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(arg1, arg2)</span> </span>{
+    <span class="hljs-keyword">this</span>._throwIfReleased();
+    <span class="hljs-keyword">var</span> CLProgram = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clProgram'</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CLProgram(<span class="hljs-keyword">this</span>, arg1, arg2);
+};
+
+CLContext.prototype.supportedImageFormats = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(flags, type)</span> </span>{
+    <span class="hljs-keyword">this</span>._throwIfReleased();
+    <span class="hljs-keyword">var</span> numFormats = ref.alloc(<span class="hljs-string">'uint'</span>);
+    <span class="hljs-keyword">var</span> err = <span class="hljs-keyword">this</span>.cl.imports.clGetSupportedImageFormats(<span class="hljs-keyword">this</span>.handle, flags, type, <span class="hljs-number">0</span>, <span class="hljs-literal">null</span>, numFormats);
+
+    <span class="hljs-keyword">this</span>.cl.checkError(err);
+
+    <span class="hljs-keyword">var</span> num = numFormats.deref();
+    <span class="hljs-keyword">var</span> resultArray = <span class="hljs-keyword">new</span> (<span class="hljs-keyword">this</span>.cl.types.ImageFormatArray)(num);
+
+    err = <span class="hljs-keyword">this</span>.cl.imports.clGetSupportedImageFormats(<span class="hljs-keyword">this</span>.handle, flags, type, num, resultArray, <span class="hljs-literal">null</span>);
+
+    <span class="hljs-keyword">this</span>.cl.checkError(err);
+
+    <span class="hljs-keyword">var</span> result = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; num; i++) {
+        <span class="hljs-keyword">var</span> item = resultArray[i];
+        result.push({
+            imageChannelOrder: item.imageChannelOrder,
+            imageChannelDataType: item.imageChannelDataType
+        });
+    }
+    <span class="hljs-keyword">return</span> result;
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Helpers:</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createPropArray</span><span class="hljs-params">(cl, properties, platform)</span> </span>{
+    <span class="hljs-keyword">var</span> propCount = _.isArray(properties) ? properties.length : <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> allPropCount = <span class="hljs-number">2</span> + propCount + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">var</span> propArray = <span class="hljs-keyword">new</span> (cl.types.ContextProperties)(allPropCount);
+    propArray[<span class="hljs-number">0</span>] = cl.defs.CL_CONTEXT_PLATFORM;
+    <span class="hljs-keyword">var</span> ptr = ref.address(clUtils.toHandle(platform));
+    propArray[<span class="hljs-number">1</span>] = ref.address(clUtils.toHandle(platform));
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">2</span>, c = <span class="hljs-number">0</span>; c &lt; propCount; i++, c++) {
+        propArray[i] = properties[c];
+    }
+    propArray[i] = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">return</span> propArray;
+}
+
+<span class="hljs-built_in">module</span>.exports = CLContext;</div></div></div></div></body></html>
