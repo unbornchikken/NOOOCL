@@ -216,7 +216,69 @@ queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, destBuffe
 
 #### Copy
 
+OpenCL buffers can be initialized by copying values from an already initialized Node.js Buffer.
+
+```javascript
+var float = ref.types.float;
+var nodeBuffer = new Buffer(float.size * 3);
+float.set(nodeBuffer, 0, 1.1);
+float.set(nodeBuffer, float.size, 2.2);
+float.set(nodeBuffer, float.size * 2, 3.3);
+var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_COPY_HOST_PTR, nodeBuffer.length, nodeBuffer);
+var otherBuffer = new Buffer(nodeBuffer.length);
+queue.waitable().enqueueReadBuffer(openCLBuffer, 0, openCLBuffer.size, otherBuffer).promise
+    .then(function () {
+        // OpenCL buffer's data are copied to otherBuffer, check;
+        for (var i = 0; i < otherBuffer.length; i++) {
+            assert.equal(otherBuffer[i], nodeBuffer[i]);
+        }
+    });
+```
+
 #### Use
+
+OpenCL can use Node.js buffers directly. It is safe to access its content only after a mapping operation.
+
+```javascript
+var float = ref.types.float;
+var nodeBuffer = new Buffer(float.size * 3);
+float.set(nodeBuffer, 0, 1.1);
+float.set(nodeBuffer, float.size, 2.2);
+float.set(nodeBuffer, float.size * 2, 3.3);
+
+var openCLBuffer = new CLBuffer(context, host.cl.defs.CL_MEM_USE_HOST_PTR, nodeBuffer.length, nodeBuffer);
+// We can use the following shortcut syntax instead of the above constructor call:
+// var openCLBuffer = CLBuffer.wrap(context, nodeBuffer);
+
+var otherBuffer = new Buffer(nodeBuffer.length);
+var out = {};
+queue.enqueueMapBuffer(
+    openCLBuffer,
+    host.cl.defs.CL_MAP_READ | host.cl.defs.CL_MAP_WRITE,
+    1 * float.size, // offset
+    2 * float.size, // size
+    out).promise
+    .then(function() {
+        // out.ptr holds the mapped ptr address of ref type void*
+        // since we've requested the pointer from byte offset float.size,
+        // and OpenCL uses nodeBuffer's memory as host side pointer,
+        // then the following assertion holds:
+        assert.equal(ref.address(out.ptr), ref.address(nodeBuffer) + float.size);
+
+        // We should reinterpret result ptr to a usable sized buffer with ref:
+        var mappedBuffer = ref.reinterpret(out.ptr, 2 * float.size, 1 * float.size);
+
+        // Now we're using the same memory for sure:
+        for (var i = 0; i < mappedBuffer.length; i++) {
+            assert.equal(otherBuffer[i], nodeBuffer[i + float.size]);
+        }
+
+        // Why out.ptr if we have access the original buffer?
+        // That's because mapping is available for OpenCL allocated buffers as well,
+        // if CL_MEM_ALLOC_HOST_PTR flags is used only,
+        // or CL_MEM_USE_HOST_PTR flag is set along with CL_MEM_COPY_HOST_PTR
+    });
+```
 
 #### Images
 
