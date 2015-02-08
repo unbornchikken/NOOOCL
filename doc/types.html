@@ -1,32 +1,41 @@
-<!DOCTYPE html><html lang="en"><head><title>types</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="types"><meta name="groc-project-path" content="lib/types.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/types.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<!DOCTYPE html><html lang="en"><head><title>types</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="types"><meta name="groc-project-path" content="lib/types.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/types.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><p> License: <a href="../LICENSE">MIT</a></p>
+<p> Copyright (c) 2014 Gábor Mező aka <a href="https://github.com/unbornchikken">unbornchikken</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="types-object">types object</h1>
+<p> Required ref types for communicating with the OpenCL C API.</p>
+<p> <strong>base:</strong> Object</p></div></div><div class="code"><div class="wrapper"><span class="hljs-pi">
+'use strict'</span>;
+
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
 <span class="hljs-keyword">var</span> Struct = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref-struct'</span>);
 <span class="hljs-keyword">var</span> ArrayType = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref-array'</span>);
 <span class="hljs-keyword">var</span> ffi = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ffi'</span>);
-<span class="hljs-keyword">var</span> Buffer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'buffer'</span>);
 <span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
 
-<span class="hljs-keyword">var</span> ImageFormat = Struct({
+<span class="hljs-keyword">var</span> ImageFormat = <span class="hljs-keyword">new</span> Struct({
     imageChannelOrder: <span class="hljs-string">'uint'</span>,
     imageChannelDataType: <span class="hljs-string">'uint'</span>
 });
 
-<span class="hljs-keyword">var</span> ImageDesc = Struct({
-    imageType: <span class="hljs-string">'uint'</span>, <span class="hljs-comment">//cl_mem_object_type      image_type;</span>
-    imageWidth: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_width;</span>
-    imageHeight: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_height;</span>
-    imageDepth: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_depth;</span>
-    imageArraySize: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_array_size;</span>
-    imageRowPitch: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_row_pitch;</span>
-    imageSlicePitch: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  image_slice_pitch;</span>
-    numMipLevels: <span class="hljs-string">'uint'</span>, <span class="hljs-comment">//cl_uint                 num_mip_levels;</span>
-    numSamples: <span class="hljs-string">'uint'</span>, <span class="hljs-comment">//cl_uint                 num_samples;</span>
-    buffer: <span class="hljs-string">'pointer'</span> <span class="hljs-comment">//cl_mem                  buffer;</span>
+<span class="hljs-keyword">var</span> ImageDesc = <span class="hljs-keyword">new</span> Struct({</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><em>imageType</em></p>
+<ul>
+<li>CL_MEM_OBJECT_BUFFER</li>
+<li>CL_MEM_OBJECT_IMAGE2D</li>
+<li>CL_MEM_OBJECT_IMAGE3D</li>
+</ul></div></div><div class="code"><div class="wrapper">    imageType: <span class="hljs-string">'uint'</span>,
+    imageWidth: <span class="hljs-string">'size_t'</span>,
+    imageHeight: <span class="hljs-string">'size_t'</span>,
+    imageDepth: <span class="hljs-string">'size_t'</span>,
+    imageArraySize: <span class="hljs-string">'size_t'</span>,
+    imageRowPitch: <span class="hljs-string">'size_t'</span>,
+    imageSlicePitch: <span class="hljs-string">'size_t'</span>,
+    numMipLevels: <span class="hljs-string">'uint'</span>,
+    numSamples: <span class="hljs-string">'uint'</span>,
+    buffer: ref.refType(<span class="hljs-string">'void'</span>)
 });
 
-<span class="hljs-keyword">var</span> BufferRegion = Struct({
-    origin: <span class="hljs-string">'size_t'</span>, <span class="hljs-comment">//size_t                  origin;</span>
-    size: <span class="hljs-string">'size_t'</span> <span class="hljs-comment">//size_t                  size;</span>
-});<span class="hljs-comment">// cl_buffer_region;</span>
+<span class="hljs-keyword">var</span> BufferRegion = <span class="hljs-keyword">new</span> Struct({
+    origin: <span class="hljs-string">'size_t'</span>,
+    size: <span class="hljs-string">'size_t'</span>
+});
 
 <span class="hljs-keyword">var</span> types = {
     ImageFormat: ImageFormat,
@@ -35,85 +44,74 @@
     ImageDesc: ImageDesc,
     ImageDescRef: ref.refType(ImageDesc),
     BufferRegion: BufferRegion,
-    Bool: ref.types.uint, <span class="hljs-comment">/* WARNING!  Unlike cl_ types in cl_platform.h, cl_bool is not guaranteed to be the same size as the Bool in kernels. */</span>
-    SizeTArray: ArrayType(<span class="hljs-string">'size_t'</span>),
-    StringArray: ArrayType(<span class="hljs-string">'string'</span>),
+    Bool: ref.types.uint,
+    SizeTArray: <span class="hljs-keyword">new</span> ArrayType(<span class="hljs-string">'size_t'</span>),
+    StringArray: <span class="hljs-keyword">new</span> ArrayType(<span class="hljs-string">'string'</span>),
     ErrorCode: ref.types.int,
     ErrorCodeRet: ref.refType(<span class="hljs-string">'int'</span>),
-    Bitfield: ref.types.uint64, <span class="hljs-comment">//typedef cl_ulong            cl_bitfield;</span>
-    DeviceType: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_device_type;</span>
-    PlatformInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_platform_info;</span>
-    DeviceInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_device_info;</span>
-    DeviceFpConfig: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_device_fp_config;</span>
-    DeviceMemCacheType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_device_mem_cache_type;</span>
-    DeviceLocalMemType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_device_local_mem_type;</span>
-    DeviceExecCapabilities: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_device_exec_capabilities;</span>
-    CommandQueueProperties: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_command_queue_properties;</span>
-    DevicePartitionProperties: ArrayType(<span class="hljs-string">'int'</span>),<span class="hljs-comment">//typedef intptr_t            cl_device_partition_property;</span>
-    DeviceAffinityDomain: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_device_affinity_domain;</span>
-    ContextProperties: ArrayType(<span class="hljs-string">'size_t'</span>),<span class="hljs-comment">//typedef intptr_t            cl_context_properties;</span>
-    ContextInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_context_info;</span>
-    CommandQueueInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_command_queue_info;</span>
-    ChannelOrder: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_channel_order;</span>
-    ChannelType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_channel_type;</span>
-    MemFlags: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_mem_flags;</span>
-    MemObjectType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_mem_object_type;</span>
-    MemInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_mem_object_type;</span>
-    MemMigrationFlags: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_mem_migration_flags;</span>
-    ImageInfo: ref.types.uint, <span class="hljs-comment">//typedef cl_uint             cl_image_info;</span>
-    BufferCreateType: ref.types.uint, <span class="hljs-comment">//typedef cl_uint             cl_buffer_create_type;</span>
-    AddressingMode: ref.types.uint, <span class="hljs-comment">//typedef cl_uint             cl_addressing_mode;</span>
-    FilterMode: ref.types.uint,<span class="hljs-comment">// typedef cl_uint             cl_filter_mode;</span>
-    SamplerInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_sampler_info;</span>
-    MapFlags: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_map_flags;</span>
-    ProgramInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_program_info;</span>
-    ProgramBuildInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_program_build_info;</span>
-    ProgramBinaryType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_program_binary_type;</span>
-    BuildStatus: ref.types.int,<span class="hljs-comment">//typedef cl_uint             cl_program_binary_type;</span>
-    KernelInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_int              cl_build_status;</span>
-    KernelArgInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_kernel_arg_info;</span>
-    KernelArgAddressQualifier: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_kernel_arg_address_qualifier;</span>
-    KernelArgAccessQualifier: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_kernel_arg_access_qualifier;</span>
-    KernelArgTypeQualifier: ref.types.uint64,<span class="hljs-comment">//typedef cl_bitfield         cl_kernel_arg_type_qualifier;</span>
-    KernelWorkGroupInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_kernel_work_group_info;</span>
-    EventInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_event_info;</span>
-    CommandType: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_command_type;</span>
-    CommandExecutionStatus: ref.types.uint, <span class="hljs-comment">// cl_command_execution_status</span>
-    ProfilingInfo: ref.types.uint,<span class="hljs-comment">//typedef cl_uint             cl_profiling_info;</span>
+    Bitfield: ref.types.uint64,
+    DeviceType: ref.types.uint64,
+    PlatformInfo: ref.types.uint,
+    DeviceInfo: ref.types.uint,
+    DeviceFpConfig: ref.types.uint64,
+    DeviceMemCacheType: ref.types.uint,
+    DeviceLocalMemType: ref.types.uint,
+    DeviceExecCapabilities: ref.types.uint64,
+    CommandQueueProperties: ref.types.uint64,
+    DevicePartitionProperties: <span class="hljs-keyword">new</span> ArrayType(<span class="hljs-string">'int'</span>),
+    DeviceAffinityDomain: ref.types.uint64,
+    ContextProperties: <span class="hljs-keyword">new</span> ArrayType(<span class="hljs-string">'size_t'</span>),
+    ContextInfo: ref.types.uint,
+    CommandQueueInfo: ref.types.uint,
+    ChannelOrder: ref.types.uint,
+    ChannelType: ref.types.uint,
+    MemFlags: ref.types.uint64,
+    MemObjectType: ref.types.uint,
+    MemInfo: ref.types.uint,
+    MemMigrationFlags: ref.types.uint64,
+    ImageInfo: ref.types.uint,
+    BufferCreateType: ref.types.uint,
+    AddressingMode: ref.types.uint,
+    FilterMode: ref.types.uint,
+    SamplerInfo: ref.types.uint,
+    MapFlags: ref.types.uint64,
+    ProgramInfo: ref.types.uint,
+    ProgramBuildInfo: ref.types.uint,
+    ProgramBinaryType: ref.types.uint,
+    BuildStatus: ref.types.int,
+    KernelInfo: ref.types.uint,
+    KernelArgInfo: ref.types.uint,
+    KernelArgAddressQualifier: ref.types.uint,
+    KernelArgAccessQualifier: ref.types.uint,
+    KernelArgTypeQualifier: ref.types.uint64,
+    KernelWorkGroupInfo: ref.types.uint,
+    EventInfo: ref.types.uint,
+    CommandType: ref.types.uint,
+    CommandExecutionStatus: ref.types.uint,
+    ProfilingInfo: ref.types.uint,
     Mem: ref.refType(<span class="hljs-string">'void'</span>),
-    MemArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    MemArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     PlatformId: ref.refType(<span class="hljs-string">'void'</span>),
-    PlatformIdArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    PlatformIdArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     DeviceId: ref.refType(<span class="hljs-string">'void'</span>),
-    DeviceIdArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    DeviceIdArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     CommandQueue: ref.refType(<span class="hljs-string">'void'</span>),
     Context: ref.refType(<span class="hljs-string">'void'</span>),
     Sampler: ref.refType(<span class="hljs-string">'void'</span>),
     Program: ref.refType(<span class="hljs-string">'void'</span>),
-    ProgramArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    ProgramArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     Kernel: ref.refType(<span class="hljs-string">'void'</span>),
-    KernelArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    KernelArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     Event: ref.refType(<span class="hljs-string">'void'</span>),
     EventRef: ref.refType(ref.refType(<span class="hljs-string">'void'</span>)),
-    EventArray: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
-    Binary: ArrayType(<span class="hljs-string">'byte'</span>),
-    Binaries: ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    EventArray: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
+    Binary: <span class="hljs-keyword">new</span> ArrayType(<span class="hljs-string">'byte'</span>),
+    Binaries: <span class="hljs-keyword">new</span> ArrayType(ref.refType(<span class="hljs-string">'void'</span>)),
     CreateContextNotify: ffi.Function(<span class="hljs-string">'void'</span>, [<span class="hljs-string">'pointer'</span>, <span class="hljs-string">'pointer'</span>]),
     BuildProgramNotify: ffi.Function(<span class="hljs-string">'void'</span>, [<span class="hljs-string">'pointer'</span>, <span class="hljs-string">'pointer'</span>]),
     EnqueueNativeKernelUserFunc: ffi.Function(<span class="hljs-string">'void'</span>, [<span class="hljs-string">'pointer'</span>]),
     SetEventCallbackCallback: ffi.Function(<span class="hljs-string">'void'</span>, [<span class="hljs-string">'pointer'</span>, <span class="hljs-string">'int'</span>, <span class="hljs-string">'pointer'</span>]),
     MemObjectDestructorCallback: ffi.Function(<span class="hljs-string">'void'</span>, [<span class="hljs-string">'pointer'</span>, <span class="hljs-string">'pointer'</span>])
 };
-
-types.utils = {
-    createDeviceArray: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(devices)</span> </span>{
-        <span class="hljs-keyword">if</span> (!_.isArray(devices)) devices = [devices];
-        <span class="hljs-keyword">var</span> deviceArray = <span class="hljs-keyword">new</span> (types.DeviceIdArray)(devices.length);
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; devices.length; i++) {
-            deviceArray[i] = devices[i].handle;
-        }
-        <span class="hljs-keyword">return</span> deviceArray;
-    }
-}
 
 <span class="hljs-built_in">module</span>.exports = types;</div></div></div></div></body></html>

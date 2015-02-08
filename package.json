@@ -26,17 +26,16 @@
     "test": "./node_modules/mocha/bin/mocha --expose-gc ./tests"
   },
   "dependencies": {
-    "bluebird": "^2.8.2",
+    "bluebird": "^2.9.7",
     "ffi": "^1.2.7",
-    "lodash": "^2.4.1",
+    "lodash": "^3.1.0",
     "ref": "^1.0.0",
     "ref-array": "^1.1.0",
     "ref-struct": "^1.0.0",
-    "underscore.string": "^3.0.1",
-    "weak": "^0.3.3"
+    "weak": "^0.3.4"
   },
   "devDependencies": {
     "jpeg-js": "^0.1.1",
-    "mocha": "^2.0.1"
+    "mocha": "^2.1.0"
   }
 }

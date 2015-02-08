@@ -133,357 +133,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "clDefines",
         "title": "clDefines"
       },
-      "depth": 1,
-      "outline": [
-        {
-          "type": "heading",
-          "data": {
-            "level": 1,
-            "title": "object clDefines",
-            "slug": "object-cldefines"
-          },
-          "depth": 1,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "Errors",
-                "slug": "errors"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "OpenCL Version",
-                "slug": "opencl-version"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_bool",
-                "slug": "cl-bool"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_platform_info",
-                "slug": "cl-platform-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_type - Bitfield",
-                "slug": "cl-device-type-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_info",
-                "slug": "cl-device-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_fp_config - Bitfield",
-                "slug": "cl-device-fp-config-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_mem_cache_type",
-                "slug": "cl-device-mem-cache-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_local_mem_type",
-                "slug": "cl-device-local-mem-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_exec_capabilities - Bitfield",
-                "slug": "cl-device-exec-capabilities-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_command_queue_properties - Bitfield",
-                "slug": "cl-command-queue-properties-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_context_info",
-                "slug": "cl-context-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_context_properties",
-                "slug": "cl-context-properties"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_partition_property",
-                "slug": "cl-device-partition-property"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_device_affinity_domain",
-                "slug": "cl-device-affinity-domain"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_command_queue_info",
-                "slug": "cl-command-queue-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_mem_flags - Bitfield",
-                "slug": "cl-mem-flags-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_mem_migration_flags - Bitfield",
-                "slug": "cl-mem-migration-flags-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_channel_order",
-                "slug": "cl-channel-order"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_channel_type",
-                "slug": "cl-channel-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_mem_object_type",
-                "slug": "cl-mem-object-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_mem_info",
-                "slug": "cl-mem-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_image_info",
-                "slug": "cl-image-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_addressing_mode",
-                "slug": "cl-addressing-mode"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_filter_mode",
-                "slug": "cl-filter-mode"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_sampler_info",
-                "slug": "cl-sampler-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_map_flags - Bitfield",
-                "slug": "cl-map-flags-bitfield"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_program_info",
-                "slug": "cl-program-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_program_build_info",
-                "slug": "cl-program-build-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_program_binary_type",
-                "slug": "cl-program-binary-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_build_status",
-                "slug": "cl-build-status"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_info",
-                "slug": "cl-kernel-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_arg_info",
-                "slug": "cl-kernel-arg-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_arg_address_qualifier",
-                "slug": "cl-kernel-arg-address-qualifier"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_arg_access_qualifier",
-                "slug": "cl-kernel-arg-access-qualifier"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_arg_type_qualifer",
-                "slug": "cl-kernel-arg-type-qualifer"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_kernel_work_group_info",
-                "slug": "cl-kernel-work-group-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_event_info",
-                "slug": "cl-event-info"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_command_type",
-                "slug": "cl-command-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "command execution status",
-                "slug": "command-execution-status"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_buffer_create_type",
-                "slug": "cl-buffer-create-type"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "cl_profiling_info",
-                "slug": "cl-profiling-info"
-              },
-              "depth": 3
-            }
-          ]
-        }
-      ]
+      "depth": 1
     }, {
       "type": "file",
       "data": {
@@ -672,6 +322,79 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "targetPath": "clPlatform",
         "pageTitle": "clPlatform",
         "title": "clPlatform"
+      },
+      "depth": 1,
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "CLPlatform class",
+            "slug": "clplatform-class"
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "name",
+                "slug": "name"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "vendor",
+                "slug": "vendor"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "clVersion",
+                "slug": "clversion"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "profile",
+                "slug": "profile"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "extensions",
+                "slug": "extensions"
+              },
+              "depth": 2
+            }
+          ]
+        }
+      ]
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".js"],
+          "pygmentsLexer": "javascript",
+          "multiLineComment": ["/*", "*", "*/"],
+          "singleLineComment": ["//"],
+          "ignorePrefix": "}",
+          "foldPrefix": "^",
+          "name": "JavaScript"
+        },
+        "sourcePath": "/home/gabor/git/NOOOCL/lib/clPredef.js",
+        "projectPath": "lib/clPredef.js",
+        "targetPath": "clPredef",
+        "pageTitle": "clPredef",
+        "title": "clPredef"
       },
       "depth": 1
     }, {

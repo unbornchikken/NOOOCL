@@ -42,7 +42,7 @@
         binaryArray[i] = binaries[i];
         binarySizes[i] = binaries[i].length;
     }
-    <span class="hljs-keyword">var</span> deviceArray = cl.types.utils.createDeviceArray(devices);
+    <span class="hljs-keyword">var</span> deviceArray = clUtils.createDeviceArray(devices);
 
     <span class="hljs-keyword">var</span> handle = cl.imports.clCreateProgramWithBinary(
         clUtils.toHandle(context),
@@ -110,7 +110,7 @@ CLProgram.prototype.build = <span class="hljs-function"><span class="hljs-keywor
             <span class="hljs-keyword">var</span> err = cl.imports.clBuildProgram(
                 self.handle,
                 devices ? devices.length : <span class="hljs-number">0</span>,
-                devices ? cl.types.utils.createDeviceArray(devices) : <span class="hljs-literal">null</span>,
+                devices ? clUtils.createDeviceArray(devices) : <span class="hljs-literal">null</span>,
                 options,
                 cl.types.BuildProgramNotify.toPointer(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
                     <span class="hljs-keyword">if</span> (!done) {

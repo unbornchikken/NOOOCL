@@ -4,15 +4,17 @@
 <span class="hljs-keyword">var</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>);
 <span class="hljs-keyword">var</span> CLImage = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clImage'</span>);
 <span class="hljs-keyword">var</span> clUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clUtils'</span>);
+<span class="hljs-keyword">var</span> clPredef = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clPredef'</span>);
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLImage3D</span><span class="hljs-params">(context, flags, format,  width, height, depth, hostPtr, rowPitch, slicePitch)</span>
 </span>{
+    format = clUtils.asImageFormat(format);
     hostPtr = hostPtr || <span class="hljs-literal">null</span>;
     rowPitch = rowPitch || <span class="hljs-number">0</span>;
     slicePitch = slicePitch || <span class="hljs-number">0</span>;
     <span class="hljs-keyword">var</span> cl = context.cl;
 
-    <span class="hljs-keyword">var</span> err = ref.alloc(cl.types.ErrorCode);
+    <span class="hljs-keyword">var</span> err = clPredef.err;
     <span class="hljs-keyword">var</span> handle = cl.imports.clCreateImage3D(clUtils.toHandle(context, <span class="hljs-string">'context'</span>), flags, format.ref(), width, height, depth, rowPitch, slicePitch, clUtils.toPtr(hostPtr, <span class="hljs-string">'hostPtr'</span>), err);
     cl.checkError(err);
 

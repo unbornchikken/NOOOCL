@@ -1,4 +1,21 @@
-<!DOCTYPE html><html lang="en"><head><title>clPlatform</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clPlatform"><meta name="groc-project-path" content="lib/clPlatform.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clPlatform.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> CLWrapper = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clWrapper'</span>);
+<!DOCTYPE html><html lang="en"><head><title>clPlatform</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clPlatform"><meta name="groc-project-path" content="lib/clPlatform.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clPlatform.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><p>License: <a href="../LICENSE">MIT</a></p>
+<p>Copyright (c) 2014 Gábor Mező aka <a href="https://github.com/unbornchikken">unbornchikken</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="clplatform-class">CLPlatform class</h1>
+<p>Represents an OpenCL platform.</p>
+<p><strong>base:</strong> <a href="clWrapper.html">CLWrapper</a></p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><a href="#name">name</a></li>
+<li><a href="#vendor">vendor</a></li>
+<li><a href="#clversion">clVersion</a></li>
+<li><a href="#profile">profile</a></li>
+<li><a href="#extensions">extensions</a></li>
+</ul>
+<p><strong>Methods:</strong></p>
+<ul>
+<li><a href="#constructor">constructor</a></li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-pi">
+'use strict'</span>;
+<span class="hljs-keyword">var</span> CLWrapper = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clWrapper'</span>);
 <span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
 <span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
 <span class="hljs-keyword">var</span> CLDevice = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clDevice'</span>);
@@ -13,32 +30,27 @@ util.inherits(CLPlatform, CLWrapper);
 <span class="hljs-built_in">Object</span>.defineProperties(CLPlatform.prototype, {
     _classInfoFunction: {
         value: <span class="hljs-string">'clGetPlatformInfo'</span>
-    },
-    name: {
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="name">name</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">    name: {
         get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">this</span>._throwIfReleased();
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_PLATFORM_NAME);
         }
-    },
-    vendor: {
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="vendor">vendor</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">    vendor: {
         get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">this</span>._throwIfReleased();
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_PLATFORM_VENDOR);
         }
-    },
-    clVersion: {
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="clversion">clVersion</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">    clVersion: {
         get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">this</span>._throwIfReleased();
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_PLATFORM_VERSION);
         }
-    },
-    profile: {
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="profile">profile</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">    profile: {
         get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">this</span>._throwIfReleased();
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_PLATFORM_PROFILE);
         }
-    },
-    extensions: {
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="extensions">extensions</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">    extensions: {
         get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">this</span>._throwIfReleased();
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_PLATFORM_EXTENSIONS);
@@ -55,11 +67,15 @@ CLPlatform.prototype.getDevices = <span class="hljs-function"><span class="hljs-
     <span class="hljs-keyword">var</span> devices = [];
     <span class="hljs-keyword">var</span> num = ref.alloc(<span class="hljs-string">'uint'</span>);
     <span class="hljs-keyword">var</span> err = <span class="hljs-keyword">this</span>.cl.imports.clGetDeviceIDs(<span class="hljs-keyword">this</span>.handle, deviceType, <span class="hljs-number">0</span>, <span class="hljs-literal">null</span>, num);
-    <span class="hljs-keyword">if</span> (err === <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_NOT_FOUND) <span class="hljs-keyword">return</span> devices;
+    <span class="hljs-keyword">if</span> (err === <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_NOT_FOUND) {
+        <span class="hljs-keyword">return</span> devices;
+    }
     <span class="hljs-keyword">this</span>.cl.checkError(err);
 
     <span class="hljs-keyword">var</span> n = num.deref();
-    <span class="hljs-keyword">if</span> (!n) <span class="hljs-keyword">return</span> devices;
+    <span class="hljs-keyword">if</span> (!n) {
+        <span class="hljs-keyword">return</span> devices;
+    }
 
     <span class="hljs-keyword">var</span> deviceIDs = <span class="hljs-keyword">new</span> (<span class="hljs-keyword">this</span>.cl.types.DeviceIdArray)(n);
     err = <span class="hljs-keyword">this</span>.cl.imports.clGetDeviceIDs(<span class="hljs-keyword">this</span>.handle, deviceType, n, deviceIDs, <span class="hljs-literal">null</span>);
