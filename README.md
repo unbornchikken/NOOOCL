@@ -501,7 +501,7 @@ func(openCLBuffer, {'uint': 55}, 100 * float.size);
 
 ### 4. API
 
-In progress. (Groc's gonna be used.)
+[In progress.](http://unbornchikken.github.io/NOOOCL/)
 
 ### 5. Examples
 
