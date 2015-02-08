@@ -384,7 +384,8 @@ var binaries = program.getBinaries();
 // the program binary in the array refers to,
 // use the CL_PROGRAM_DEVICES query to get the list of devices.
 // There is a one-to-one correspondence between the array of n pointers
-// returned by CL_PROGRAM_BINARIES and array of devices returned by CL_PROGRAM_DEVICES."
+// returned by CL_PROGRAM_BINARIES and array of devices
+// returned by CL_PROGRAM_DEVICES."
 
 // So we can zip the above:
 var deviceBinaries =
@@ -403,7 +404,8 @@ var binary = fs.readFileSync('/tmp/foo.bin');
 
 var program = context.createProgram(binary, device);
 
-// We should call build, but this time it will be much faster than compiling from source:
+// We should call build,
+// but this time it will be much faster than compiling from source:
 program.build().then(
     function() {
         // can be either: CL_BUILD_SUCCESS, CL_BUILD_ERROR
@@ -417,3 +419,89 @@ program.build().then(
 ```
 
 #### Kernel
+
+We can create kernel by name, or can create all kernels in the program at once.
+
+```javascript
+// By name:
+doStuffKernel = program.createKernel('doStuff');
+
+// All. This time the return values is an array of CLKernel instances.
+var kernels = program.createAllKernels();
+doStuffKernel = _.first(_.where(kernels, { name: 'doStuff' }));
+```
+
+We can set its arguments by index, or all at once:
+
+```javascript
+// Assume we have a kernel of the following signature:
+// kernel void doStuff(global float* data, uint someValue, local float* tmp) {...}
+// and a CLBuffer instance created like:
+// var openCLBuffer = CLBuffer.wrap(context, nodeBuffer);
+
+
+var kernel = program.createKernel('doStuff');
+
+// We can set kernel's arguments by index:
+
+// For buffer arguments we can pass the instance of a CLBuffer class:
+kernel.setArg(0, openCLBuffer);
+// or native cl_mem handle
+// kernel.setArg(0, openCLBuffer.handle);
+
+// For constant arguments we have to specify its type
+kernel.setArg(1, 55, 'uint');
+
+// For local buffers, we have to specify its size in bytes
+kernel.setArg(2, 100 * float.size);
+
+// Or we can specify all of the arguments at once:
+
+kernel.setArgs(openCLBuffer, {'uint': 55}, 100 * float.size);
+```
+
+Now we can enqueue the kernel. In NOOOCL there is an NDRange class, for defining OpenCL ranges.
+
+```javascript
+// 1 dimension range:
+var r1 = new NDRange(10);
+
+// 2 dimensions range:
+var r2 = new NDRange(10, 20);
+
+// 3 dimensions range
+var r3 = new NDRange(10, 20, 30);
+```
+
+So the enqueuing is really simple:
+
+```javascript
+queue.enqueueNDRangeKernel(
+    kernel,
+    new NDRange(3), // global size
+    null, // local size
+    new NDRange(1) // offset
+);
+```
+
+We can create a simple JavaScript function for calling OpenCL kernels with ad-hoc arguments by using the bind method:
+
+```javascript
+var func = kernel.bind(
+    queue, // command queue to use
+    new NDRange(3), // global size
+    null, // local size
+    new NDRange(1)); // offset
+
+// Now we have a JS function to call (aka set arguments and enqueue) our OpenCL kernel!
+// It's easy as goblin pie.
+func(openCLBuffer, {'uint': 55}, 100 * float.size);
+```
+
+### 4. API
+
+In progress. (Groc's gonna be used.)
+
+### 5. Examples
+
+TODO (I'm gonna try to make some particle simulation demo in node-webkit)
