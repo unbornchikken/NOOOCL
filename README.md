@@ -5,7 +5,8 @@ Node.js Object Oriented OpenCL Bindings
 
 ## About
 
-This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications. Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref and co](https://www.npmjs.com/package/ref).
+This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
+Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref and co](https://www.npmjs.com/package/ref).
 
 ## Install
 
@@ -46,13 +47,14 @@ host = new CLHost(1.1); // for OpenCL 1.1
 host = new CLHost(1.2); // for OpenCL 1.2
 ```
 
-You will get an exception if there is no compatible OpenCL platform available.
+we will get an exception if there is no compatible OpenCL platform available.
 
 CLHost and all of CL* class instances share this common, important properties:
 
 - **cl.version**: version of the OpenCL platform
 - **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/defs.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/defs.js).
-- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, you can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
+- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
+- **cl.types.xxx**: [ref](https://www.npmjs.com/package/ref) compatible OpenCL type definitions, see the complete list there: [NOOOCL/lib/cl/types.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/types.js).
 
 Example:
 
@@ -75,16 +77,16 @@ var err = host.cl.imports.clEnqueueNDRangeKernel(
 
 #### Platforms
 
-Then you can access to supported platforms:
+Then we can access to supported platforms:
 
 ```javascript
 var count = host.platformsCount;
 
-// you will get an array filled with instances of nooocl.CLPlatform class
+// we will get an array filled with instances of nooocl.CLPlatform class
 var allPlatforms = host.getPlatforms();
 ```
 
-For each platform you can access its information in JS properties:
+For each platform we can access its information in JS properties:
 
 ```javascript
 var platform = host.getPlatforms()[0]; // First platform
@@ -103,7 +105,7 @@ These handles will be automatically released during garbage collection, rr they 
 
 #### Devices
 
-You can query available devices:
+we can query available devices:
 
 ```javascript
 var all = platform.allDevices();
@@ -120,21 +122,21 @@ var gpusAndCpus =
         platform.cl.defs.CL_DEVICE_TYPE_CPU);
 ```
 
-You will get an array of nooocl.CLDevice class instances. CLDevice can provide all OpenCL device information in simple JavaScript properties, for example:
+we will get an array of nooocl.CLDevice class instances. CLDevice can provide all OpenCL device information in simple JavaScript properties, for example:
 
 ```javascript
 var cpuDevice = platform.cpuDevices()[0];
 
-// You get the value of CL_DEVICE_MAX_COMPUTE_UNITS:
+// we get the value of CL_DEVICE_MAX_COMPUTE_UNITS:
 var maxComputeUnits = cpuDevice.maxComputeUnits;
 
-// You get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]:
+// we get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]:
 var maxWorkItemSizes = cpuDevice.maxWorkItemSizes;
 ```
 
 Please see the API docs or [NOOOCL/tests/hostTests.js](https://github.com/unbornchikken/NOOOCL/blob/master/tests/hostTests.js) unit test for complete list of available device info properties.
 
-Ok, you have a host, a platform, a device, now you need a context. You can create it from a CLDevice instance, from an array of CLDevice instances, or from a CLPlatform instance and a device type, like:
+Ok, we have a host, a platform, a device, now we need a context. we can create it from a CLDevice instance, from an array of CLDevice instances, or from a CLPlatform instance and a device type, like:
 
 ```javascript
 // Create content for a single device:
@@ -154,7 +156,7 @@ context = new CLContext(platform, platform.cl.defs.CL_DEVICE_TYPE_GPU);
 
 #### The Queue
 
-The last thing that you need in every OpenCL application is the command queue. You can create a queue for a device by calling CLCommandQueue class' constructor:
+The last thing that we need in every OpenCL application is the command queue. we can create a queue for a device by calling CLCommandQueue class' constructor:
 
 ```javascript
 // The last two parameters are optional, their defaults are false:
@@ -166,7 +168,7 @@ Please see the API docs further details.
 
 The queue has two modes. Waitable and non waitable. A queue initially is non waitable.
 If the queue is non waitable its enqueue* methods return undefined, if waitable enqueue* methods return a CLEvent instance which have a _promise_ property of type [bluebird promise](https://www.npmjs.com/package/bluebird).
-You can switch modes by calling waitable method, which accepts an optional boolean parameter. When its true, the result queue will be waitable, if false, the result queue will be non waitable. Default value is true.
+we can switch modes by calling waitable method, which accepts an optional boolean parameter. When its true, the result queue will be waitable, if false, the result queue will be non waitable. Default value is true.
 
 Example:
 
@@ -204,7 +206,7 @@ var openCLBuffer = new CLBuffer(
     size_in_bytes_here);
 ```
 
-You can copy data into this buffer, and copy data from it into Node.js memory.
+we can copy data into this buffer, and copy data from it into Node.js memory.
 
 ```javascript
 var destBuffer = new Buffer(openCLBuffer.size);
@@ -304,9 +306,114 @@ queue.enqueueMapBuffer(
         // That's because mapping is available for OpenCL allocated buffers as well,
         // if CL_MEM_ALLOC_HOST_PTR flags is used only,
         // or CL_MEM_USE_HOST_PTR flag is set along with CL_MEM_COPY_HOST_PTR
+
+        // ...
+
+        // After doing stuff, we have to unmap memory:
+        queue.enqueueUnmapMemory(openCLBuffer, out.ptr);
     });
 ```
 
 #### Images
 
-.... in progress ....
+2D and 3D images are also supported in NOOOCL. There is a unit test that shows how we can do OpenCL accelerated image grayscale conversion in NOOOCL,
+please take a look at it there: [NOOOCL/tests/imageTests.js](https://github.com/unbornchikken/NOOOCL/blob/beta-dev/tests/imageTests.js).
+
+Fist, we should open the image and access to its raw RGBA data in a Node.js buffer. Any appropriate npm module can be used there (I suggest [lwip](https://github.com/EyalAr/lwip)).
+
+Then we can create and OpenCL image from it:
+
+```javascript
+var ImageFormat = host.conel.types.ImageFormat;
+var format = new ImageFormat({
+    imageChannelOrder: host.cl.defs.CL_RGBA,
+    imageChannelDataType: host.cl.defs.CL_UNSIGNED_INT8
+});
+
+// Wrap means CL_MEM_USE_HOST_PTR
+var src = CLImage2D.wrapReadOnly(
+    context,
+    format,
+    inputImage.width,
+    inputImage.height,
+    inputImage.data);
+```
+
+Please refer to the API docs for further details.
+
+### 3. Program
+
+#### Build
+
+OpenCL programs can be compiled from string source code or loaded from precompiled binaries, these methods are supported in NOOOCL.
+
+```javascript
+// Creating OpenCL program from string source:
+var source = 'kernel void foo(global float* data) { }';
+var program = context.createProgram(source);
+
+// Everything is asynchronous in Node.js:
+program.build('-cl-fast-relaxed-math').then(
+    function() {
+        // At this point we don't know that the build succeeded or failed.
+        // Since one context can hold multiple devices,
+        // and a build could succeeded on a device, but could failed on the other,
+        // NOOOCL won't raise build errors, we should asks for it per device basis:
+
+        // can be either: CL_BUILD_SUCCESS, CL_BUILD_ERROR
+        var buildStatus = program.getBuildStatus(device);
+
+        // Compiler output:
+        var buildLog = program.getBuildLog(device);
+    });
+```
+
+After a program builds we can access it's binaries for each device:
+
+```javascript
+// This returns an array of CLDevice instances
+var devices = program.devices;
+
+// This returns an array of Buffer instances
+var binaries = program.getBinaries();
+
+// According to the OpenCL Specification:
+// "Each entry in this array is used by the implementation
+// as the location in memory where to copy the program binary for a specific device,
+// if there is a binary available. To find out which device
+// the program binary in the array refers to,
+// use the CL_PROGRAM_DEVICES query to get the list of devices.
+// There is a one-to-one correspondence between the array of n pointers
+// returned by CL_PROGRAM_BINARIES and array of devices returned by CL_PROGRAM_DEVICES."
+
+// So we can zip the above:
+var deviceBinaries =
+    _.zip(devices, binaries)
+    .map(function(a) { return { device: a[0], binary: a[1] }; );
+```
+
+Binaries could be stored in files for example, so when the application executes next time,
+there slow build from source process won't be necessary.
+
+```javascript
+// Creating program from binaries:
+
+// This creates a Buffer instance:
+var binary = fs.readFileSync('/tmp/foo.bin');
+
+var program = context.createProgram(binary, device);
+
+// We should call build, but this time it will be much faster than compiling from source:
+program.build().then(
+    function() {
+        // can be either: CL_BUILD_SUCCESS, CL_BUILD_ERROR
+        var buildStatus = program.getBuildStatus(device);
+
+        // Compiler output:
+        var buildLog = program.getBuildLog(device);
+
+        // ...
+    });
+```
+
+#### Kernel
