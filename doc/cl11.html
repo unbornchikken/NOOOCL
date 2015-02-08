@@ -1,0 +1,552 @@
+<!DOCTYPE html><html lang="en"><head><title>cl11</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="cl11"><meta name="groc-project-path" content="lib/cl11.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/cl11.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> ffi = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ffi'</span>);
+<span class="hljs-keyword">var</span> types = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./types'</span>);
+<span class="hljs-keyword">var</span> defs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./defs'</span>);
+<span class="hljs-keyword">var</span> CLError = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clError'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CL11</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.types = types;
+    <span class="hljs-keyword">this</span>.defs = defs;
+    <span class="hljs-keyword">this</span>.version = <span class="hljs-number">1.1</span>;
+    <span class="hljs-keyword">this</span>.libName = <span class="hljs-regexp">/^win/</span>.test(process.platform) ? <span class="hljs-string">"OpenCL"</span> : <span class="hljs-string">"libOpenCL.so"</span>;
+    <span class="hljs-keyword">this</span>.imports = ffi.Library(<span class="hljs-keyword">this</span>.libName,
+        {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Platform APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetPlatformIDs(cl_uint          /* num_entries */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>            cl_platform_id * /* platforms */,
+           cl_uint *        /* num_platforms */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetPlatformIDs: [ref.types.int, [ref.types.uint, types.PlatformIdArray, ref.refType(ref.types.uint)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetPlatformInfo(cl_platform_id   /* platform */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>             cl_platform_info /* param_name */,
+             size_t           /* param_value_size */,
+             void *           /* param_value */,
+             size_t *         /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetPlatformInfo: [ref.types.int, [types.PlatformId, types.PlatformInfo, ref.types.size_t, ref.refType(<span class="hljs-string">'void'</span>), ref.refType(ref.types.size_t)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Device APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetDeviceIDs(cl_platform_id   /* platform */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          cl_device_type   /* device_type */,
+          cl_uint          /* num_entries */,
+          cl_device_id *   /* devices */,
+          cl_uint *        /* num_devices */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetDeviceIDs: [ref.types.int, [types.PlatformId, types.DeviceType, ref.types.uint, types.DeviceIdArray, ref.refType(ref.types.uint)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetDeviceInfo(cl_device_id    /* device */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>           cl_device_info  /* param_name */,
+          size_t          /* param_value_size */,
+          void *          /* param_value */,
+          size_t *        /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetDeviceInfo: [ref.types.int, [types.PlatformId, types.DeviceInfo, ref.types.size_t, ref.refType(<span class="hljs-string">'void'</span>), ref.refType(ref.types.size_t)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Context APIs  </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_context CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateContext(const cl_context_properties * /* properties */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>           cl_uint                 /* num_devices */,
+           const cl_device_id *    /* devices */,
+           void (CL_CALLBACK * /* pfn_notify */)(const char *, const void *, size_t, void *),
+           void *                  /* user_data */,
+           cl_int *                /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateContext: [ref.refType(<span class="hljs-string">'void'</span>), [types.ContextProperties, ref.types.uint, types.DeviceIdArray, ref.refType(types.CreateContextNotify), ref.refType(<span class="hljs-string">'void'</span>), types.ErrorCodeRet]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_context CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateContextFromType(const cl_context_properties * /* properties */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                   cl_device_type          /* device_type */,
+                   void (CL_CALLBACK *     /* pfn_notify*/ )(const char *, const void *, size_t, void *),
+                   void *                  /* user_data */,
+                   cl_int *                /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateContextFromType: [ref.refType(<span class="hljs-string">'void'</span>), [types.ContextProperties, types.DeviceType, ref.refType(types.CreateContextNotify), ref.refType(<span class="hljs-string">'void'</span>), types.ErrorCodeRet]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainContext(cl_context /* context */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainContext: [<span class="hljs-string">'int'</span>, [types.Context]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseContext(cl_context /* context */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseContext: [<span class="hljs-string">'int'</span>, [types.Context]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetContextInfo(cl_context         /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>            cl_context_info    /* param_name */,
+            size_t             /* param_value_size */,
+            void *             /* param_value */,
+            size_t *           /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetContextInfo: [<span class="hljs-string">'int'</span>, [types.Context, types.ContextInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Command Queue APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_command_queue CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateCommandQueue(cl_context                     /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                cl_device_id                   /* device */,
+                cl_command_queue_properties    /* properties */,
+                cl_int *                       /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateCommandQueue: [types.CommandQueue, [types.Context, types.DeviceId, types.CommandQueueProperties, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainCommandQueue(cl_command_queue /* command_queue */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainCommandQueue: [<span class="hljs-string">'int'</span>, [types.CommandQueue]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseCommandQueue(cl_command_queue /* command_queue */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseCommandQueue: [<span class="hljs-string">'int'</span>, [types.CommandQueue]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetCommandQueueInfo(cl_command_queue      /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                 cl_command_queue_info /* param_name */,
+                 size_t                /* param_value_size */,
+                 void *                /* param_value */,
+                 size_t *              /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetCommandQueueInfo: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.CommandQueueInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Memory Object APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_mem CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateBuffer(cl_context   /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          cl_mem_flags /* flags */,
+          size_t       /* size */,
+          void *       /* host_ptr */,
+          cl_int *     /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateBuffer: [types.Mem, [types.Context, types.MemFlags, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainMemObject(cl_mem /* memobj */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainMemObject: [<span class="hljs-string">'int'</span>, [types.Mem]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseMemObject(cl_mem /* memobj */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseMemObject: [<span class="hljs-string">'int'</span>, [types.Mem]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetSupportedImageFormats(cl_context           /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                      cl_mem_flags         /* flags */,
+                      cl_mem_object_type   /* image_type */,
+                      cl_uint              /* num_entries */,
+                      cl_image_format *    /* image_formats */,
+                      cl_uint *            /* num_image_formats */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetSupportedImageFormats: [<span class="hljs-string">'int'</span>, [types.Context, types.MemFlags, types.MemObjectType, <span class="hljs-string">'uint'</span>, types.ImageFormatArray, ref.refType(<span class="hljs-string">'uint'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetMemObjectInfo(cl_mem           /* memobj */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              cl_mem_info      /* param_name */,
+              size_t           /* param_value_size */,
+              void *           /* param_value */,
+              size_t *         /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetMemObjectInfo: [<span class="hljs-string">'int'</span>, [types.Mem, types.MemInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetImageInfo(cl_mem           /* image */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          cl_image_info    /* param_name */,
+          size_t           /* param_value_size */,
+          void *           /* param_value */,
+          size_t *         /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetImageInfo: [<span class="hljs-string">'int'</span>, [types.Mem, types.ImageInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sampler APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_sampler CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateSampler(cl_context          /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>           cl_bool             /* normalized_coords */,
+           cl_addressing_mode  /* addressing_mode */,
+           cl_filter_mode      /* filter_mode */,
+           cl_int *            /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateSampler: [types.Sampler, [types.Context, types.Bool, types.AddressingMode, types.FilterMode, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainSampler(cl_sampler /* sampler */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainSampler: [<span class="hljs-string">'int'</span>, [types.Sampler]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseSampler(cl_sampler /* sampler */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseSampler: [<span class="hljs-string">'int'</span>, [types.Sampler]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetSamplerInfo(cl_sampler         /* sampler */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>            cl_sampler_info    /* param_name */,
+            size_t             /* param_value_size */,
+            void *             /* param_value */,
+            size_t *           /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetSamplerInfo: [<span class="hljs-string">'int'</span>, [types.Sampler, types.SamplerInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Program Object APIs  </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_program CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateProgramWithSource(cl_context        /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                     cl_uint           /* count */,
+                     const char **     /* strings */,
+                     const size_t *    /* lengths */,
+                     cl_int *          /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateProgramWithSource: [types.Program, [types.Context, <span class="hljs-string">'uint'</span>, types.StringArray, types.SizeTArray, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_program CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateProgramWithBinary(cl_context                     /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                     cl_uint                        /* num_devices */,
+                     const cl_device_id *           /* device_list */,
+                     const size_t *                 /* lengths */,
+                     const unsigned char **         /* binaries */,
+                     cl_int *                       /* binary_status */,
+                     cl_int *                       /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateProgramWithBinary: [types.Program, [types.Context, <span class="hljs-string">'uint'</span>, types.DeviceIdArray, types.SizeTArray, types.Binaries, ref.refType(<span class="hljs-string">'int'</span>), ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainProgram(cl_program /* program */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainProgram: [<span class="hljs-string">'int'</span>, [types.Program]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseProgram(cl_program /* program */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseProgram: [<span class="hljs-string">'int'</span>, [types.Program]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clBuildProgram(cl_program           /* program */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>         cl_uint              /* num_devices */,
+         const cl_device_id * /* device_list */,
+         const char *         /* options */,
+         void (CL_CALLBACK *  /* pfn_notify */)(cl_program /* program */, void * /* user_data */),
+         void *               /* user_data */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clBuildProgram: [<span class="hljs-string">'int'</span>, [types.Program, <span class="hljs-string">'uint'</span>, types.DeviceIdArray, <span class="hljs-string">'string'</span>, types.BuildProgramNotify, <span class="hljs-string">'pointer'</span>]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetProgramInfo(cl_program         /* program */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>            cl_program_info    /* param_name */,
+            size_t             /* param_value_size */,
+            void *             /* param_value */,
+            size_t *           /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetProgramInfo: [<span class="hljs-string">'int'</span>, [types.Program, types.ProgramInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetProgramBuildInfo(cl_program            /* program */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                 cl_device_id          /* device */,
+                 cl_program_build_info /* param_name */,
+                 size_t                /* param_value_size */,
+                 void *                /* param_value */,
+                 size_t *              /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetProgramBuildInfo: [<span class="hljs-string">'int'</span>, [types.Program, types.DeviceId, types.ProgramBuildInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Kernel Object APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_kernel CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateKernel(cl_program      /* program */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          const char *    /* kernel_name */,
+          cl_int *        /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateKernel: [types.Kernel, [types.Program, <span class="hljs-string">'string'</span>, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateKernelsInProgram(cl_program     /* program */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                    cl_uint        /* num_kernels */,
+                    cl_kernel *    /* kernels */,
+                    cl_uint *      /* num_kernels_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateKernelsInProgram: [<span class="hljs-string">'int'</span>, [types.Program, <span class="hljs-string">'uint'</span>, types.KernelArray, ref.refType(<span class="hljs-string">'uint'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainKernel(cl_kernel    /* kernel */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainKernel: [<span class="hljs-string">'int'</span>, [types.Kernel]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseKernel(cl_kernel   /* kernel */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseKernel: [<span class="hljs-string">'int'</span>, [types.Kernel]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clSetKernelArg(cl_kernel    /* kernel */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          cl_uint      /* arg_index */,
+          size_t       /* arg_size */,
+          const void * /* arg_value */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clSetKernelArg: [<span class="hljs-string">'int'</span>, [types.Kernel, <span class="hljs-string">'uint'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetKernelInfo(cl_kernel       /* kernel */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>           cl_kernel_info  /* param_name */,
+           size_t          /* param_value_size */,
+           void *          /* param_value */,
+           size_t *        /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetKernelInfo: [<span class="hljs-string">'int'</span>, [types.Kernel, types.KernelInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetKernelWorkGroupInfo(cl_kernel                  /* kernel */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                    cl_device_id               /* device */,
+                    cl_kernel_work_group_info  /* param_name */,
+                    size_t                     /* param_value_size */,
+                    void *                     /* param_value */,
+                    size_t *                   /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetKernelWorkGroupInfo: [<span class="hljs-string">'int'</span>, [types.Kernel, types.DeviceId, types.KernelWorkGroupInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Event Object APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clWaitForEvents(cl_uint             /* num_events */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>           const cl_event *    /* event_list */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clWaitForEvents: [<span class="hljs-string">'int'</span>, [<span class="hljs-string">'uint'</span>, types.EventArray]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetEventInfo(cl_event         /* event */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>          cl_event_info    /* param_name */,
+          size_t           /* param_value_size */,
+          void *           /* param_value */,
+          size_t *         /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clGetEventInfo: [<span class="hljs-string">'int'</span>, [types.Event, types.EventInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clRetainEvent(cl_event /* event */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clRetainEvent: [<span class="hljs-string">'int'</span>, [types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseEvent(cl_event /* event */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clReleaseEvent: [<span class="hljs-string">'int'</span>, [types.Event]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Profiling APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clGetEventProfilingInfo(cl_event            /* event */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                   cl_profiling_info   /* param_name */,
+                   size_t              /* param_value_size */,
+                   void *              /* param_value */,
+                   size_t *            /* param_value_size_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clReleaseEvent(cl_event /* event */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clGetEventProfilingInfo: [<span class="hljs-string">'int'</span>, [types.Event, types.ProfilingInfo, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, ref.refType(<span class="hljs-string">'size_t'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Flush and Finish APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clFlush(cl_command_queue /* command_queue */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clFlush: [<span class="hljs-string">'int'</span>, [types.CommandQueue]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clFinish(cl_command_queue /* command_queue */) CL_API_SUFFIX__VERSION_1_0;</span>
+            clFinish: [<span class="hljs-string">'int'</span>, [types.CommandQueue]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Enqueued Commands APIs </p></div></div><div class="code"><div class="wrapper">            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueReadBuffer(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              cl_mem              /* buffer */,
+               cl_bool             /* blocking_read */,
+               size_t              /* offset */,
+               size_t              /* size */,
+               void *              /* ptr */,
+               cl_uint             /* num_events_in_wait_list */,
+               const cl_event *    /* event_wait_list */,
+               cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueReadBuffer: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Bool, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueWriteBuffer(cl_command_queue   /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                cl_mem             /* buffer */,
+                cl_bool            /* blocking_write */,
+                size_t             /* offset */,
+                size_t             /* size */,
+                const void *       /* ptr */,
+                cl_uint            /* num_events_in_wait_list */,
+                const cl_event *   /* event_wait_list */,
+                cl_event *         /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueWriteBuffer: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Bool, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueCopyBuffer(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>               cl_mem              /* src_buffer */,
+               cl_mem              /* dst_buffer */,
+               size_t              /* src_offset */,
+               size_t              /* dst_offset */,
+               size_t              /* size */,
+               cl_uint             /* num_events_in_wait_list */,
+              const cl_event *    /* event_wait_list */,
+               cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueCopyBuffer: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Mem, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueReadImage(cl_command_queue     /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              cl_mem               /* image */,
+              cl_bool              /* blocking_read */,
+              const size_t *       /* origin[3] */,
+              const size_t *       /* region[3] */,
+              size_t               /* row_pitch */,
+              size_t               /* slice_pitch */,
+              void *               /* ptr */,
+              cl_uint              /* num_events_in_wait_list */,
+              const cl_event *     /* event_wait_list */,
+              cl_event *           /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueReadImage: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Bool, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL/</span>
+            <span class="hljs-comment">//clEnqueueWriteImage(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>               cl_mem              /* image */,
+               cl_bool             /* blocking_write */,
+               const size_t *      /* origin[3] */,
+               const size_t *      /* region[3] */,
+               size_t              /* input_row_pitch */,
+               size_t              /* input_slice_pitch */,
+               const void *        /* ptr */,
+               cl_uint             /* num_events_in_wait_list */,
+              const cl_event *    /* event_wait_list */,
+               cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueWriteImage: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Bool, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueCopyImage(cl_command_queue     /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              cl_mem               /* src_image */,
+              cl_mem               /* dst_image */,
+              const size_t *       /* src_origin[3] */,
+              const size_t *       /* dst_origin[3] */,
+              const size_t *       /* region[3] */,
+              cl_uint              /* num_events_in_wait_list */,
+              const cl_event *     /* event_wait_list */,
+              cl_event *           /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueCopyImage: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Mem, types.SizeTArray, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueCopyImageToBuffer(cl_command_queue /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                      cl_mem           /* src_image */,
+                      cl_mem           /* dst_buffer */,
+                      const size_t *   /* src_origin[3] */,
+                      const size_t *   /* region[3] */,
+                      size_t           /* dst_offset */,
+                      cl_uint          /* num_events_in_wait_list */,
+                      const cl_event * /* event_wait_list */,
+                      cl_event *       /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueCopyImageToBuffer: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Mem, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueCopyBufferToImage(cl_command_queue /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                      cl_mem           /* src_buffer */,
+                      cl_mem           /* dst_image */,
+                      size_t           /* src_offset */,
+                      const size_t *   /* dst_origin[3] */,
+                      const size_t *   /* region[3] */,
+                      cl_uint          /* num_events_in_wait_list */,
+                      const cl_event * /* event_wait_list */,
+                      cl_event *       /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueCopyBufferToImage: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, types.Mem, <span class="hljs-string">'size_t'</span>, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY void * CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueMapBuffer(cl_command_queue /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              cl_mem           /* buffer */,
+              cl_bool          /* blocking_map */,
+              cl_map_flags     /* map_flags */,
+              size_t           /* offset */,
+              size_t           /* size */,
+              cl_uint          /* num_events_in_wait_list */,
+              const cl_event * /* event_wait_list */,
+              cl_event *       /* event */,
+              cl_int *         /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueMapBuffer: [<span class="hljs-string">'pointer'</span>, [types.CommandQueue, types.Mem, types.Bool, types.MapFlags, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY void * CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueMapImage(cl_command_queue  /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>             cl_mem            /* image */,
+             cl_bool           /* blocking_map */,
+             cl_map_flags      /* map_flags */,
+             const size_t *    /* origin[3] */,
+             const size_t *    /* region[3] */,
+             size_t *          /* image_row_pitch */,
+             size_t *          /* image_slice_pitch */,
+             cl_uint           /* num_events_in_wait_list */,
+             const cl_event *  /* event_wait_list */,
+             cl_event *        /* event */,
+             cl_int *          /* errcode_ret */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueMapImage: [<span class="hljs-string">'pointer'</span>, [types.CommandQueue, types.Mem, types.Bool, types.MapFlags, types.SizeTArray, types.SizeTArray, ref.refType(<span class="hljs-string">'size_t'</span>), ref.refType(<span class="hljs-string">'size_t'</span>), <span class="hljs-string">'uint'</span>, types.EventArray, types.Event, ref.refType(<span class="hljs-string">'int'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueUnmapMemObject(cl_command_queue /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                   cl_mem           /* memobj */,
+                   void *           /* mapped_ptr */,
+                   cl_uint          /* num_events_in_wait_list */,
+                   const cl_event *  /* event_wait_list */,
+                   cl_event *        /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueUnmapMemObject: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Mem, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueNDRangeKernel(cl_command_queue /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                  cl_kernel        /* kernel */,
+                  cl_uint          /* work_dim */,
+                  const size_t *   /* global_work_offset */,
+                  const size_t *   /* global_work_size */,
+                  const size_t *   /* local_work_size */,
+                  cl_uint          /* num_events_in_wait_list */,
+                  const cl_event * /* event_wait_list */,
+                  cl_event *       /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueNDRangeKernel: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Kernel, <span class="hljs-string">'uint'</span>, types.SizeTArray, types.SizeTArray, types.SizeTArray, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueTask(cl_command_queue  /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>         cl_kernel         /* kernel */,
+         cl_uint           /* num_events_in_wait_list */,
+         const cl_event *  /* event_wait_list */,
+         cl_event *        /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueTask: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Kernel, <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueNativeKernel(cl_command_queue  /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>              void (CL_CALLBACK * /*user_func*/)(void *),
+                 void *            /* args */,
+                 size_t            /* cb_args */,
+                 cl_uint           /* num_mem_objects */,
+                 const cl_mem *    /* mem_list */,
+                 const void **     /* args_mem_loc */,
+                 cl_uint           /* num_events_in_wait_list */,
+                 const cl_event *  /* event_wait_list */,
+                 cl_event *        /* event */) CL_API_SUFFIX__VERSION_1_0;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueNativeKernel: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.EnqueueNativeKernelUserFunc, <span class="hljs-string">'pointer'</span>, <span class="hljs-string">'size_t'</span>, <span class="hljs-string">'uint'</span>, types.MemArray, ref.refType(ref.refType(<span class="hljs-string">'void'</span>)), <span class="hljs-string">'uint'</span>, types.EventArray, types.Event]],
+            
+            <span class="hljs-comment">/*1.1*/</span>
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_mem CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateSubBuffer(cl_mem                   /* buffer */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>             cl_mem_flags             /* flags */,
+             cl_buffer_create_type    /* buffer_create_type */,
+             const void *             /* buffer_create_info */,
+             cl_int *                 /* errcode_ret */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateSubBuffer: [types.Mem, [types.Mem, types.MemFlags, types.BufferCreateType, ref.refType(<span class="hljs-string">'void'</span>), types.ErrorCodeRet]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clSetMemObjectDestructorCallback(  cl_mem /* memobj */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                               void (CL_CALLBACK * /*pfn_notify*/)( cl_mem /* memobj */, void* /*user_data*/),
+                               void * /*user_data */ )             CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clSetMemObjectDestructorCallback: [<span class="hljs-string">'int'</span>, [types.Mem, types.SetEventCallbackCallback, ref.refType(<span class="hljs-string">'void'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clSetUserEventStatus(cl_event   /* event */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>               cl_int     /* execution_status */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clSetUserEventStatus: [<span class="hljs-string">'int'</span>, [types.Event, <span class="hljs-string">'int'</span>]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clSetEventCallback( cl_event    /* event */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>               cl_int      /* command_exec_callback_type */,
+               void (CL_CALLBACK * /* pfn_notify */)(cl_event, cl_int, void *),
+               void *      /* user_data */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clSetEventCallback: [<span class="hljs-string">'int'</span>, [types.Event, <span class="hljs-string">'int'</span>, types.SetEventCallbackCallback, ref.refType(<span class="hljs-string">'void'</span>)]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueReadBufferRect(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                   cl_mem              /* buffer */,
+                   cl_bool             /* blocking_read */,
+                   const size_t *      /* buffer_offset */,
+                   const size_t *      /* host_offset */,
+                   const size_t *      /* region */,
+                   size_t              /* buffer_row_pitch */,
+                   size_t              /* buffer_slice_pitch */,
+                   size_t              /* host_row_pitch */,
+                   size_t              /* host_slice_pitch */,
+                   void *              /* ptr */,
+                   cl_uint             /* num_events_in_wait_list */,
+                   const cl_event *    /* event_wait_list */,
+                   cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueReadBufferRect: [
+                <span class="hljs-string">'int'</span>,
+                [
+                    types.CommandQueue,
+                    types.Mem,
+                    types.Bool,
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    ref.refType(<span class="hljs-string">'void'</span>),
+                    <span class="hljs-string">'uint'</span>,
+                    types.EventArray,
+                    types.Event
+                ]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueWriteBufferRect(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                    cl_mem              /* buffer */,
+                    cl_bool             /* blocking_write */,
+                    const size_t *      /* buffer_offset */,
+                    const size_t *      /* host_offset */,
+                    const size_t *      /* region */,
+                    size_t              /* buffer_row_pitch */,
+                    size_t              /* buffer_slice_pitch */,
+                    size_t              /* host_row_pitch */,
+                    size_t              /* host_slice_pitch */,
+                    const void *        /* ptr */,
+                    cl_uint             /* num_events_in_wait_list */,
+                    const cl_event *    /* event_wait_list */,
+                    cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueWriteBufferRect: [
+                <span class="hljs-string">'int'</span>,
+                [
+                    types.CommandQueue,
+                    types.Mem,
+                    types.Bool,
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    ref.refType(<span class="hljs-string">'void'</span>),
+                    <span class="hljs-string">'uint'</span>,
+                    types.EventArray,
+                    types.Event
+                ]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_int CL_API_CALL</span>
+            <span class="hljs-comment">//clEnqueueCopyBufferRect(cl_command_queue    /* command_queue */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>                   cl_mem              /* src_buffer */,
+                   cl_mem              /* dst_buffer */,
+                   const size_t *      /* src_origin */,
+                   const size_t *      /* dst_origin */,
+                   const size_t *      /* region */,
+                   size_t              /* src_row_pitch */,
+                   size_t              /* src_slice_pitch */,
+                   size_t              /* dst_row_pitch */,
+                   size_t              /* dst_slice_pitch */,
+                   cl_uint             /* num_events_in_wait_list */,
+                   const cl_event *    /* event_wait_list */,
+                   cl_event *          /* event */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clEnqueueCopyBufferRect: [
+                <span class="hljs-string">'int'</span>,
+                [
+                    types.CommandQueue,
+                    types.Mem,
+                    types.Mem,
+                    types.Bool,
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    ref.refType(<span class="hljs-string">'size_t'</span>),
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'size_t'</span>,
+                    <span class="hljs-string">'uint'</span>,
+                    types.EventArray,
+                    types.Event
+                ]],
+
+            <span class="hljs-comment">//extern CL_API_ENTRY cl_event CL_API_CALL</span>
+            <span class="hljs-comment">//clCreateUserEvent(cl_context    /* context */,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><pre><code>            cl_int *      /* errcode_ret */) CL_API_SUFFIX__VERSION_1_1;</code></pre></div></div><div class="code"><div class="wrapper">            clCreateUserEvent: [types.Event, [types.Context, ref.refType(<span class="hljs-string">'int'</span>)]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> cl_int clGetGLObjectInfo (    cl_mem memobj,
+     cl_gl_object_type <em>gl_object_type,
+     GLuint </em>gl_object_name)</p></div></div><div class="code"><div class="wrapper">            clGetGLObjectInfo: [<span class="hljs-string">'int'</span>, [ ref.refType(<span class="hljs-string">'uint'</span>), ref.refType(<span class="hljs-string">'uint'</span>) ]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>cl_int clEnqueueWaitForEvents (
+    cl_command_queue command_queue,
+    cl_uint num_events,
+    const cl_event *event_list)</p></div></div><div class="code"><div class="wrapper">            clEnqueueWaitForEvents: [<span class="hljs-string">'int'</span>, [types.CommandQueue, <span class="hljs-string">'uint'</span>, types.EventArray]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> cl_int clEnqueueMarker (
+    cl_command_queue command_queue,
+    cl_event *event)</p></div></div><div class="code"><div class="wrapper">            clEnqueueMarker: [<span class="hljs-string">'int'</span>, [types.CommandQueue, types.Event]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> cl_int clEnqueueBarrier (
+ cl_command_queue command_queue,
+ cl_event *event)</p></div></div><div class="code"><div class="wrapper">            clEnqueueBarrier: [<span class="hljs-string">'int'</span>, [types.CommandQueue]],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> cl_mem clCreateImage2D (
+     cl_context context,
+     cl_mem_flags flags,
+     const cl_image_format <em>image_format,
+     size_t image_width,
+     size_t image_height,
+     size_t image_row_pitch,
+     void </em>host_ptr,
+     cl_int *errcode_ret)</p></div></div><div class="code"><div class="wrapper">            clCreateImage2D:
+                [types.Mem,
+                    [
+                        types.Context,
+                        types.MemFlags,
+                        types.ImageFormatRef,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'pointer'</span>,
+                        types.ErrorCodeRet
+                    ]
+                ],</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> cl_mem clCreateImage3D (
+     cl_context context,
+     cl_mem_flags flags,
+     const cl_image_format <em>image_format,
+     size_t image_width,
+     size_t image_height,
+     size_t image_depth,
+     size_t image_row_pitch,
+     size_t image_slice_pitch,
+     void </em>host_ptr,
+     cl_int *errcode_ret)</p></div></div><div class="code"><div class="wrapper">            clCreateImage3D:
+                [types.Mem,
+                    [
+                        types.Context,
+                        types.MemFlags,
+                        types.ImageFormatRef,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'size_t'</span>,
+                        <span class="hljs-string">'pointer'</span>,
+                        types.ErrorCodeRet
+                    ]
+                ]
+        });
+}
+
+CL11.types = types;
+
+CL11.defs = defs;
+
+CL11.prototype.checkError = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
+    <span class="hljs-keyword">if</span> (err) {
+        <span class="hljs-keyword">if</span> (_.isFunction(err.deref)) {
+            err = err.deref();
+        }
+        <span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> CLError(err);
+        }
+    }
+};
+
+<span class="hljs-built_in">module</span>.exports = CL11;</div></div></div></div></body></html>

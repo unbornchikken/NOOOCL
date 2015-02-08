@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><title>kernelArg</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="kernelArg"><meta name="groc-project-path" content="lib/kernelArg.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/kernelArg.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> clUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clUtils'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+
+<span class="hljs-keyword">var</span> kernelArgKind = {
+    clObject: <span class="hljs-number">0</span>,
+    localSize: <span class="hljs-number">1</span>,
+    value: <span class="hljs-number">2</span>
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">KernelArg</span><span class="hljs-params">(kernel, index, value, type)</span> </span>{
+    <span class="hljs-keyword">this</span>.kernel = kernel;
+    <span class="hljs-keyword">this</span>.index = index;
+    <span class="hljs-keyword">this</span>.kind = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">this</span>._value = value;
+    <span class="hljs-keyword">this</span>._type = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>._valueBuffer = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>._set = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">var</span> setArg = <span class="hljs-keyword">this</span>.kernel.cl.imports.clSetKernelArg;
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._value === <span class="hljs-literal">null</span> || clUtils.isHandle(<span class="hljs-keyword">this</span>._value)) {
+        <span class="hljs-keyword">this</span>.kind = kernelArgKind.clObject;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._value !== <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">this</span>._value = clUtils.toHandle(<span class="hljs-keyword">this</span>._value);
+            <span class="hljs-keyword">this</span>._valueBuffer = ref.alloc(<span class="hljs-keyword">this</span>.kernel.cl.types.Mem);
+            ref.set(<span class="hljs-keyword">this</span>._valueBuffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">this</span>._value);
+        }
+        <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">this</span>._valueBuffer = <span class="hljs-literal">null</span>;
+        }
+        <span class="hljs-keyword">this</span>._set = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>.kernel.cl.checkError(setArg(<span class="hljs-keyword">this</span>.kernel.handle, <span class="hljs-keyword">this</span>.index, ref.types.size_t.size, <span class="hljs-keyword">this</span>._valueBuffer));
+        }).bind(<span class="hljs-keyword">this</span>);
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (_.isUndefined(type) || type === <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">this</span>.kind = kernelArgKind.localSize;
+        <span class="hljs-keyword">this</span>._set = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>.kernel.cl.checkError(setArg(<span class="hljs-keyword">this</span>.kernel.handle, <span class="hljs-keyword">this</span>.index, <span class="hljs-keyword">this</span>._value, <span class="hljs-literal">null</span>));
+        }).bind(<span class="hljs-keyword">this</span>);
+    }
+    <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.kind = kernelArgKind._value;
+        <span class="hljs-keyword">this</span>._type = ref.coerceType(type);
+        <span class="hljs-keyword">this</span>._valueBuffer = ref.alloc(<span class="hljs-keyword">this</span>._type);
+        ref.set(<span class="hljs-keyword">this</span>._valueBuffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">this</span>._value);
+        <span class="hljs-keyword">this</span>._set = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>.kernel.cl.checkError(setArg(<span class="hljs-keyword">this</span>.kernel.handle, <span class="hljs-keyword">this</span>.index, <span class="hljs-keyword">this</span>._type.size, <span class="hljs-keyword">this</span>._valueBuffer));
+        }).bind(<span class="hljs-keyword">this</span>);
+    }
+
+    <span class="hljs-keyword">this</span>._set();
+}
+
+KernelArg.kind = kernelArgKind;
+
+<span class="hljs-built_in">Object</span>.defineProperties(KernelArg.prototype, {
+    value: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._value;
+        },
+        set: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(to)</span> </span>{
+            <span class="hljs-keyword">switch</span>(<span class="hljs-keyword">this</span>.kind) {
+                <span class="hljs-keyword">case</span> kernelArgKind.clObject:
+                {
+                    <span class="hljs-keyword">if</span> (to === <span class="hljs-literal">null</span>) {
+                        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._value === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span>;
+                        <span class="hljs-keyword">this</span>._value = <span class="hljs-literal">null</span>;
+                        <span class="hljs-keyword">this</span>._set();
+                    }
+                    <span class="hljs-keyword">else</span> {
+                        to = clUtils.toHandle(to, <span class="hljs-string">'to'</span>);
+                        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.value === <span class="hljs-literal">null</span> || ref.address(<span class="hljs-keyword">this</span>._value) !== ref.address(to)) {
+                            <span class="hljs-keyword">this</span>._value = clUtils.toHandle(<span class="hljs-keyword">this</span>._value);
+                            ref.set(<span class="hljs-keyword">this</span>._valueBuffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">this</span>._value);
+                            <span class="hljs-keyword">this</span>._set();
+                        }
+                    }
+                    <span class="hljs-keyword">break</span>;
+                }
+                <span class="hljs-keyword">case</span> kernelArgKind.localSize:
+                {
+                    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._value !== to) {
+                        <span class="hljs-keyword">this</span>._value = to;
+                        <span class="hljs-keyword">this</span>._set();
+                    }
+                    <span class="hljs-keyword">break</span>;
+                }
+                <span class="hljs-keyword">case</span> kernelArgKind.value:
+                {
+                    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._valueBuffer.deref() !== to) {
+                        <span class="hljs-keyword">this</span>._value = to;
+                        ref.set(<span class="hljs-keyword">this</span>._valueBuffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">this</span>._value);
+                        <span class="hljs-keyword">this</span>._set();
+                    }
+                    <span class="hljs-keyword">break</span>;
+                }
+            }
+        }
+    }
+});
+
+<span class="hljs-built_in">module</span>.exports = KernelArg;</div></div></div></div></body></html>

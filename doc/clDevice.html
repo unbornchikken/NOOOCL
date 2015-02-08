@@ -1,0 +1,387 @@
+<!DOCTYPE html><html lang="en"><head><title>clDevice</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clDevice"><meta name="groc-project-path" content="lib/clDevice.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clDevice.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> CLWrapper = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clWrapper'</span>);
+<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLDevice</span><span class="hljs-params">(cl, handle, platform)</span> </span>{
+    CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
+    <span class="hljs-keyword">this</span>._platform = platform;
+}
+
+util.inherits(CLDevice, CLWrapper);
+
+<span class="hljs-built_in">Object</span>.defineProperties(CLDevice.prototype, {
+    _classInfoFunction: {
+        value: <span class="hljs-string">'clGetDeviceInfo'</span>
+    },
+    deviceType: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceType, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_TYPE);
+        }
+    },
+    platform: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">var</span> CLPlatform = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clPlatform'</span>);
+            <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">this</span>._platform <span class="hljs-keyword">instanceof</span> CLPlatform)) {
+                <span class="hljs-keyword">this</span>._platform = <span class="hljs-keyword">new</span> CLPlatform(<span class="hljs-keyword">this</span>.cl, <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.PlatformId, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_PLATFORM));
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._platform;
+        }
+    },
+
+    <span class="hljs-comment">//! A unique device vendor identifier. (e.g. PCIe ID)</span>
+    vendorID: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_VENDOR_ID);
+        }
+    },
+
+    <span class="hljs-comment">//! The number of parallel compute cores on the OpenCL device (min. 1)</span>
+    maxComputeUnits: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_COMPUTE_UNITS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Maximum dimensions that specify the global and local work-item IDs used by
+   the data parallel execution model. (Refer to clEnqueueNDRangeKernel)
+   The minimum value is 3.</p></div></div><div class="code"><div class="wrapper">    maxWorkItemDimensions: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Maximum number of work-items that can be specified in each dimension of
+   the work-group to clEnqueueNDRangeKernel.</p>
+<p>   The minimum value is (1, 1, 1).</p>
+<p>   Returns:
+       n size_t entries, where n is the value returned by the query for maxWorkItemDimensions.</p></div></div><div class="code"><div class="wrapper">    maxWorkItemSizes: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getArrayInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_WORK_ITEM_SIZES);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Maximum number of work-items in a work-group executing a kernel using the data parallel execution model.
+(Refer to clEnqueueNDRangeKernel). The minimum value is 1.</p></div></div><div class="code"><div class="wrapper">    maxWorkgroupSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_WORK_GROUP_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! Maximum configured clock frequency of the device in MHz</span>
+    maxClockFrequency: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_CLOCK_FREQUENCY);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   The default compute device address space size specified as an unsigned integer value in bits.
+   Currently supported values are 32 or 64 bits</p></div></div><div class="code"><div class="wrapper">    addressBits: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_ADDRESS_BITS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max size of memory object allocation in bytes.
+   The minimum value is max(1/4 <em> CL_DEVICE_GLOBAL_MEM_SIZE, 128</em>1024*1024)</p></div></div><div class="code"><div class="wrapper">    maxMemAllocSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint64'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_MEM_ALLOC_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! true if images are supported by the OpenCL device</span>
+    imageSupport: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE_SUPPORT);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max number of simultaneous image objects that can be read by a kernel.
+   minimum value is 128 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    maxReadImageArgs: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_READ_IMAGE_ARGS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max number of simultaneous image objects that can be written by a kernel.
+   minimum value is 8 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    maxWriteImageArgs: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_WRITE_IMAGE_ARGS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max width of 2D image in pixels.
+   minimum value is 8192 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    image2DMaxWidth: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE2D_MAX_WIDTH);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max height of 2D image in pixels.
+   minimum value is 8192 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    image2DMaxHeight: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE2D_MAX_HEIGHT);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max width of 3D image in pixels.
+   minimum value is 2048 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    image3DMaxWidth: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE3D_MAX_WIDTH);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max height of 3D image in pixels.
+   minimum value is 2048 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    image3DMaxHeight: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE3D_MAX_HEIGHT);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max depth of 3D image in pixels.
+   minimum value is 2048 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    image3DMaxDepth: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_IMAGE3D_MAX_DEPTH);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Maximum number of samplers that can be used in a kernel.
+   minimum value is 16 if imageSupport is true</p></div></div><div class="code"><div class="wrapper">    maxSamplers: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_SAMPLERS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Max size in bytes of the arguments that can be passed to a kernel.</p>
+<p>   The minimum value is 1024. For this minimum value, only a maximum of
+   128 arguments can be passed to a kernel</p></div></div><div class="code"><div class="wrapper">    maxParameterSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_PARAMETER_SIZE);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   The minimum value is the size (in bits) of the largest OpenCL built-in data
+   type supported by the device (long16 in FULL profile, long16 or int16 in EMBEDDED profile).</p></div></div><div class="code"><div class="wrapper">    memBaseAddrAlign: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MEM_BASE_ADDR_ALIGN);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   The minimum value is the size (in bytes) of the largest OpenCL builtin
+   data type supported by the device (long16 in FULL profile, long16 or int16 in EMBEDDED profile).</p></div></div><div class="code"><div class="wrapper">    minDataTypeAlignSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MIN_DATA_TYPE_ALIGN_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! Describes single precision floating-point capability of the device. This is a bit-field, see the docs</span>
+    singleFpConfig: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceFpConfig, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_SINGLE_FP_CONFIG);
+        }
+    },
+
+    <span class="hljs-comment">//! Describes double precision floating-point capability of the device. Make sure the cl_khr_fp64 extension is supported</span>
+    doubleFpConfig: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceFpConfig, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_DOUBLE_FP_CONFIG);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Type of global memory cache supported. Valid values are:
+   CL_NONE, CL_READ_ONLY_CACHE and CL_READ_WRITE_CACHE</p></div></div><div class="code"><div class="wrapper">    globalMemCacheType: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceMemCacheType, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_GLOBAL_MEM_CACHE_TYPE);
+        }
+    },
+
+    <span class="hljs-comment">//! size of global memory cache line in bytes.</span>
+    globalMemCacheLineSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! size of global memory cache in bytes.</span>
+    globalMemCacheSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint64'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_GLOBAL_MEM_CACHE_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! size of global device memory in bytes.</span>
+    globalMemSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint64'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_GLOBAL_MEM_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! Max size in bytes of a constant buffer allocation (min. 64 KB)</span>
+    maxConstBufferSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint64'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! Max number of arguments declared with the __constant qualifier in a kernel (min. 8)</span>
+    maxConstArgs: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_MAX_CONSTANT_ARGS);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Type of local memory supported.
+   This can be set to CL_LOCAL implying dedicated local memory storage such as SRAM, or CL_GLOBAL</p></div></div><div class="code"><div class="wrapper">    localMemType: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceLocalMemType, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_LOCAL_MEM_TYPE);
+        }
+    },
+
+    <span class="hljs-comment">//! Size of local memory arena in bytes. The minimum value is 32 KB.</span>
+    localMemSize: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint64'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_LOCAL_MEM_SIZE);
+        }
+    },
+
+    <span class="hljs-comment">//! true if the device implements error correction for all accesses to compute device memory (global and constant)</span>
+    errorCorrectionSupport: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_ERROR_CORRECTION_SUPPORT);
+        }
+    },
+
+    <span class="hljs-comment">//! returns true if the device and the host have a unified memory subsystem</span>
+    hostUnifiedMemory: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_HOST_UNIFIED_MEMORY);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Describes the resolution of device timer.
+   This is measured in nanoseconds.</p></div></div><div class="code"><div class="wrapper">    profilingTimerResolution: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_PROFILING_TIMER_RESOLUTION);
+        }
+    },
+
+    <span class="hljs-comment">//! is device a little endian device?</span>
+    littleEndian: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_ENDIAN_LITTLE);
+        }
+    },
+
+    <span class="hljs-comment">//! is device available?</span>
+    available: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_AVAILABLE);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   does the implementation have a compiler to compile the program source?
+   This can be CL_FALSE for the embedded platform profile only.</p></div></div><div class="code"><div class="wrapper">    compilerAvailable: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.Bool, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_COMPILER_AVAILABLE);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Describes the execution capabilities of the device.</p>
+<p>   Returns:
+       a bit-field that describes one or more of the following values:</p>
+<pre><code>   $(UL
+   $(LI CL_EXEC_KERNEL – The OpenCL device can execute OpenCL kernels.)
+   $(LI CL_EXEC_NATIVE_KERNEL – The OpenCL device can execute native kernels.))
+
+   The mandated minimum capability is: CL_EXEC_KERNEL.</code></pre></div></div><div class="code"><div class="wrapper">    deviceExecCapabilities: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.DeviceExecCapabilities, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_EXECUTION_CAPABILITIES);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Describes the command-queue properties supported by the device.</p>
+<p>   Returns:
+       a bit-field that describes one or more of the following values:</p>
+<pre><code>   $(UL
+   $(LI CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE)
+   $(LI CL_QUEUE_PROFILING_ENABLE))</code></pre>
+<p>   TODO: make own functions for outOfOrder and profiling?</p></div></div><div class="code"><div class="wrapper">    commandQueueProperties: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-keyword">this</span>.cl.types.CommandQueueProperties, <span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_QUEUE_PROPERTIES);
+        }
+    },
+
+    <span class="hljs-comment">/// get device name</span>
+    name: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_NAME);
+        }
+    },
+
+    <span class="hljs-comment">/// get device vendor</span>
+    vendor: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_VENDOR);
+        }
+    },
+
+    <span class="hljs-comment">/// get device OpenCL driver version in the form major_number.minor_number</span>
+    driverVersion: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DRIVER_VERSION);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   get OpenCL profile string</p>
+<p>   Returns:
+       the profile name supported by the device.
+       The profile name returned can be one of the following strings:
+       $(UL
+       $(LI FULL_PROFILE - if the device supports the OpenCL specification
+       (functionality defined as part of the core specification and does not require
+       any extensions to be supported).)</p>
+<pre><code>   $(LI EMBEDDED_PROFILE - if the device supports the OpenCL embedded profile.))</code></pre></div></div><div class="code"><div class="wrapper">    profile: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_PROFILE);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>get OpenCL version string</p>
+<p>Returns:
+       OpenCL version supported by the device.
+       This version string has the following format:
+       OpenCL<space><major_version.minor_version><space><vendor-specific information></p></div></div><div class="code"><div class="wrapper">    clVersion: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_VERSION);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>   Returns the highest OpenCL C version supported by the compiler for this device</p></div></div><div class="code"><div class="wrapper">    clCVersion: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_OPENCL_C_VERSION);
+        }
+    },
+
+    numVersion: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">var</span> m = <span class="hljs-regexp">/^OpenCL\sC\s(.*)/</span>.exec(<span class="hljs-keyword">this</span>.clCVersion);
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(m[<span class="hljs-number">1</span>]);
+        }
+    },</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>get extensions supported by the device</p>
+<p>Returns:
+       Returns a space separated list of extension names
+       (the extension names themselves do not contain any spaces).</p></div></div><div class="code"><div class="wrapper">    extensions: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">this</span>._throwIfReleased();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_EXTENSIONS);
+        }
+    }
+});
+
+CLDevice.prototype.createReleaseMethod = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.cl.version &gt;= <span class="hljs-number">1.2</span>) {
+        <span class="hljs-keyword">var</span> handle = <span class="hljs-keyword">this</span>.handle;
+        <span class="hljs-keyword">var</span> cl = <span class="hljs-keyword">this</span>.cl;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            cl.imports.clReleaseDevice(handle);
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+};
+
+<span class="hljs-built_in">module</span>.exports = CLDevice;</div></div></div></div></body></html>

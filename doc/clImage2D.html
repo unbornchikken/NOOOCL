@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><title>clImage2D</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clImage2D"><meta name="groc-project-path" content="lib/clImage2D.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clImage2D.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>);
+<span class="hljs-keyword">var</span> CLImage = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clImage'</span>);
+<span class="hljs-keyword">var</span> clUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clUtils'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLImage2D</span><span class="hljs-params">(context, flags, format, width, height, hostPtr, rowPitch)</span>
+</span>{
+    hostPtr = hostPtr || <span class="hljs-literal">null</span>;
+    rowPitch = rowPitch || <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> cl = context.cl;
+
+    <span class="hljs-keyword">var</span> err = ref.alloc(cl.types.ErrorCode);
+    <span class="hljs-keyword">var</span> handle = cl.imports.clCreateImage2D(clUtils.toHandle(context, <span class="hljs-string">'context'</span>), flags, format.ref(), width, height, rowPitch, clUtils.toPtr(hostPtr, <span class="hljs-string">'hostPtr'</span>), err);
+    cl.checkError(err);
+
+    CLImage.call(<span class="hljs-keyword">this</span>, context, handle);
+}
+
+CLImage2D._wrap = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(context, readOrWriteOnly, format, width, height, hostPtr, rowPitch)</span> </span>{
+    <span class="hljs-keyword">var</span> ptr = clUtils.toPtr(hostPtr, <span class="hljs-string">'hostPtr'</span>);
+    <span class="hljs-keyword">var</span> flags = context.cl.defs.CL_MEM_USE_HOST_PTR;
+    <span class="hljs-keyword">if</span> (readOrWriteOnly === <span class="hljs-string">'readOnly'</span>) {
+        flags |= context.cl.defs.CL_MEM_READ_ONLY;
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (readOrWriteOnly === <span class="hljs-string">'writeOnly'</span>) {
+        flags |= context.cl.defs.CL_MEM_WRITE_ONLY;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CLImage2D(context, context.cl.defs.CL_MEM_USE_HOST_PTR, format, width, height, hostPtr, rowPitch)
+};
+
+CLImage2D.wrap = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(context, format, width, height, hostPtr, rowPitch)</span> </span>{
+    <span class="hljs-keyword">return</span> CLImage2D._wrap(context, <span class="hljs-literal">null</span>, format, width, height, hostPtr, rowPitch);
+};
+
+CLImage2D.wrapReadOnly = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(context, format, width, height, hostPtr, rowPitch)</span> </span>{
+    <span class="hljs-keyword">return</span> CLImage2D._wrap(context, <span class="hljs-string">'readOnly'</span>, format, width, height, hostPtr, rowPitch);
+};
+
+CLImage2D.wrapWriteOnly = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(context, format, width, height, hostPtr, rowPitch)</span> </span>{
+    <span class="hljs-keyword">return</span> CLImage2D._wrap(context, <span class="hljs-string">'writeOnly'</span>, format, width, height, hostPtr, rowPitch);
+};
+
+util.inherits(CLImage2D, CLImage);
+
+<span class="hljs-built_in">module</span>.exports = CLImage2D;</div></div></div></div></body></html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><title>clUtils</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clUtils"><meta name="groc-project-path" content="lib/clUtils.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clUtils.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> clUtils = {
+    toPtr: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ptr, name)</span> </span>{
+        <span class="hljs-keyword">if</span> (ptr === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">if</span> (ptr <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> ptr;
+        <span class="hljs-keyword">if</span> (ptr &amp;&amp; ptr.buffer <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> ptr.buffer;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">'Pointer "'</span> + (name || <span class="hljs-string">'ptr'</span>) + <span class="hljs-string">'" is not a buffer.'</span>);
+    },
+
+    toHandle: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(obj, name)</span> </span>{
+        <span class="hljs-keyword">if</span> (obj <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> obj;
+        <span class="hljs-keyword">if</span> (obj &amp;&amp; obj.handle <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> obj.handle;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">'Object "'</span> + (name || <span class="hljs-string">'obj'</span>) + <span class="hljs-string">'" is not an OpenCL object.'</span>);
+    },
+
+    isHandle: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(obj)</span> </span>{
+        <span class="hljs-keyword">if</span> (obj <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">if</span> (obj &amp;&amp; obj.handle <span class="hljs-keyword">instanceof</span> Buffer) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+};
+
+<span class="hljs-built_in">module</span>.exports = clUtils;</div></div></div></div></body></html>

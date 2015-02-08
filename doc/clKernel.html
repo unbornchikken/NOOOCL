@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en"><head><title>clKernel</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="clKernel"><meta name="groc-project-path" content="lib/clKernel.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">lib/clKernel.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> CLWrapper = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clWrapper'</span>);
+<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);
+<span class="hljs-keyword">var</span> ref = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ref'</span>);
+<span class="hljs-keyword">var</span> NDRange = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./ndRange'</span>);
+<span class="hljs-keyword">var</span> clUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clUtils'</span>);
+<span class="hljs-keyword">var</span> KernelArg = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./kernelArg'</span>);
+<span class="hljs-keyword">var</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLKernel</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (_.isString(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>])) {
+        CLKernel1.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+    }
+    <span class="hljs-keyword">else</span> {
+        CLKernel2.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+    }
+    <span class="hljs-keyword">this</span>._args = [];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLKernel1</span><span class="hljs-params">(program, name)</span> </span>{
+    <span class="hljs-keyword">var</span> cl = program.cl;
+    <span class="hljs-keyword">var</span> err = ref.alloc(cl.types.ErrorCode);
+    <span class="hljs-keyword">var</span> handle = cl.imports.clCreateKernel(clUtils.toHandle(program), name, err);
+    cl.checkError(err);
+    CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
+    <span class="hljs-keyword">this</span>.propgram = program;
+    <span class="hljs-keyword">this</span>._name = name;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLKernel2</span><span class="hljs-params">(program, handle)</span> </span>{
+    <span class="hljs-keyword">var</span> cl = program.cl;
+    CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
+    <span class="hljs-keyword">this</span>.propgram = program;
+    <span class="hljs-keyword">this</span>._name = <span class="hljs-literal">null</span>;
+}
+
+util.inherits(CLKernel, CLWrapper);
+
+<span class="hljs-built_in">Object</span>.defineProperties(CLKernel.prototype, {
+    _classInfoFunction: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'clGetKernelInfo'</span>;
+        }
+    },
+    name: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._name ? <span class="hljs-keyword">this</span>._name : <span class="hljs-keyword">this</span>._getStringInfo(<span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_FUNCTION_NAME);
+        }
+    },
+    context: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.program.context;
+        }
+    },
+    numArgs: {
+        get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo(<span class="hljs-string">'uint'</span>, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_NUM_ARGS);
+        }
+    }
+});
+
+CLKernel.prototype.createReleaseMethod = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> handle = <span class="hljs-keyword">this</span>.handle;
+    <span class="hljs-keyword">var</span> cl = <span class="hljs-keyword">this</span>.cl;
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        cl.imports.clReleaseKernel(handle);
+    };
+};
+
+CLKernel.prototype.getWorkgroupSize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(device)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo2(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.imports.clGetKernelWorkGroupInfo, device, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_WORK_GROUP_SIZE);
+};
+
+CLKernel.prototype.getCompileWorkGroupSize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(device)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getArrayInfo2(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.imports.clGetKernelWorkGroupInfo, device, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_COMPILE_WORK_GROUP_SIZE);
+};
+
+CLKernel.prototype.getLocalMemSize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(device)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo2(<span class="hljs-string">'ulong'</span>, <span class="hljs-keyword">this</span>.cl.imports.clGetKernelWorkGroupInfo, device, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_LOCAL_MEM_SIZE);
+};
+
+CLKernel.prototype.getPreferredWorkGroupSizeMultiple = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(device)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo2(<span class="hljs-string">'size_t'</span>, <span class="hljs-keyword">this</span>.cl.imports.clGetKernelWorkGroupInfo, device, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE);
+};
+
+CLKernel.prototype.getPrivateMemSize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(device)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getInfo2(<span class="hljs-string">'ulong'</span>, <span class="hljs-keyword">this</span>.cl.imports.clGetKernelWorkGroupInfo, device, <span class="hljs-keyword">this</span>.cl.defs.CL_KERNEL_PRIVATE_MEM_SIZE);
+};
+
+CLKernel.prototype.setArg = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index, value, type)</span> </span>{
+    assert(_.isNumber(index), <span class="hljs-string">'Argument "index" is not a number.'</span>);
+    assert(index &gt;= <span class="hljs-number">0</span> &amp;&amp; index &lt; <span class="hljs-number">2048</span>, <span class="hljs-string">'Argument "index" is out of range.'</span>);
+
+    <span class="hljs-keyword">while</span>(<span class="hljs-keyword">this</span>._args.length &lt;= index) {
+        <span class="hljs-keyword">this</span>._args.push(<span class="hljs-literal">null</span>);
+    }
+    <span class="hljs-keyword">if</span> (_.isPlainObject(value) &amp;&amp; _.isUndefined(type)) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Supporting formats like: { &#39;int&#39;: 55 }</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k <span class="hljs-keyword">in</span> value) {
+            <span class="hljs-keyword">if</span> (value.hasOwnProperty(k)) {
+                type = k;
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+        <span class="hljs-keyword">if</span> (type) {
+            value = value[type];
+        }
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._args[index] === <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">this</span>._args[index] = <span class="hljs-keyword">new</span> KernelArg(<span class="hljs-keyword">this</span>, index, value, type);
+    }
+    <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>._args[index].value = value;
+    }
+};
+
+CLKernel.prototype.setArgs = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+    _.forEach(_.isArray(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>]) ? <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] : <span class="hljs-built_in">arguments</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(arg, i)</span> </span>{
+        self.setArg(i, arg);
+    });
+}
+
+CLKernel.prototype.bind = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(queue, globalRange, localRange, offset)</span> </span>{
+    <span class="hljs-keyword">return</span> (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.setArgs.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+        queue.waitable(<span class="hljs-literal">false</span>).enqueueNDRangeKernel(<span class="hljs-keyword">this</span>, globalRange, localRange, offset);
+    }).bind(<span class="hljs-keyword">this</span>);
+}
+
+<span class="hljs-built_in">module</span>.exports = CLKernel;</div></div></div></div></body></html>

@@ -493,7 +493,8 @@ var func = kernel.bind(
     null, // local size
     new NDRange(1)); // offset
 
-// Now we have a JS function to call (aka set arguments and enqueue) our OpenCL kernel!
+// Now we have a JS function to call (aka set arguments and enqueue)
+// our OpenCL kernel!
 // It's easy as goblin pie.
 func(openCLBuffer, {'uint': 55}, 100 * float.size);
 ```
