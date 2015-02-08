@@ -33,7 +33,7 @@ host = <span class="hljs-keyword">new</span> CLHost(<span class="hljs-number">1.
 <p>CLHost and all of CL* class instances share this common, important properties:</p>
 <ul>
 <li><strong>cl.version</strong>: version of the OpenCL platform</li>
-<li><strong>cl.defs.xxx</strong>: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or <a href="https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/defs.js">NOOOCL/lib/cl/defs.js</a>.</li>
+<li><strong>cl.defs.xxx</strong>: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or <a href="https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/clDefines.js">NOOOCL/lib/cl/clDefines.js</a>.</li>
 <li><strong>cl.imports.clxxx</strong>: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.</li>
 <li><strong>cl.types.xxx</strong>: <a href="https://www.npmjs.com/package/ref">ref</a> compatible OpenCL type definitions, see the complete list there: <a href="https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/types.js">NOOOCL/lib/cl/types.js</a>.</li>
 </ul>

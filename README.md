@@ -52,7 +52,7 @@ we will get an exception if there is no compatible OpenCL platform available.
 CLHost and all of CL* class instances share this common, important properties:
 
 - **cl.version**: version of the OpenCL platform
-- **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/defs.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/defs.js).
+- **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/clDefines.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/clDefines.js).
 - **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
 - **cl.types.xxx**: [ref](https://www.npmjs.com/package/ref) compatible OpenCL type definitions, see the complete list there: [NOOOCL/lib/cl/types.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/types.js).
 
