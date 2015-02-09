@@ -4,7 +4,8 @@
     "lib/clHost.js",
     "lib/clWrapper.js",
     "lib/clPlatform.js",
-    "lib/clDevice.js"
+    "lib/clDevice.js",
+    "lib/clContext.js"
   ],
   "index": "lib/index.js",
   "github": false,
