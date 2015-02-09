@@ -66,11 +66,11 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "foldPrefix": "^",
           "name": "JavaScript"
         },
-        "sourcePath": "/home/gabor/git/NOOOCL/lib/clHost.js",
-        "projectPath": "lib/clHost.js",
-        "targetPath": "clHost",
-        "pageTitle": "clHost",
-        "title": "clHost"
+        "sourcePath": "/home/gabor/git/NOOOCL/lib/clContext.js",
+        "projectPath": "lib/clContext.js",
+        "targetPath": "clContext",
+        "pageTitle": "clContext",
+        "title": "clContext"
       },
       "depth": 1,
       "outline": [
@@ -78,12 +78,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 1,
-            "title": "CLHost class",
-            "slug": "clhost-class"
+            "title": "CLContext class",
+            "slug": "clcontext-class"
           },
           "depth": 1,
           "children": [
             {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "constructor 1",
+                "slug": "constructor-1"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "constructor 2",
+                "slug": "constructor-2"
+              },
+              "depth": 4
+            }, {
               "type": "heading",
               "data": {
                 "level": 2,
@@ -95,56 +111,59 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "version",
-                "slug": "version"
+                "title": "numDevices",
+                "slug": "numdevices"
               },
               "depth": 2
             }, {
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "cl",
-                "slug": "cl"
+                "title": "numDevices",
+                "slug": "numdevices"
               },
               "depth": 2
             }, {
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "supportedVersions",
-                "slug": "supportedversions"
+                "title": "contextProperties",
+                "slug": "contextproperties"
               },
               "depth": 2
             }, {
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "platformsCount",
-                "slug": "platformscount"
+                "title": "createProgram",
+                "slug": "createprogram"
               },
-              "depth": 2
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "version 1",
+                    "slug": "version-1"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "version 2",
+                    "slug": "version-2"
+                  },
+                  "depth": 3
+                }
+              ]
             }, {
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "createV11",
-                "slug": "createv11"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "createV12",
-                "slug": "createv12"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "getPlatforms",
-                "slug": "getplatforms"
+                "title": "getSupportedImageFormats",
+                "slug": "getsupportedimageformats"
               },
               "depth": 2
             }
@@ -163,11 +182,11 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "foldPrefix": "^",
           "name": "JavaScript"
         },
-        "sourcePath": "/home/gabor/git/NOOOCL/lib/clPlatform.js",
-        "projectPath": "lib/clPlatform.js",
-        "targetPath": "clPlatform",
-        "pageTitle": "clPlatform",
-        "title": "clPlatform"
+        "sourcePath": "/home/gabor/git/NOOOCL/lib/clDevice.js",
+        "projectPath": "lib/clDevice.js",
+        "targetPath": "clDevice",
+        "pageTitle": "clDevice",
+        "title": "clDevice"
       },
       "depth": 1,
       "outline": [
@@ -175,8 +194,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 1,
-            "title": "CLPlatform class",
-            "slug": "clplatform-class"
+            "title": "CLDevice class",
+            "slug": "cldevice-class"
           },
           "depth": 1,
           "children": [
@@ -192,86 +211,439 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "heading",
               "data": {
                 "level": 2,
-                "title": "name",
-                "slug": "name"
+                "title": "Device properties",
+                "slug": "device-properties"
               },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "vendor",
-                "slug": "vendor"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "clVersion",
-                "slug": "clversion"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "profile",
-                "slug": "profile"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "extensions",
-                "slug": "extensions"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "getDevices",
-                "slug": "getdevices"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "allDevices",
-                "slug": "alldevices"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "cpuDevices",
-                "slug": "cpudevices"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "gpuDevices",
-                "slug": "gpudevices"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "accelDevices",
-                "slug": "acceldevices"
-              },
-              "depth": 2
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "deviceType",
+                    "slug": "devicetype"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "platform",
+                    "slug": "platform"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "vendorID",
+                    "slug": "vendorid"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxComputeUnits",
+                    "slug": "maxcomputeunits"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxWorkItemDimensions",
+                    "slug": "maxworkitemdimensions"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxWorkItemSizes",
+                    "slug": "maxworkitemsizes"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxWorkgroupSize",
+                    "slug": "maxworkgroupsize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxClockFrequency",
+                    "slug": "maxclockfrequency"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "addressBits",
+                    "slug": "addressbits"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxMemAllocSize",
+                    "slug": "maxmemallocsize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "imageSupport",
+                    "slug": "imagesupport"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxReadImageArgs",
+                    "slug": "maxreadimageargs"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxWriteImageArgs",
+                    "slug": "maxwriteimageargs"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "image2DMaxWidth",
+                    "slug": "image2dmaxwidth"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "image2DMaxHeight",
+                    "slug": "image2dmaxheight"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "image3DMaxWidth",
+                    "slug": "image3dmaxwidth"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "image3DMaxHeight",
+                    "slug": "image3dmaxheight"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "image3DMaxDepth",
+                    "slug": "image3dmaxdepth"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxSamplers",
+                    "slug": "maxsamplers"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxParameterSize",
+                    "slug": "maxparametersize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "memBaseAddrAlign",
+                    "slug": "membaseaddralign"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "minDataTypeAlignSize",
+                    "slug": "mindatatypealignsize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "singleFpConfig",
+                    "slug": "singlefpconfig"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "doubleFpConfig",
+                    "slug": "doublefpconfig"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "globalMemCacheType",
+                    "slug": "globalmemcachetype"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "globalMemCacheLineSize",
+                    "slug": "globalmemcachelinesize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "globalMemCacheSize",
+                    "slug": "globalmemcachesize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "globalMemSize",
+                    "slug": "globalmemsize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxConstBufferSize",
+                    "slug": "maxconstbuffersize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "maxConstArgs",
+                    "slug": "maxconstargs"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "localMemType",
+                    "slug": "localmemtype"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "localMemSize",
+                    "slug": "localmemsize"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "errorCorrectionSupport",
+                    "slug": "errorcorrectionsupport"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "hostUnifiedMemory",
+                    "slug": "hostunifiedmemory"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "profilingTimerResolution",
+                    "slug": "profilingtimerresolution"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "littleEndian",
+                    "slug": "littleendian"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "available",
+                    "slug": "available"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "compilerAvailable",
+                    "slug": "compileravailable"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "deviceExecCapabilities",
+                    "slug": "deviceexeccapabilities"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "commandQueueProperties",
+                    "slug": "commandqueueproperties"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "name",
+                    "slug": "name"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "vendor",
+                    "slug": "vendor"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "driverVersion",
+                    "slug": "driverversion"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "profile",
+                    "slug": "profile"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "clVersion",
+                    "slug": "clversion"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "clCVersion",
+                    "slug": "clcversion"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "numVersion",
+                    "slug": "numversion"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "extensions",
+                    "slug": "extensions"
+                  },
+                  "depth": 3
+                }
+              ]
             }
           ]
         }
       ]
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".js"],
+          "pygmentsLexer": "javascript",
+          "multiLineComment": ["/*", "*", "*/"],
+          "singleLineComment": ["//"],
+          "ignorePrefix": "}",
+          "foldPrefix": "^",
+          "name": "JavaScript"
+        },
+        "sourcePath": "/home/gabor/git/NOOOCL/lib/clHost.js",
+        "projectPath": "lib/clHost.js",
+        "targetPath": "clHost",
+        "pageTitle": "clHost",
+        "title": "clHost"
+      },
+      "depth": 1
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".js"],
+          "pygmentsLexer": "javascript",
+          "multiLineComment": ["/*", "*", "*/"],
+          "singleLineComment": ["//"],
+          "ignorePrefix": "}",
+          "foldPrefix": "^",
+          "name": "JavaScript"
+        },
+        "sourcePath": "/home/gabor/git/NOOOCL/lib/clPlatform.js",
+        "projectPath": "lib/clPlatform.js",
+        "targetPath": "clPlatform",
+        "pageTitle": "clPlatform",
+        "title": "clPlatform"
+      },
+      "depth": 1
     }, {
       "type": "file",
       "data": {
@@ -313,8 +685,32 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "heading",
               "data": {
                 "level": 2,
+                "title": "the OpenCL object handle",
+                "slug": "the-opencl-object-handle"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
                 "title": "version",
                 "slug": "version"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "createReleaseMethod",
+                "slug": "createreleasemethod"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "createReleaseMethod",
+                "slug": "createreleasemethod"
               },
               "depth": 2
             }

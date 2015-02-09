@@ -28,7 +28,7 @@
 <span class="hljs-keyword">var</span> clPredef = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./clPredef'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="constructor">constructor</h2>
 <p><strong>arguments:</strong></p>
 <ul>
-<li><strong>cl:</strong>: object of type <a href="CL11.html">CL11</a></li>
+<li><strong>cl:</strong>: object of type <a href="cl11.html">CL11</a></li>
 <li><strong>handle:</strong>: OpenCL handle</li>
 </ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">CLPlatform</span><span class="hljs-params">(cl, handle)</span> </span>{
     CLWrapper.call(<span class="hljs-keyword">this</span>, cl, handle);
@@ -80,7 +80,7 @@ CLPlatform.prototype.createReleaseMethod = <span class="hljs-function"><span cla
 <li><strong>deviceType</strong>: combination of the CL<em>DEVICE_TYPE</em>* flags</li>
 </ul>
 <p><strong> result: </strong></p>
-<p>Array of <a href="CLDevice.html">CLDevice</a> instances.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.getDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(deviceType)</span> </span>{
+<p>Array of <a href="clDevice.html">CLDevice</a> instances.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.getDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(deviceType)</span> </span>{
     <span class="hljs-keyword">this</span>._throwIfReleased();
     <span class="hljs-keyword">var</span> i, device, devNumVersion;
     <span class="hljs-keyword">var</span> devices = [];
@@ -108,22 +108,22 @@ CLPlatform.prototype.createReleaseMethod = <span class="hljs-function"><span cla
     <span class="hljs-keyword">return</span> devices;
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="alldevices">allDevices</h2>
 <p><strong>returns:</strong></p>
-<p>Array of all available devices.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.allDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<p>Array of all available devices (<a href="clDevice.html">CLDevice</a> instances).</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.allDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">this</span>._throwIfReleased();
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getDevices(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_TYPE_ALL);
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="cpudevices">cpuDevices</h2>
 <p><strong>returns:</strong></p>
-<p>Array of CPU devices.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.cpuDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<p>Array of CPU devices (<a href="clDevice.html">CLDevice</a> instances).</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.cpuDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">this</span>._throwIfReleased();
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getDevices(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_TYPE_CPU);
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="gpudevices">gpuDevices</h2>
 <p><strong>returns:</strong></p>
-<p>Array of GPU devices.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.gpuDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<p>Array of GPU devices (<a href="clDevice.html">CLDevice</a> instances).</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.gpuDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">this</span>._throwIfReleased();
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getDevices(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_TYPE_GPU);
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="acceldevices">accelDevices</h2>
 <p><strong>returns:</strong></p>
-<p>Array of accelerator devices.</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.accelDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<p>Array of accelerator devices (<a href="clDevice.html">CLDevice</a> instances).</p></div></div><div class="code"><div class="wrapper">CLPlatform.prototype.accelDevices = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">this</span>._throwIfReleased();
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getDevices(<span class="hljs-keyword">this</span>.cl.defs.CL_DEVICE_TYPE_ACCELERATOR);
 };
