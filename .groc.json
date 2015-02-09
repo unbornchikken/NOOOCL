@@ -2,6 +2,7 @@
   "glob": [
     "lib/index.js",
     "lib/clHost.js",
+    "lib/clWrapper.js",
     "lib/clPlatform.js"
   ],
   "index": "lib/index.js",
