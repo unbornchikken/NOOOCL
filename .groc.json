@@ -1,4 +1,5 @@
 {
-    "glob": ["lib/**/*.js", "README.md"],
+    "glob": ["lib/clHost.js", "lib/clPlatform.js"],
+    "index": "README.md",
     "github": true
 }

@@ -23,7 +23,7 @@
     "native"
   ],
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --expose-gc ./tests"
+    "test": "node ./node_modules/mocha/bin/mocha --expose-gc ./tests"
   },
   "dependencies": {
     "bluebird": "^2.9.7",
