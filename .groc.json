@@ -6,6 +6,6 @@
     "lib/clPlatform.js"
   ],
   "index": "lib/index.js",
-  "github": false,
+  "github": true,
   "strip": "lib"
 }
