@@ -6,7 +6,7 @@ Node.js Object Oriented OpenCL Bindings
 ## About
 
 This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
-Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref and co](https://www.npmjs.com/package/ref).
+Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref](https://www.npmjs.com/package/ref).
 
 ## Install
 
@@ -53,7 +53,7 @@ CLHost and all of CL* class instances share this common, important properties:
 
 - **cl.version**: version of the OpenCL platform
 - **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/clDefines.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/clDefines.js).
-- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel and co.
+- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel, etc.
 - **cl.types.xxx**: [ref](https://www.npmjs.com/package/ref) compatible OpenCL type definitions, see the complete list there: [NOOOCL/lib/cl/types.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/types.js).
 
 Example:
@@ -193,7 +193,7 @@ Please note *there is no synchronous operations in NOOOCL*, because those kill t
 
 ### 2. Memory
 
-NOOOCL uses [standard Node.js Buffer](http://nodejs.org/api/buffer.html) for memory pointers. Raw memory operations, like reinterpreting are implemented by using [ref and co](https://www.npmjs.com/package/ref).
+NOOOCL uses [standard Node.js Buffer](http://nodejs.org/api/buffer.html) for memory pointers. Raw memory operations, like reinterpreting are implemented by using [ref](https://www.npmjs.com/package/ref).
 
 #### Allocate
 
