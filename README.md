@@ -81,6 +81,7 @@ var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
 var CLUserEvent = nooocl.CLUserEvent;
 var NDRange = nooocl.NDRange;
+var CLProgram = nooocl.CLProgram;
 var CLKernel = nooocl.CLKernel;
 var CLImage2D = nooocl.CLImage2D;
 var CLImage3D = nooocl.CLImage3D;
