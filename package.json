@@ -1,6 +1,6 @@
 {
   "name": "nooocl",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "author": "Gábor Mező aka unbornchikken",
   "description": "NOOOCL: Node.js Object Oriented OpenCL Bindings",
   "homepage": "https://github.com/unbornchikken/nooocl",

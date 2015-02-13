@@ -5,8 +5,63 @@ Node.js Object Oriented OpenCL Bindings
 
 ## About
 
+### Why OpenCL?
+
+In Node.js JavaScript code is synchronous, single threaded. That's mean if you have an algorithm that can spawn a tens of thousand computation operations per second,
+your application will hang while the computation runs. The is no HTTP requests served, the is no event processed, there is nothing.
+You can overcome the above limitation by using some of the available threading modules there (like [Webworker Threads](https://www.npmjs.com/package/webworker-threads)),
+but this has some serious limitations:
+
+- There is no synchronization implemented in Node.js, so the inter thread communication is allowed only by using messages.
+That's mean you can only exchange small, JSON serialized data between worker threads, so this is impossible to implement
+parallel algorithms that works on common data reside in memory buffers, like image processing for example.
+- Code JIT-en by V8 doesn't support SIMD instructions at the same level like that available in advanced C++ compilers.
+So while JavaScript code can be perfect for orchestrating large computation operations, it is not so good for writing them.
+- Data parallelism is very hard to implement from scratch by using a only simple threading module,
+and it requires synchronization constructs that is not available in Node.js.
+
+OpenCL is perfect to fill the gap. Beside solving the above issues it provides the following benefits:
+
+- It supports GPU beside CPU based SSE/AVX instructions sets.
+- It's supported by all the mayor GPU and CPU vendors.
+- It's truly cross platform.
+
+### Why not WebCL?
+
+WebCL is gonna be the OpenCL for JavaScript (TM) some time. It will be (should be) supported by all mayor browsers,
+to give web developers a powerful, cross platform computation platform for supporting algorithms like image processing in the client side.
+At least that's the plan.
+
+Right now [WebCL is a draft specification](https://www.khronos.org/registry/webcl/specs/latest/1.0/). There are plugins available for
+some browsers, but it is far from being a part of the modern web standards.
+
+The problem is WebCL specification is a nerfed version of the OpenCL 1.0 with some support of minor Open CL 1.1 features.
+Right now OpenCL standard stays on version 2.0 which is a huge step forward from the 1.x line. When WebCL will be a released
+technology it will be a toy compared to the mainline.
+
+There is already a [WebCL module for Node.js](https://www.npmjs.com/package/node-webcl), if you are interested.
+But this module doesn't seem to be maintained for a while, and have strange dependencies for no apparent reason
+(you just **don't need** GLFW, GLEW, AntTweakBar and FreeImage to run OpenCL programs, trust me).
+
+### Why NOOOCL?
+
 This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
 Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref](https://www.npmjs.com/package/ref).
+
+I know that there are some [other OpenCL modules](https://www.npmjs.com/search?q=opencl),
+but please check them out then decide that if there is a need for yet an other OpenCL module for Node.js or not?
+
+**OpenCL 2.0?**
+
+Sadly I don't have an OpenCL 2.0 compatible card. As soon as I get one, I upgrade NOOOCL to support 2.0 spec.
+
+**io.js?**
+
+As soon as ffi supports io.js, NOOOCL supports io.js. Please vote up the issue [there](https://github.com/node-ffi/node-ffi/issues/184).
+
+**0.12?**
+
+As soon as ffi supports 0.12, NOOOCL supports 0.12. Please vote up the issue [there](https://github.com/node-ffi/node-ffi/issues/187).
 
 ## Install
 
