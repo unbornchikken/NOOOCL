@@ -15,20 +15,20 @@ but this has some serious limitations:
 - There is no synchronization implemented in Node.js, so the inter thread communication is allowed only by using messages.
 That's mean you can only exchange small, JSON serialized data between worker threads, so this is impossible to implement
 parallel algorithms that works on common data reside in memory buffers, like image processing for example.
-- Code JIT-en by V8 doesn't support SIMD instructions at the same level like that available in advanced C++ compilers.
+- Code JIT-ed by V8 doesn't support SIMD instructions at the same level like that available in advanced C++ compilers.
 So while JavaScript code can be perfect for orchestrating large computation operations, it is not so good for writing them.
 - Data parallelism is very hard to implement from scratch by using a only simple threading module,
 and it requires synchronization constructs that is not available in Node.js.
 
 OpenCL is perfect to fill the gap. Beside solving the above issues it provides the following benefits:
 
-- It supports GPU beside CPU based SSE/AVX instructions sets.
+- It supports GPU along with CPU based SSE/AVX instructions sets.
 - It's supported by all the mayor GPU and CPU vendors.
 - It's truly cross platform.
 
 ### Why not WebCL?
 
-WebCL is gonna be the OpenCL for JavaScript (TM) some time. It will be (should be) supported by all mayor browsers,
+WebCL is gonna be the OpenCL for JavaScript (TM) at some time. It will be (should be) supported by all mayor browsers,
 to give web developers a powerful, cross platform computation platform for supporting algorithms like image processing in the client side.
 At least that's the plan.
 
@@ -45,11 +45,11 @@ But this module doesn't seem to be maintained for a while, and have strange depe
 
 ### Why NOOOCL?
 
-This is a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
+It's a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
 Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref](https://www.npmjs.com/package/ref).
 
 I know that there are some [other OpenCL modules](https://www.npmjs.com/search?q=opencl),
-but please check them out then decide that if there is a need for yet an other OpenCL module for Node.js or not?
+but please check them out then decide that if there is a need for yet an other OpenCL module for Node.js or isn't?
 
 **OpenCL 2.0?**
 
