@@ -32,7 +32,7 @@ describe('CLContext', function() {
 // Helpers
 
 function checkContext(context, devices) {
-    var formats = context.supportedImageFormats(context.cl.defs.CL_MEM_ALLOC_HOST_PTR, context.cl.defs.CL_MEM_OBJECT_IMAGE2D);
+    var formats = context.getSupportedImageFormats(context.cl.defs.CL_MEM_ALLOC_HOST_PTR, context.cl.defs.CL_MEM_OBJECT_IMAGE2D);
     assert(_.isArray(formats));
     assert(formats.length ? true : false);
     if (devices) {
