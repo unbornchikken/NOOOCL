@@ -86,7 +86,7 @@ CLWrapper.prototype._cached = <span class="hljs-function"><span class="hljs-keyw
 <li>null, if there is not required to release the wrapped OpenCL object</li>
 </ul></div></div><div class="code"><div class="wrapper">CLWrapper.prototype.createReleaseMethod = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">this</span>._ni(<span class="hljs-string">'createReleaseMethod'</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="createreleasemethod">createReleaseMethod</h2>
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="release">release</h2>
 <p>Releases the underlying OpenCL object.</p></div></div><div class="code"><div class="wrapper">CLWrapper.prototype.release = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._released) {
         <span class="hljs-keyword">return</span>;
