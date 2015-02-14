@@ -103,13 +103,13 @@ host = new CLHost(1.1); // for OpenCL 1.1
 host = new CLHost(1.2); // for OpenCL 1.2
 ```
 
-we will get an exception if there is no compatible OpenCL platform available.
+You will get an exception if there is no compatible OpenCL platform available.
 
 CLHost and all of CL* class instances share this common, important properties:
 
 - **cl.version**: version of the OpenCL platform
 - **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/clDefines.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/clDefines.js).
-- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, we can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel, etc.
+- **cl.imports.clxxx**: this is where OpenCL C API is imported with ffi, you can call native API methods like clEnqueueCopyBuffer, clEnqueueNDRangeKernel, etc.
 - **cl.types.xxx**: [ref](https://www.npmjs.com/package/ref) compatible OpenCL type definitions, see the complete list there: [NOOOCL/lib/cl/types.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/types.js).
 
 Example:
@@ -133,16 +133,16 @@ var err = host.cl.imports.clEnqueueNDRangeKernel(
 
 #### Platforms
 
-Then we can access to supported platforms:
+Then you can access to supported platforms:
 
 ```javascript
 var count = host.platformsCount;
 
-// we will get an array filled with instances of nooocl.CLPlatform class
+// you will get an array filled with instances of nooocl.CLPlatform class
 var allPlatforms = host.getPlatforms();
 ```
 
-For each platform we can access its information in JS properties:
+For each platform you can access its information in JS properties:
 
 ```javascript
 var platform = host.getPlatforms()[0]; // First platform
@@ -161,7 +161,7 @@ These handles will be automatically released during garbage collection, rr they 
 
 #### Devices
 
-we can query available devices:
+You can query available devices:
 
 ```javascript
 var all = platform.allDevices();
@@ -178,21 +178,21 @@ var gpusAndCpus =
         platform.cl.defs.CL_DEVICE_TYPE_CPU);
 ```
 
-we will get an array of nooocl.CLDevice class instances. CLDevice can provide all OpenCL device information in simple JavaScript properties, for example:
+You will get an array of nooocl.CLDevice class instances. CLDevice can provide all OpenCL device information in simple JavaScript properties, for example:
 
 ```javascript
 var cpuDevice = platform.cpuDevices()[0];
 
-// we get the value of CL_DEVICE_MAX_COMPUTE_UNITS:
+// you get the value of CL_DEVICE_MAX_COMPUTE_UNITS:
 var maxComputeUnits = cpuDevice.maxComputeUnits;
 
-// we get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]:
+// you get the value of CL_DEVICE_MAX_WORK_ITEM_SIZES in an array like: [256, 64, 1]:
 var maxWorkItemSizes = cpuDevice.maxWorkItemSizes;
 ```
 
 Please see the API docs or [NOOOCL/tests/hostTests.js](https://github.com/unbornchikken/NOOOCL/blob/master/tests/hostTests.js) unit test for complete list of available device info properties.
 
-Ok, we have a host, a platform, a device, now we need a context. we can create it from a CLDevice instance, from an array of CLDevice instances, or from a CLPlatform instance and a device type, like:
+Ok, you have a host, a platform, a device, now you need a context. you can create it from a CLDevice instance, from an array of CLDevice instances, or from a CLPlatform instance and a device type, like:
 
 ```javascript
 // Create content for a single device:
@@ -212,7 +212,7 @@ context = new CLContext(platform, platform.cl.defs.CL_DEVICE_TYPE_GPU);
 
 #### The Queue
 
-The last thing that we need in every OpenCL application is the command queue. we can create a queue for a device by calling CLCommandQueue class' constructor:
+The last thing that you need in every OpenCL application is the command queue. you can create a queue for a device by calling CLCommandQueue class' constructor:
 
 ```javascript
 // The last two parameters are optional, their defaults are false:
@@ -224,7 +224,7 @@ Please see the API docs further details.
 
 The queue has two modes. Waitable and non waitable. A queue initially is non waitable.
 If the queue is non waitable its enqueue* methods return undefined, if waitable enqueue* methods return a CLEvent instance which have a _promise_ property of type [bluebird promise](https://www.npmjs.com/package/bluebird).
-we can switch modes by calling waitable method, which accepts an optional boolean parameter. When its true, the result queue will be waitable, if false, the result queue will be non waitable. Default value is true.
+You can switch modes by calling waitable method, which accepts an optional boolean parameter. When its true, the result queue will be waitable, if false, the result queue will be non waitable. Default value is true.
 
 Example:
 
@@ -262,7 +262,7 @@ var openCLBuffer = new CLBuffer(
     size_in_bytes_here);
 ```
 
-we can copy data into this buffer, and copy data from it into Node.js memory.
+You can copy data into this buffer, and copy data from it into Node.js memory.
 
 ```javascript
 var destBuffer = new Buffer(openCLBuffer.size);
@@ -330,7 +330,7 @@ var openCLBuffer = new CLBuffer(
     nodeBuffer.length,
     nodeBuffer);
 
-// We can use the following shortcut syntax instead of the above constructor call:
+// You can use the following shortcut syntax instead of the above constructor call:
 // var openCLBuffer = CLBuffer.wrap(context, nodeBuffer);
 
 var otherBuffer = new Buffer(nodeBuffer.length);
@@ -343,41 +343,41 @@ queue.enqueueMapBuffer(
     out).promise
     .then(function() {
         // out.ptr holds the mapped ptr address of ref type void*
-        // since we've requested the pointer from byte offset float.size,
+        // since you've requested the pointer from byte offset float.size,
         // and OpenCL uses nodeBuffer's memory as host side pointer,
         // then the following assertion holds:
         assert.equal(
             ref.address(out.ptr),
             ref.address(nodeBuffer) + float.size);
 
-        // We should reinterpret result ptr to a usable sized buffer with ref:
+        // You should reinterpret result ptr to a usable sized buffer with ref:
         var mappedBuffer = ref.reinterpret(out.ptr, 2 * float.size, 1 * float.size);
 
-        // Now we're using the same memory for sure:
+        // Now you're using the same memory for sure:
         for (var i = 0; i < mappedBuffer.length; i++) {
             assert.equal(otherBuffer[i], nodeBuffer[i + float.size]);
         }
 
-        // Why out.ptr if we have access the original buffer?
+        // Why out.ptr if you have access the original buffer?
         // That's because mapping is available for OpenCL allocated buffers as well,
         // if CL_MEM_ALLOC_HOST_PTR flags is used only,
         // or CL_MEM_USE_HOST_PTR flag is set along with CL_MEM_COPY_HOST_PTR
 
         // ...
 
-        // After doing stuff, we have to unmap memory:
+        // After doing stuff, you have to unmap memory:
         queue.enqueueUnmapMemory(openCLBuffer, out.ptr);
     });
 ```
 
 #### Images
 
-2D and 3D images are also supported in NOOOCL. There is a unit test that shows how we can do OpenCL accelerated image grayscale conversion in NOOOCL,
+2D and 3D images are also supported in NOOOCL. There is a unit test that shows how you can do OpenCL accelerated image grayscale conversion in NOOOCL,
 please take a look at it there: [NOOOCL/tests/imageTests.js](https://github.com/unbornchikken/NOOOCL/blob/beta-dev/tests/imageTests.js).
 
-Fist, we should open the image and access to its raw RGBA data in a Node.js buffer. Any appropriate npm module can be used there (I suggest [lwip](https://github.com/EyalAr/lwip)).
+Fist, you should open the image and access to its raw RGBA data in a Node.js buffer. Any appropriate npm module can be used there (I suggest [lwip](https://github.com/EyalAr/lwip)).
 
-Then we can create and OpenCL image from it:
+Then you can create and OpenCL image from it:
 
 ```javascript
 var ImageFormat = host.conel.types.ImageFormat;
@@ -411,10 +411,10 @@ var program = context.createProgram(source);
 // Everything is asynchronous in Node.js:
 program.build('-cl-fast-relaxed-math').then(
     function() {
-        // At this point we don't know that the build succeeded or failed.
+        // At this point you don't know that the build succeeded or failed.
         // Since one context can hold multiple devices,
         // and a build could succeeded on a device, but could failed on the other,
-        // NOOOCL won't raise build errors, we should asks for it per device basis:
+        // NOOOCL won't raise build errors, you should asks for it per device basis:
 
         // can be either: CL_BUILD_SUCCESS, CL_BUILD_ERROR
         var buildStatus = program.getBuildStatus(device);
@@ -424,7 +424,7 @@ program.build('-cl-fast-relaxed-math').then(
     });
 ```
 
-After a program builds we can access it's binaries for each device:
+After a program builds you can access it's binaries for each device:
 
 ```javascript
 // This returns an array of CLDevice instances
@@ -443,7 +443,7 @@ var binaries = program.getBinaries();
 // returned by CL_PROGRAM_BINARIES and array of devices
 // returned by CL_PROGRAM_DEVICES."
 
-// So we can zip the above:
+// So you can zip the above:
 var deviceBinaries =
     _.zip(devices, binaries)
     .map(function(a) { return { device: a[0], binary: a[1] }; );
@@ -460,7 +460,7 @@ var binary = fs.readFileSync('/tmp/foo.bin');
 
 var program = context.createProgram(binary, device);
 
-// We should call build,
+// You should call build,
 // but this time it will be much faster than compiling from source:
 program.build().then(
     function() {
@@ -476,7 +476,7 @@ program.build().then(
 
 #### Kernel
 
-We can create kernel by name, or can create all kernels in the program at once.
+You can create kernel by name, or can create all kernels in the program at once.
 
 ```javascript
 // By name:
@@ -487,10 +487,10 @@ var kernels = program.createAllKernels();
 doStuffKernel = _.first(_.where(kernels, { name: 'doStuff' }));
 ```
 
-We can set its arguments by index, or all at once:
+You can set its arguments by index, or all at once:
 
 ```javascript
-// Assume we have a kernel of the following signature:
+// Assume you have a kernel of the following signature:
 // kernel void doStuff(global float* data, uint someValue, local float* tmp) {...}
 // and a CLBuffer instance created like:
 // var openCLBuffer = CLBuffer.wrap(context, nodeBuffer);
@@ -498,25 +498,25 @@ We can set its arguments by index, or all at once:
 
 var kernel = program.createKernel('doStuff');
 
-// We can set kernel's arguments by index:
+// You can set kernel's arguments by index:
 
-// For buffer arguments we can pass the instance of a CLBuffer class:
+// For buffer arguments you can pass the instance of a CLBuffer class:
 kernel.setArg(0, openCLBuffer);
 // or native cl_mem handle
 // kernel.setArg(0, openCLBuffer.handle);
 
-// For constant arguments we have to specify its type
+// For constant arguments you have to specify its type
 kernel.setArg(1, 55, 'uint');
 
-// For local buffers, we have to specify its size in bytes
+// For local buffers, you have to specify its size in bytes
 kernel.setArg(2, 100 * float.size);
 
-// Or we can specify all of the arguments at once:
+// Or you can specify all of the arguments at once:
 
 kernel.setArgs(openCLBuffer, {'uint': 55}, 100 * float.size);
 ```
 
-Now we can enqueue the kernel. In NOOOCL there is an NDRange class, for defining OpenCL ranges.
+Now you can enqueue the kernel. In NOOOCL there is an NDRange class, for defining OpenCL ranges.
 
 ```javascript
 // 1 dimension range:
@@ -540,7 +540,7 @@ queue.enqueueNDRangeKernel(
 );
 ```
 
-We can create a simple JavaScript function for calling OpenCL kernels with ad-hoc arguments by using the bind method:
+You can create a simple JavaScript function for calling OpenCL kernels with ad-hoc arguments by using the bind method:
 
 ```javascript
 var func = kernel.bind(
@@ -549,7 +549,7 @@ var func = kernel.bind(
     null, // local size
     new NDRange(1)); // offset
 
-// Now we have a JS function to call (aka set arguments and enqueue)
+// Now you have a JS function to call (aka set arguments and enqueue)
 // our OpenCL kernel!
 // It's easy as goblin pie.
 func(openCLBuffer, {'uint': 55}, 100 * float.size);
