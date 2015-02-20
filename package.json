@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "bluebird": "^2.9.9",
-    "ffi": "git+https://github.com/kjunichi/node-ffi.git#261aec0306f21ce725b74640caf46a0b78afc5e6",
+    "ffi": "git+https://github.com/kjunichi/node-ffi.git#bad796888ad564bbc6a15b73579223b8f118605e",
     "lodash": "^3.2.0",
     "ref": "^1.0.0",
     "ref-array": "^1.1.0",
