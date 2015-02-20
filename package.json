@@ -26,9 +26,9 @@
     "test": "node ./node_modules/mocha/bin/mocha --expose-gc ./tests"
   },
   "dependencies": {
-    "bluebird": "^2.9.7",
+    "bluebird": "^2.9.9",
     "ffi": "git+https://github.com/kjunichi/node-ffi.git#261aec0306f21ce725b74640caf46a0b78afc5e6",
-    "lodash": "^3.1.0",
+    "lodash": "^3.2.0",
     "ref": "^1.0.0",
     "ref-array": "^1.1.0",
     "ref-struct": "^1.0.0",
