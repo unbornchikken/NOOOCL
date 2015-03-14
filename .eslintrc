@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "no-underscore-dangle": false,
+    "camelcase": false,
+    "eol-last": false
+  },
+  "env": {
+    "node": true
+  }
+}

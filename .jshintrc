@@ -1,0 +1,6 @@
+{
+  "onevar": true,
+  "esnext": false,
+  "node": true,
+  "browser": true
+}
