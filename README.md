@@ -57,7 +57,7 @@ Sadly I don't have an OpenCL 2.0 compatible card. As soon as I get one, I upgrad
 
 **io.js? 0.12?**
 
-Those versions are supperted aswel.
+Those versions are supported as well.
 
 ## Install
 
