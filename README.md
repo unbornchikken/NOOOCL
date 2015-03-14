@@ -55,13 +55,9 @@ but please check them out then decide that if there is a need for yet an other O
 
 Sadly I don't have an OpenCL 2.0 compatible card. As soon as I get one, I upgrade NOOOCL to support 2.0 spec.
 
-**io.js?**
+**io.js? 0.12?**
 
-As soon as ffi supports io.js, NOOOCL supports io.js. Please vote up the issue [there](https://github.com/node-ffi/node-ffi/issues/184).
-
-**0.12?**
-
-As soon as ffi supports 0.12, NOOOCL supports 0.12. Please vote up the issue [there](https://github.com/node-ffi/node-ffi/issues/187).
+Those versions are supperted aswel.
 
 ## Install
 
