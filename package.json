@@ -1,6 +1,6 @@
 {
   "name": "nooocl",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "author": "Gábor Mező aka unbornchikken",
   "description": "NOOOCL: Node.js Object Oriented OpenCL Bindings",
   "homepage": "https://github.com/unbornchikken/nooocl",
@@ -11,7 +11,8 @@
   "main": "./index",
   "licenses": "MIT",
   "engines": [
-    "node >=0.10.0"
+    "node >=0.10.0",
+    "iojs >=1.1.0"
   ],
   "keywords": [
     "OpenCL",
@@ -26,16 +27,16 @@
     "test": "node ./node_modules/mocha/bin/mocha --expose-gc ./tests"
   },
   "dependencies": {
-    "bluebird": "^2.9.9",
-    "ffi": "git+https://github.com/kjunichi/node-ffi.git#bad796888ad564bbc6a15b73579223b8f118605e",
-    "lodash": "^3.2.0",
+    "bluebird": "^2.9.14",
+    "ffi-io": "^1.0.3",
+    "lodash": "^3.5.0",
     "ref": "^1.0.0",
     "ref-array": "^1.1.0",
     "ref-struct": "^1.0.0",
-    "weak": "^0.3.4"
+    "weak": "^0.4.0"
   },
   "devDependencies": {
     "jpeg-js": "^0.1.1",
-    "mocha": "^2.1.0"
+    "mocha": "^2.2.1"
   }
 }
