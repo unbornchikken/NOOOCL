@@ -1,16 +1,16 @@
-var assert = require('assert');
-var nooocl = require('../');
+"use strict";
+
+/* global describe,it */
+var assert = require("assert");
+var nooocl = require("../");
 var CLHost = nooocl.CLHost;
-var _ = require('lodash');
+var _ = require("lodash");
 var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
-var CLContext = nooocl.CLContext;
-var ref = require('ref');
-var ArrayType = require('ref-array');
-var CLKernel = nooocl.CLKernel;
+var ref = require("ref");
+var ArrayType = require("ref-array");
 var NDRange = nooocl.NDRange;
-var Promise = require('bluebird');
-var testHelpers = require('./testHelpers');
+var testHelpers = require("./testHelpers");
 
 var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
@@ -19,14 +19,14 @@ var copyMemKernel =
     "dst[idx - 1] = src[idx + begin];" +
     "}";
 
-describe('CLKernel', function() {
-    it('should do NDRange calls', function(done) {
+describe("CLKernel", function () {
+    it("should do NDRange calls", function (done) {
         var i;
         var host = CLHost.createV11();
         var ctx = testHelpers.createContext(host);
         var context = ctx.context;
         var device = ctx.device;
-        var FloatArray = new ArrayType('float');
+        var FloatArray = new ArrayType("float");
         var srcArray = new FloatArray(5);
         var dstArray = new FloatArray(3);
         for (i = 0; i < srcArray.length; i++) {
@@ -41,21 +41,21 @@ describe('CLKernel', function() {
         assert.equal(dstArray.length * ref.types.float.size, dst.size);
         var queue = new CLCommandQueue(context, device);
         var program = context.createProgram(copyMemKernel);
-        program.build().then(function() {
-            buildStatus = program.getBuildStatus(device);
+        program.build().then(function () {
+            var buildStatus = program.getBuildStatus(device);
             if (buildStatus < 0) {
-                assert.fail('Build failed.\n' + program.getBuildLog(device));
+                assert.fail("Build failed.\n" + program.getBuildLog(device));
             }
-            var kernel = program.createKernel('copy');
+            var kernel = program.createKernel("copy");
             assert(kernel ? true : false);
             assert(kernel.handle ? true : false);
-            assert.equal('copy', kernel.name);
+            assert.equal("copy", kernel.name);
             var kernels = program.createAllKernels();
             assert(_.isArray(kernels));
             assert.equal(1, kernels.length);
             assert.equal(kernel.name, kernels[0].name);
 
-            var assertValues = function() {
+            var assertValues = function () {
                 var out = {};
                 return queue.waitable().enqueueMapBuffer(dst, host.cl.defs.CL_MAP_READ | host.cl.defs.CL_MAP_WRITE, 0, dst.size, out).promise
                     .then(function () {
@@ -84,15 +84,15 @@ describe('CLKernel', function() {
 
             // Test bind:
             var func = kernel.bind(queue, new NDRange(3), null, new NDRange(1));
-            func(src, dst, { 'uint': 1 });
+            func(src, dst, { "uint": 1 });
 
             return assertValues()
-                .then(function() {
+                .then(function () {
                     // Test direct call:
                     kernels[0].setArg(0, src);
                     kernels[0].setArg(1, dst);
-                    kernels[0].setArg(2, 1, 'uint');
-                    queue.enqueueNDRangeKernel(kernels[0],new NDRange(3), null, new NDRange(1));
+                    kernels[0].setArg(2, 1, "uint");
+                    queue.enqueueNDRangeKernel(kernels[0], new NDRange(3), null, new NDRange(1));
 
                     return assertValues();
                 });

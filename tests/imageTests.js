@@ -1,23 +1,23 @@
-var assert = require('assert');
-var nooocl = require('../');
+"use strict";
+
+/* global describe,it */
+var assert = require("assert");
+var nooocl = require("../");
 var CLHost = nooocl.CLHost;
-var _ = require('lodash');
-var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
-var CLContext = nooocl.CLContext;
-var ref = require('ref');
-var testHelpers = require('./testHelpers');
-var path = require('path');
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs'));
+var ref = require("ref");
+var testHelpers = require("./testHelpers");
+var path = require("path");
+var Bluebird = require("bluebird");
+var fs = Bluebird.promisifyAll(require("fs"));
 var cd = __dirname;
-var jpeg = require('jpeg-js');
+var jpeg = require("jpeg-js");
 var CLImage2D = nooocl.CLImage2D;
 var NDRange = nooocl.NDRange;
 
-describe('CLImage2D', function () {
-    it('should convert an image to grayscale', function (done) {
-        fs.readFileAsync(path.join(cd, 'elefant.jpg')).then(function (data) {
+describe("CLImage2D", function () {
+    it("should convert an image to grayscale", function (done) {
+        fs.readFileAsync(path.join(cd, "elefant.jpg")).then(function (data) {
             var inputImage = jpeg.decode(data);
             var host = CLHost.createV11();
             var ctx = testHelpers.createContext(host);
@@ -31,15 +31,15 @@ describe('CLImage2D', function () {
             var src = CLImage2D.wrapReadOnly(context, format, inputImage.width, inputImage.height, inputImage.data);
             var outputData = new Buffer(inputImage.data.length);
             var dst = CLImage2D.wrapWriteOnly(context, format, inputImage.width, inputImage.height, outputData);
-            return fs.readFileAsync(path.join(cd, 'toGray.cl'), 'utf8').then(
+            return fs.readFileAsync(path.join(cd, "toGray.cl"), "utf8").then(
                 function (source) {
                     var program = context.createProgram(source);
                     return program.build().then(function () {
                         var buildStatus = program.getBuildStatus(device);
                         if (buildStatus < 0) {
-                            assert.fail('Build failed.\n' + program.getBuildLog(device));
+                            assert.fail("Build failed.\n" + program.getBuildLog(device));
                         }
-                        var kernel = program.createKernel('toGray');
+                        var kernel = program.createKernel("toGray");
                         kernel.setArgs(src, dst);
                         queue.enqueueNDRangeKernel(kernel, new NDRange(inputImage.width, inputImage.height), null, null);
                         var out = {};
@@ -59,7 +59,7 @@ describe('CLImage2D', function () {
 
                                 var jpegData = jpeg.encode(outputImage, 85);
 
-                                return fs.writeFileAsync(path.join(cd, 'out.jpg'), jpegData.data, 'binary').finally(
+                                return fs.writeFileAsync(path.join(cd, "out.jpg"), jpegData.data, "binary").finally(
                                     function () {
                                         return queue.waitable().enqueueUnmapMemory(dst, out.ptr).promise;
                                     });

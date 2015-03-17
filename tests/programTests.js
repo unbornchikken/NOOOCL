@@ -1,16 +1,18 @@
-var assert = require('assert');
-var nooocl = require('../');
+"use strict";
+
+/* global describe,it */
+var assert = require("assert");
+var nooocl = require("../");
 var CLHost = nooocl.CLHost;
-var _ = require('lodash');
-var CLContext = nooocl.CLContext;
-var testHelpers = require('./testHelpers');
+var _ = require("lodash");
+var testHelpers = require("./testHelpers");
 
-var source = 'kernel void foo(global float* data) { }';
+var source = "kernel void foo(global float* data) { }";
 
-var badSource = 'da shit';
+var badSource = "da shit";
 
-describe('CLContext', function() {
-    it('should build and get kernel from string source', function(done) {
+describe("CLContext", function () {
+    it("should build and get kernel from string source", function (done) {
         var host = CLHost.createV11();
         var ctx = testHelpers.createContext(host);
         var context = ctx.context;
@@ -20,15 +22,15 @@ describe('CLContext', function() {
         var buildOptions = program.getBuildOptions(device);
         var buildLog = program.getBuildLog(device);
         assert.equal(buildStatus, host.cl.defs.CL_BUILD_NONE);
-        assert.equal(buildOptions, '');
+        assert.equal(buildOptions, "");
         assert(_.isString(buildLog));
-        program.build('-cl-fast-relaxed-math').then(
-            function() {
+        program.build("-cl-fast-relaxed-math").then(
+            function () {
                 buildStatus = program.getBuildStatus(device);
                 buildOptions = program.getBuildOptions(device);
                 buildLog = program.getBuildLog(device);
                 assert.equal(buildStatus, host.cl.defs.CL_BUILD_SUCCESS);
-                assert.equal(buildOptions, '-cl-fast-relaxed-math');
+                assert.equal(buildOptions, "-cl-fast-relaxed-math");
                 assert(_.isString(buildLog));
                 var binaries = program.getBinaries();
                 assert(_.isArray(binaries));
@@ -38,7 +40,7 @@ describe('CLContext', function() {
             }).nodeify(done);
     });
 
-    it('should fail by building a fucked up string source', function(done) {
+    it("should fail by building a fucked up string source", function (done) {
         var host = CLHost.createV11();
         var ctx = testHelpers.createContext(host);
         var context = ctx.context;
@@ -48,15 +50,15 @@ describe('CLContext', function() {
         var buildOptions = program.getBuildOptions(device);
         var buildLog = program.getBuildLog(device);
         assert.equal(buildStatus, host.cl.defs.CL_BUILD_NONE);
-        assert.equal(buildOptions, '');
+        assert.equal(buildOptions, "");
         assert(_.isString(buildLog));
-        program.build('-cl-fast-relaxed-math').then(
-            function() {
+        program.build("-cl-fast-relaxed-math").then(
+            function () {
                 buildStatus = program.getBuildStatus(device);
                 buildOptions = program.getBuildOptions(device);
                 buildLog = program.getBuildLog(device);
                 assert.equal(buildStatus, host.cl.defs.CL_BUILD_ERROR);
-                assert.equal(buildOptions, '-cl-fast-relaxed-math');
+                assert.equal(buildOptions, "-cl-fast-relaxed-math");
                 assert(_.isString(buildLog));
                 assert(buildLog.length > 0);
                 var buildLogs = program.getBuildLogs();
@@ -65,7 +67,7 @@ describe('CLContext', function() {
             }).nodeify(done);
     });
 
-    it("should support binaries", function(done) {
+    it("should support binaries", function (done) {
         var host = CLHost.createV11();
         var ctx = testHelpers.createContext(host);
         var context = ctx.context;
@@ -75,10 +77,10 @@ describe('CLContext', function() {
         var buildOptions = program.getBuildOptions(device);
         var buildLog = program.getBuildLog(device);
         assert.equal(buildStatus, host.cl.defs.CL_BUILD_NONE);
-        assert.equal(buildOptions, '');
+        assert.equal(buildOptions, "");
         assert(_.isString(buildLog));
-        program.build('-cl-fast-relaxed-math').then(
-            function() {
+        program.build("-cl-fast-relaxed-math").then(
+            function () {
                 var binaries = program.getBinaries();
                 assert(_.isArray(binaries));
                 assert.equal(binaries.length, 1);
@@ -86,8 +88,8 @@ describe('CLContext', function() {
                 assert(binaries[0].length > 0);
 
                 var program2 = context.createProgram(binaries, device);
-                return program2.build('-cl-fast-relaxed-math').then(
-                    function() {
+                return program2.build("-cl-fast-relaxed-math").then(
+                    function () {
                         buildStatus = program2.getBuildStatus(device);
                         assert.equal(buildStatus, host.cl.defs.CL_BUILD_SUCCESS);
                     });

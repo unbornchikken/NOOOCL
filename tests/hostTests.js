@@ -1,21 +1,24 @@
-var assert = require('assert');
-var nooocl = require('../');
-var CLHost = nooocl.CLHost;
-var _ = require('lodash');
+"use strict";
 
-describe('CLHost', function () {
-    it('should return platforms and devices', function () {
+/* global describe,it */
+var assert = require("assert");
+var nooocl = require("../");
+var CLHost = nooocl.CLHost;
+var _ = require("lodash");
+
+describe("CLHost", function () {
+    it("should return platforms and devices", function () {
         var host = CLHost.createV11();
         assert(_.isObject(host));
 
         var count = host.platformsCount;
-        assert.notEqual(count, 0, 'There are no OpenCL platforms found.');
+        assert.notEqual(count, 0, "There are no OpenCL platforms found.");
 
         var platforms = host.getPlatforms();
         assert(_.isArray(platforms));
         assert.equal(platforms.length, count);
 
-        _.forEach(platforms, function (platform, idx) {
+        _.forEach(platforms, function (platform) {
             var info = {
                 name: platform.name,
                 vendor: platform.vendor,
@@ -40,7 +43,7 @@ describe('CLHost', function () {
             var all = gpuDevices.concat(cpuDevice);
             assert.notEqual(all.length, 0);
             _.forEach(all, function (device) {
-                var info = {
+                info = {
                     deviceType: device.deviceType,
                     vendorID: device.vendorID,
                     maxComputeUnits: device.maxComputeUnits,

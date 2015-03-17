@@ -1,16 +1,16 @@
-var assert = require('assert');
-var nooocl = require('../');
+"use strict";
+
+/* global describe,it */
+var assert = require("assert");
+var nooocl = require("../");
 var CLHost = nooocl.CLHost;
-var _ = require('lodash');
 var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
-var CLContext = nooocl.CLContext;
-var ref = require('ref');
-var ArrayType = require('ref-array');
-var testHelpers = require('./testHelpers');
+var ref = require("ref");
+var testHelpers = require("./testHelpers");
 
-describe('CLBuffer', function () {
-    it('can copy contents of two node.js buffer through OpenCL', function (done) {
+describe("CLBuffer", function () {
+    it("can copy contents of two node.js buffer through OpenCL", function (done) {
         try {
             var host = CLHost.createV11();
             var ctx = testHelpers.createContext(host);
@@ -50,7 +50,7 @@ describe('CLBuffer', function () {
         }
     });
 
-    it('supports sub buffers', function (done) {
+    it("supports sub buffers", function (done) {
         try {
             var host = CLHost.createV11();
             var ctx = testHelpers.createContext(host);
@@ -86,7 +86,7 @@ describe('CLBuffer', function () {
         }
     });
 
-    it('supports mapping of host array', function(done) {
+    it("supports mapping of host array", function(done) {
         var host = CLHost.createV11();
         var ctx = testHelpers.createContext(host);
         var context = ctx.context;

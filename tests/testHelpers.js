@@ -1,8 +1,10 @@
-var nooocl = require('../');
+"use strict";
+
+var nooocl = require("../");
 var CLContext = nooocl.CLContext;
-var _ = require('lodash');
-var assert = require('assert');
-var ref = require('ref');
+var _ = require("lodash");
+var assert = require("assert");
+var ref = require("ref");
 
 module.exports = {
     createContext: function (host) {
@@ -20,14 +22,14 @@ module.exports = {
             context: context
         };
     },
-    getContextRefCount: function(host, handle) {
+    getContextRefCount: function (host, handle) {
         var info = ref.alloc(ref.types.uint);
         ref.types.uint.set(info, 0, 0);
         var err = host.cl.imports.clGetContextInfo(handle, host.cl.defs.CL_CONTEXT_REFERENCE_COUNT, ref.types.uint.size, info, null);
         host.cl.checkError(err);
         return info.deref();
     },
-    getMemRefCount: function(host, handle) {
+    getMemRefCount: function (host, handle) {
         var info = ref.alloc(ref.types.uint);
         ref.types.uint.set(info, 0, 0);
         var err = host.cl.imports.clGetMemObjectInfo(handle, host.cl.defs.CL_MEM_REFERENCE_COUNT, ref.types.uint.size, info, null);
