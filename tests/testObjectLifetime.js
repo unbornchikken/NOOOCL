@@ -16,8 +16,8 @@ describe("NOOOCL", function () {
         var host = CLHost.createV11();
         var context, bufferHandle;
         var createStuff = function () {
-            var ctx = testHelpers.createContext(host);
-            context = ctx.context;
+            var env = testHelpers.createEnvironment(host, "cpu");
+            context = env.context;
             var buffer = new CLBuffer(context, context.cl.defs.CL_MEM_ALLOC_HOST_PTR, 10);
             bufferHandle = buffer.handle;
             assert.equal(2, testHelpers.getContextRefCount(host, context.handle));

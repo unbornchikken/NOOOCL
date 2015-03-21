@@ -1,23 +1,54 @@
 "use strict";
 
 var nooocl = require("../");
+var CLHost = nooocl.CLHost;
 var CLContext = nooocl.CLContext;
 var _ = require("lodash");
 var assert = require("assert");
 var ref = require("ref");
+var Bluebird = require("bluebird");
 
-module.exports = {
-    createContext: function (host) {
+var gpuWarn = false;
+
+var testHelpers = {
+    doTest: function (testMethod, version) {
+        version = version || CLHost.supportedVersions.cl11;
+        var host = new CLHost(version);
+        var cpuEnv = testHelpers.createEnvironment(host, "cpu");
+        var cpuTestResult = cpuEnv ? testMethod(cpuEnv) : Bluebird.resolve();
+        var gpuEnv = testHelpers.createEnvironment(host, "gpu");
+        if (gpuEnv) {
+            return cpuTestResult.then(function () {
+                return testMethod(gpuEnv);
+            });
+        }
+        if (!gpuWarn) {
+            console.warn("GPU is not available!");
+            gpuWarn = true;
+        }
+        return cpuTestResult;
+    },
+    createEnvironment: function (host, hardware) {
         assert(_.isObject(host));
+        hardware = (hardware || "cpu").toLowerCase();
         var platforms = host.getPlatforms();
-        assert(_.isArray(platforms));
-        assert.notEqual(platforms.length, 0);
-        var devices = platforms[0].allDevices();
-        assert(_.isArray(devices));
-        assert.notEqual(devices.length, 0);
-        var device = devices[0];
+        var device;
+        platforms.forEach(function (p) {
+            var devices = hardware === "gpu" ? p.gpuDevices() : p.cpuDevices();
+            devices.forEach(function (d) {
+                device = d;
+                return false;
+            });
+            if (devices) {
+                return false;
+            }
+        });
+        if (!device) {
+            return null;
+        }
         var context = new CLContext(device);
         return {
+            host: host,
             device: device,
             context: context
         };
@@ -37,3 +68,5 @@ module.exports = {
         return info.deref();
     }
 };
+
+module.exports = testHelpers;
