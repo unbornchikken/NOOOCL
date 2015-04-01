@@ -12,6 +12,11 @@ var gpuWarn = false;
 
 var testHelpers = {
     doTest: function (testMethod, version) {
+        var pm = testMethod;
+        testMethod = function (env) {
+            console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
+            return pm(env);
+        };
         version = version || CLHost.supportedVersions.cl11;
         var host = new CLHost(version);
         var cpuEnv = testHelpers.createEnvironment(host, "cpu");
@@ -35,10 +40,9 @@ var testHelpers = {
         var device;
         platforms.forEach(function (p) {
             var devices = hardware === "gpu" ? p.gpuDevices() : p.cpuDevices();
-            devices.forEach(function (d) {
-                device = d;
-                return false;
-            });
+            if (devices.length) {
+                device = devices[0];
+            }
             if (device) {
                 return false;
             }
