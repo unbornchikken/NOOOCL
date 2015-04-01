@@ -14,7 +14,7 @@ var testHelpers = {
     doTest: function (testMethod, version) {
         var pm = testMethod;
         testMethod = function (env) {
-            console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
+            // console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
             return pm(env);
         };
         version = version || CLHost.supportedVersions.cl11;

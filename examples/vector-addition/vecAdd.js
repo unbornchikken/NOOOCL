@@ -18,11 +18,9 @@ var CLKernel = nooocl.CLKernel;
 var CLImage2D = nooocl.CLImage2D;
 var CLImage3D = nooocl.CLImage3D;
 var CLSampler = nooocl.CLSampler;
+var CLError = nooocl.CLError;
 var ref = require("ref");
-var double = ref.double;
-
-// Load the kernel source:
-var kernelSource = fs.readFileSync(path.join(cwd, "vecAdd.cl"), { encoding: "utf8" });
+var double = ref.types.double;
 
 // Initialize OpenCL then we get host, device, context, and a queue
 var host = CLHost.createV11();
@@ -30,9 +28,15 @@ var defs = host.cl.defs;
 
 var platforms = host.getPlatforms();
 var device;
-function searchForDevice (hardware) {
+function searchForDevice(hardware) {
     platforms.forEach(function (p) {
         var devices = hardware === "gpu" ? p.gpuDevices() : p.cpuDevices();
+        devices = devices.filter(function (d) {
+            // Is double precision supported?
+            // See: https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetDeviceInfo.html
+            return d.doubleFpConfig &
+                (defs.CL_FP_FMA | defs.CL_FP_ROUND_TO_NEAREST | defs.CL_FP_ROUND_TO_ZERO | defs.CL_FP_ROUND_TO_INF | defs.CL_FP_INF_NAN | defs.CL_FP_DENORM);
+        });
         if (devices.length) {
             device = devices[0];
         }
@@ -78,6 +82,67 @@ var d_a = new CLBuffer(context, defs.CL_MEM_READ_ONLY, bytes);
 var d_b = new CLBuffer(context, defs.CL_MEM_READ_ONLY, bytes);
 var d_c = new CLBuffer(context, defs.CL_MEM_WRITE_ONLY, bytes);
 
-// Bind memory buffers
+// Copy memory buffers
+// Notice: the is no synchronous operations in NOOOCL,
+// so there is no blocking_write parameter there.
+// All writes and reads are asynchronous.
 queue.enqueueWriteBuffer(d_a, 0, bytes, h_a);
 queue.enqueueWriteBuffer(d_b, 0, bytes, h_b);
+
+// It's time to build the program.
+var kernelSourceCode = fs.readFileSync(path.join(cwd, "vecAdd.cl"), { encoding: "utf8" });
+var program = context.createProgram(kernelSourceCode);
+
+console.log("Building ...");
+// Building is always asynchronous in NOOOCL!
+program.build("-cl-fast-relaxed-math").then(
+    function () {
+        var buildStatus = program.getBuildStatus(device);
+        var buildLog = program.getBuildLog(device);
+        console.log(buildLog);
+        if (buildStatus < 0) {
+            throw new CLError(buildStatus, "Build failed.");
+        }
+        console.log("Build completed.");
+
+        // Kernel stuff:
+        var kernel = program.createKernel("vecAdd");
+
+        kernel.setArg(0, d_a);
+        kernel.setArg(1, d_b);
+        kernel.setArg(2, d_c);
+        // Notice: in NOOOCL you have specify type of value arguments,
+        // because there is no C compatible type system exists in JavaScript.
+        kernel.setArg(3, n, "uint");
+
+        // Ranges:
+        // Number of work items in each local work group
+        var localSize = new NDRange(64);
+        // Number of total work items - localSize must be devisor
+        var globalSize = new NDRange(Math.ceil(n / 64) * 64);
+
+        console.log("Launching the kernel.");
+
+        // Enqueue the kernel asynchronously
+        queue.enqueueNDRangeKernel(kernel, globalSize, localSize);
+
+        // Then copy back the result from the device to the host asynchronously,
+        // when the queue ends.
+        // We should query a waitable queue which returns an event for each enqueue operations,
+        // and the event's promise can be used for continuation of the control flow on the host side.
+        console.log("Waiting for result.");
+        queue.waitable().enqueueReadBuffer(d_c, 0, bytes, h_c).promise
+            .then(function() {
+                // Data gets back to host, we're done:
+
+                var sum = 0;
+                for (var i = 0; i < n; i++) {
+                    var offset = i * double.size;
+                    sum += double.get(h_c, offset);
+                }
+
+                console.log("Final result: " + sum / n);
+            });
+    });
+
+console.log("(Everything after this point is asynchronous.)");

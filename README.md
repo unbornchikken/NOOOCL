@@ -555,6 +555,10 @@ func(openCLBuffer, {'uint': 55}, 100 * float.size);
 
 [In progress.](http://unbornchikken.github.io/NOOOCL/)
 
-### 5. Examples
+### 5. Examples / Tutorials
 
-TODO (I'm gonna try to make some particle simulation demo in node-webkit)
+## Vector Addition
+
+I converted this OpenCL tutorial's C++ code to JavaScript: [OAK RIDGE - OpenCL Vector Addition](https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/).
+
+You can find the example [there](https://github.com/unbornchikken/NOOOCL/tree/master/examples/vector-addition).
