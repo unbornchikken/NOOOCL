@@ -555,7 +555,7 @@ func(openCLBuffer, {'uint': 55}, 100 * float.size);
 
 [In progress.](http://unbornchikken.github.io/NOOOCL/)
 
-## Examples / Tutorials
+## Examples
 
 ### Vector Addition
 
