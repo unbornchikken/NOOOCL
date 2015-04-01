@@ -18,6 +18,7 @@ var testHelpers = {
         var cpuTestResult = cpuEnv ? testMethod(cpuEnv) : Bluebird.resolve();
         var gpuEnv = testHelpers.createEnvironment(host, "gpu");
         if (gpuEnv) {
+            console.log(require("util").inspect(gpuEnv.device));
             return cpuTestResult.then(function () {
                 return testMethod(gpuEnv);
             });
@@ -39,7 +40,7 @@ var testHelpers = {
                 device = d;
                 return false;
             });
-            if (devices) {
+            if (device) {
                 return false;
             }
         });
