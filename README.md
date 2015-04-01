@@ -3,32 +3,6 @@ Node.js Object Oriented OpenCL Bindings
 
 [![bitHound Score](https://www.bithound.io/unbornchikken/NOOOCL/badges/score.svg)](https://www.bithound.io/unbornchikken/NOOOCL)
 
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [NOOOCL (MIT)](#)
-	- [About](#)
-		- [Why OpenCL?](#)
-		- [Why not WebCL?](#)
-		- [Why NOOOCL?](#)
-	- [Install](#)
-	- [Tutorial](#)
-		- [1. Basics](#)
-			- [Host](#)
-			- [Platforms](#)
-			- [Devices](#)
-			- [The Queue](#)
-		- [2. Memory](#)
-			- [Allocate](#)
-			- [Copy](#)
-			- [Use](#)
-			- [Images](#)
-		- [3. Program](#)
-			- [Build](#)
-			- [Kernel](#)
-		- [4. API](#)
-		- [5. Examples / Tutorials](#)
-			- [Vector Addition](#)
-
 ## About
 
 ### Why OpenCL?
@@ -577,13 +551,13 @@ var func = kernel.bind(
 func(openCLBuffer, {'uint': 55}, 100 * float.size);
 ```
 
-### 4. API
+## API Docs
 
 [In progress.](http://unbornchikken.github.io/NOOOCL/)
 
-### 5. Examples / Tutorials
+## Examples / Tutorials
 
-#### Vector Addition
+### Vector Addition
 
 I converted this OpenCL tutorial's C++ code to JavaScript: [OAK RIDGE - OpenCL Vector Addition](https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/).
 
