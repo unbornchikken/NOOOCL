@@ -19,7 +19,7 @@ var testHelpers = {
         };
         version = version || CLHost.supportedVersions.cl11;
         var host = new CLHost(version);
-        var cpuEnv = testHelpers.createEnvironment(host, "cpu");
+        var cpuEnv = null;//testHelpers.createEnvironment(host, "cpu");
         var cpuTestResult = cpuEnv ? testMethod(cpuEnv) : Bluebird.resolve();
         var gpuEnv = testHelpers.createEnvironment(host, "gpu");
         if (gpuEnv) {

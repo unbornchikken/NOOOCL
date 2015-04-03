@@ -40,7 +40,7 @@ function searchForDevice(hardware) {
 
 searchForDevice("gpu");
 if (!device) {
-    console.warn("No GPU devices has been found, searching for a CPU fallback.");
+    console.warn("No GPU device has been found, searching for a CPU fallback.");
     searchForDevice("cpu");
 }
 
