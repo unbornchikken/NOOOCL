@@ -591,3 +591,5 @@ You can find the example [there](https://github.com/unbornchikken/NOOOCL/tree/ma
 
 Slightly modified version of the above Vector Addition example to demonstrate how promise based asynchronous code can look in
 recent version of JavaScript (like synchronous code).
+
+You can find the example [there](https://github.com/unbornchikken/NOOOCL/tree/master/examples/vector-addition-es6).
