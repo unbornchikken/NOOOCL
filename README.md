@@ -25,6 +25,7 @@ Node.js Object Oriented OpenCL Bindings
 - [API Docs](#api-docs)
 - [Examples](#examples)
     - [Vector Addition](#vector-addition)
+    - [Vector Addition ES6](#vector-addition-es6)
 
 ## About
 
@@ -585,3 +586,8 @@ func(openCLBuffer, {'uint': 55}, 100 * float.size);
 I converted this OpenCL tutorial's C++ code to JavaScript: [OAK RIDGE - OpenCL Vector Addition](https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/).
 
 You can find the example [there](https://github.com/unbornchikken/NOOOCL/tree/master/examples/vector-addition).
+
+### Vector Addition ES6
+
+Slightly modified version of the above Vector Addition example to demonstrate how promise based asynchronous code can look in
+recent version of JavaScript (like synchronous code).
