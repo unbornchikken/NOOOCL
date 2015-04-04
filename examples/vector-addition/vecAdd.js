@@ -138,5 +138,3 @@ program.build("-cl-fast-relaxed-math").then(
     });
 
 console.log("(Everything after this point is asynchronous.)");
-
-setTimeout(function() { }, 10000)

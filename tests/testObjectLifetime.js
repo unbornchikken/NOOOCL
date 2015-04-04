@@ -8,25 +8,40 @@ var CLBuffer = nooocl.CLBuffer;
 var assert = require("assert");
 
 describe("NOOOCL", function () {
-    it("should call release on gc collect", function () {
+    it("should call release on gc collect", function (done) {
         if (!global.gc) {
             console.warn("Please enable GC for unit tests.");
             return;
         }
+        var released = false;
+        var pm = CLBuffer.prototype.createReleaseMethod;
+        CLBuffer.prototype.createReleaseMethod = function() {
+            var m = pm.call(this);
+            return function () {
+                released = true;
+                m();
+            }
+        };
         var host = CLHost.createV11();
-        var context, bufferHandle;
+        var context, buffer;
         var createStuff = function () {
-            var env = testHelpers.createEnvironment(host, "cpu");
+            var env = testHelpers.createEnvironment(host, "gpu");
             context = env.context;
-            var buffer = new CLBuffer(context, context.cl.defs.CL_MEM_ALLOC_HOST_PTR, 10);
-            bufferHandle = buffer.handle;
-            assert.equal(2, testHelpers.getContextRefCount(host, context.handle));
-            assert.equal(1, testHelpers.getMemRefCount(host, bufferHandle));
+            buffer = new CLBuffer(context, context.cl.defs.CL_MEM_ALLOC_HOST_PTR, 10);
+            assert(testHelpers.getContextRefCount(host, context.handle) > 0);
+            assert(testHelpers.getMemRefCount(host, buffer.handle) > 0);
         };
         createStuff();
-        assert.equal(2, testHelpers.getContextRefCount(host, context.handle));
-        assert.equal(1, testHelpers.getMemRefCount(host, bufferHandle));
+        assert(testHelpers.getContextRefCount(host, context.handle) > 0);
+        assert(testHelpers.getMemRefCount(host, buffer.handle) > 0);
+        assert.deepEqual(released, false);
+        buffer = null;
         global.gc();
-        assert.equal(1, testHelpers.getContextRefCount(host, context.handle)); // aka: The buffer has been released for sure.
+        process.nextTick(function() {
+            assert(testHelpers.getContextRefCount(host, context.handle) > 0);
+            assert.deepEqual(released, true);
+            CLBuffer.prototype.createReleaseMethod = pm;
+            done();
+        });
     });
 });

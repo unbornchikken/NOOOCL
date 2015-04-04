@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "bluebird": "^2.9.14",
-    "ffi": "1.2.7",
+    "ffi-io": "1.x",
     "lodash": "^3.5.0",
     "ref": "^1.0.0",
     "ref-array": "^1.1.0",
