@@ -77,7 +77,7 @@ but please check them out then decide that if there is a need for yet an other O
 
 **OpenCL 2.0?**
 
-Sadly I don't have an OpenCL 2.0 compatible card. As soon as I get one, I upgrade NOOOCL to support 2.0 spec.
+I'm planning to support OCL 2.0 in the near future, it just depends on demand. Open up an issue or give a tlinkin' star to my repo, and I'll look into this as soon as possible. 
 
 **io.js? 0.12?**
 
