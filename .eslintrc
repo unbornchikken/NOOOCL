@@ -1,8 +1,8 @@
 {
   "rules": {
-    "no-underscore-dangle": false,
-    "camelcase": false,
-    "eol-last": false
+    "no-underscore-dangle": 0,
+    "camelcase": 0,
+    "eol-last": 0
   },
   "env": {
     "node": true
