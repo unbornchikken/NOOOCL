@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "bluebird": "*",
-    "ffi": "1",
+    "ffi": "2",
     "lodash": "*",
     "ref": "1",
     "ref-array": "1",
