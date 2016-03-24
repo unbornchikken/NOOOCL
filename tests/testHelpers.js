@@ -12,26 +12,28 @@ var gpuWarn = false;
 
 var testHelpers = {
     doTest: function (testMethod, version) {
-        var pm = testMethod;
-        testMethod = function (env) {
-            // console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
-            return pm(env);
-        };
-        version = version || CLHost.supportedVersions.cl11;
-        var host = new CLHost(version);
-        var cpuEnv = testHelpers.createEnvironment(host, "cpu");
-        var cpuTestResult = cpuEnv ? testMethod(cpuEnv) : Bluebird.resolve();
-        var gpuEnv = testHelpers.createEnvironment(host, "gpu");
-        if (gpuEnv) {
-            return cpuTestResult.then(function () {
-                return testMethod(gpuEnv);
-            });
-        }
-        if (!gpuWarn) {
-            console.warn("GPU is not available!");
-            gpuWarn = true;
-        }
-        return cpuTestResult;
+        return Bluebird.try(function () {
+            var pm = testMethod;
+            testMethod = function (env) {
+                // console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
+                return pm(env);
+            };
+            version = version || CLHost.supportedVersions.cl11;
+            var host = new CLHost(version);
+            var cpuEnv = testHelpers.createEnvironment(host, "cpu");
+            var cpuTestResult = cpuEnv ? testMethod(cpuEnv) : Bluebird.resolve();
+            var gpuEnv = testHelpers.createEnvironment(host, "gpu");
+            if (gpuEnv) {
+                return cpuTestResult.then(function () {
+                    return testMethod(gpuEnv);
+                });
+            }
+            if (!gpuWarn) {
+                console.warn("GPU is not available!");
+                gpuWarn = true;
+            }
+            return cpuTestResult;
+        });
     },
     createEnvironment: function (host, hardware) {
         assert(_.isObject(host));
