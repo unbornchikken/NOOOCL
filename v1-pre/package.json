@@ -22,7 +22,7 @@
     "test": "mocha --expose-gc -t 10000"
   },
   "dependencies": {
-    "node-opencl": "0",
+    "node-opencl": "*",
     "bluebird": "3",
     "lodash": "4",
     "weak": "1"

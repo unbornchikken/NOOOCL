@@ -3,11 +3,9 @@ const _ = require('lodash');
 const assert = require('assert');
 const CLWrapper = require('./CLWrapper');
 
-module.exports = CLContext;
-
 let CLProgram = null;
 
-class CLContext {
+class CLContext extends CLWrapper {
     constructor(options) {
         assert(_.isObject(options), 'Object argument expected.');
 
@@ -75,3 +73,5 @@ class CLContext {
         return this.cl.getSupportedImageFormats(this.handle, flags, type);
     }
 }
+
+module.exports = CLContext;

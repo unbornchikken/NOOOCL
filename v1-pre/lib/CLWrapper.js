@@ -4,8 +4,6 @@ const _ = require('lodash');
 const assert = require('assert');
 const cl = require('node-opencl');
 
-module.exports = CLWrapper;
-
 class CLWrapper {
     constructor(handle) {
         assert(handle, 'Argument "handle" expected.');
@@ -51,7 +49,7 @@ class CLWrapper {
     }
 
     getInfo(infoName, noCache) {
-        return this.getInfoWith(this.classInfoFunction(), infoName, nocache);
+        return this.getInfoWith(this.classInfoFunction(), infoName, noCache);
     }
 
     getArrayInfo(infoName, noCache) {
@@ -130,3 +128,5 @@ class CLWrapper {
         }
     }
 }
+
+module.exports = CLWrapper;

@@ -1,7 +1,6 @@
 'use strict';
 const CLWrapper = require('./CLWrapper');
-
-module.exports = CLDevice;
+const helpers = require('./helpers');
 
 let CLPlatform = null;
 
@@ -236,3 +235,5 @@ class CLDevice extends CLWrapper {
         return null;
     }
 }
+
+module.exports = CLDevice;

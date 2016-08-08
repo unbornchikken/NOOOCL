@@ -3,8 +3,6 @@ const assert = require('assert');
 const cl = require('node-opencl');
 const CLPlatform = require('./CLPlatform');
 
-module.exports = CLHost;
-
 class CLHost {
     constructor(minimumVersion) {
         minimumVersion = minimumVersion || 1.0;
@@ -24,3 +22,5 @@ class CLHost {
         return result;
     }
 }
+
+module.exports = CLHost;

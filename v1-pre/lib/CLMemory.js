@@ -1,8 +1,6 @@
 'use strict';
 const CLWrapper = require('./CLWrapper');
 
-module.exports = CLMemory;
-
 class CLMemory extends CLWrapper {
     constructor(handle, context) {
         super(handle);
@@ -40,3 +38,5 @@ class CLMemory extends CLWrapper {
         throw new Error('TODO: Make a PR for supporting setDestructorCallback at node-opencl side.');
     }
 }
+
+module.exports = CLMemory;

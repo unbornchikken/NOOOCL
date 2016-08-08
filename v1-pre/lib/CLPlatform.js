@@ -3,8 +3,6 @@ const CLWrapper = require('./CLWrapper');
 const CLDevice = require('./CLDevice');
 const helpers = require('./helpers');
 
-module.exports = CLPlatform;
-
 class CLPlatform extends CLWrapper {
     constructor(handle) {
         super(handle);
@@ -50,8 +48,12 @@ class CLPlatform extends CLWrapper {
     getDevices(type) {
         this.throwIfReleased();
         const devices = [];
-        for (const id of this.cl.getDeviceIDs(this.handle, type || null)) {
-            devices.push(new CLDevice(id, this));
+        try {
+            for (const id of this.cl.getDeviceIDs(this.handle, type || null)) {
+                devices.push(new CLDevice(id, this));
+            }
+        }
+        catch (err) {
         }
         return devices;
     }
@@ -68,3 +70,5 @@ class CLPlatform extends CLWrapper {
         return this.getDevices(this.cl.DEVICE_TYPE_ACCELERATOR);
     }
 }
+
+module.exports = CLPlatform;

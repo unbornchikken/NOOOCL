@@ -9,11 +9,6 @@
     "url": "https://github.com/unbornchikken/nooocl.git"
   },
   "main": "./index",
-  "licenses": "MIT",
-  "engines": [
-    "node >=0.10.0",
-    "iojs >=1.1.0"
-  ],
   "keywords": [
     "OpenCL",
     "GPGPU",
@@ -33,7 +28,8 @@
     "ref": "1",
     "ref-array": "1",
     "ref-struct": "1",
-    "weak": "*"
+    "weak": "*",
+    "node-opencl": "*"
   },
   "devDependencies": {
     "jpeg-js": "*",
