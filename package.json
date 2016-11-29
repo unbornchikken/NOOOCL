@@ -9,11 +9,7 @@
     "url": "https://github.com/unbornchikken/nooocl.git"
   },
   "main": "./index",
-  "licenses": "MIT",
-  "engines": [
-    "node >=0.10.0",
-    "iojs >=1.1.0"
-  ],
+  "license": "MIT",
   "keywords": [
     "OpenCL",
     "GPGPU",
@@ -24,16 +20,12 @@
     "native"
   ],
   "scripts": {
-    "test": "mocha --expose-gc ./tests -t 60000"
+    "test": "mocha --expose-gc -t 60000"
   },
   "dependencies": {
     "bluebird": "2",
-    "ffi": "2",
-    "lodash": "3",
-    "ref": "1",
-    "ref-array": "1",
-    "ref-struct": "1",
-    "weak": "*"
+    "lodash": "4",
+    "fastcall": "cmake-js/fastcall#v0.1.2"
   },
   "devDependencies": {
     "jpeg-js": "*",

@@ -5,7 +5,8 @@ var CLHost = nooocl.CLHost;
 var CLContext = nooocl.CLContext;
 var _ = require("lodash");
 var assert = require("assert");
-var ref = require("ref");
+var fastcall = require("fastcall");
+var ref = fastcall.ref;
 var Bluebird = require("bluebird");
 
 var gpuWarn = false;

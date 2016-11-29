@@ -6,7 +6,8 @@ var nooocl = require("../");
 var CLHost = nooocl.CLHost;
 var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
-var ref = require("ref");
+var fastcall = require("fastcall");
+var ref = fastcall.ref;
 var testHelpers = require("./testHelpers");
 
 describe("CLBuffer", function () {

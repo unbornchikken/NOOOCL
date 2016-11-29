@@ -11,7 +11,8 @@ var CLBuffer = nooocl.CLBuffer;
 var CLCommandQueue = nooocl.CLCommandQueue;
 var NDRange = nooocl.NDRange;
 var CLError = nooocl.CLError;
-var ref = require("ref");
+var fastcall = require("fastcall");
+var ref = fastcall.ref;
 var double = ref.types.double;
 
 // Initialize OpenCL then we get host, device, context, and a queue
