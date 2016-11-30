@@ -140,5 +140,5 @@ var doVecAdd = async(function*() {
     console.log("Final result: " + sum / n);
 });
 
-doVecAdd();
+nooocl.scope(doVecAdd);
 console.log("(Everything after this point is asynchronous.)");

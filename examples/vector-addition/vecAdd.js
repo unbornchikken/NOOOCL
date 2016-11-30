@@ -88,8 +88,9 @@ var program = context.createProgram(kernelSourceCode);
 
 console.log("Building ...");
 // Building is always asynchronous in NOOOCL!
-program.build("-cl-fast-relaxed-math").then(
-    function () {
+nooocl.scope(function () {
+    return program.build("-cl-fast-relaxed-math")
+    .then(function () {
         var buildStatus = program.getBuildStatus(device);
         var buildLog = program.getBuildLog(device);
         console.log(buildLog);
@@ -124,18 +125,19 @@ program.build("-cl-fast-relaxed-math").then(
         // We should query a waitable queue which returns an event for each enqueue operations,
         // and the event's promise can be used for continuation of the control flow on the host side.
         console.log("Waiting for result.");
-        queue.waitable().enqueueReadBuffer(d_c, 0, bytes, h_c).promise
-            .then(function() {
-                // Data gets back to host, we're done:
+        return queue.waitable().enqueueReadBuffer(d_c, 0, bytes, h_c).promise
+        .then(function() {
+            // Data gets back to host, we're done:
 
-                var sum = 0;
-                for (var i = 0; i < n; i++) {
-                    var offset = i * double.size;
-                    sum += double.get(h_c, offset);
-                }
+            var sum = 0;
+            for (var i = 0; i < n; i++) {
+                var offset = i * double.size;
+                sum += double.get(h_c, offset);
+            }
 
-                console.log("Final result: " + sum / n);
-            });
+            console.log("Final result: " + sum / n);
+        });
     });
+});
 
 console.log("(Everything after this point is asynchronous.)");
