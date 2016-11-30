@@ -14,6 +14,7 @@ var NDRange = nooocl.NDRange;
 var testHelpers = require("./testHelpers");
 var float = ref.types.float;
 var FloatArray = new ArrayType("float");
+var scope = nooocl.scope;
 
 var copyMemKernel =
     "kernel void copy(global float* src, global float* dst, uint begin)" +
@@ -23,6 +24,14 @@ var copyMemKernel =
     "}";
 
 describe("CLKernel", function () {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("should enqueue NDRange kernels", function (done) {
         testHelpers.doTest(function (env) {
             var host = env.host;
@@ -32,10 +41,10 @@ describe("CLKernel", function () {
             var srcArray = new FloatArray(5);
             var dstArray = new FloatArray(4);
             for (i = 0; i < srcArray.length; i++) {
-                srcArray[i] = (i + 1) * 1.1;
+                srcArray.set(i, (i + 1) * 1.1);
             }
             for (i = 0; i < dstArray.length; i++) {
-                dstArray[i] = 0.0;
+                dstArray.set(i, 0.0);
             }
             var src = CLBuffer.wrapReadOnly(context, srcArray);
             var dst = CLBuffer.wrap(context, ref.reinterpret(dstArray.buffer, 3 * float.size, 0));
@@ -63,25 +72,25 @@ describe("CLKernel", function () {
                         .then(function () {
                             var buffer = ref.reinterpret(out.ptr, dst.size + float.size, 0);
                             var v1 = float.get(buffer, 0).toFixed(2);
-                            var v2 = dstArray[0].toFixed(2);
+                            var v2 = dstArray.get(0).toFixed(2);
                             assert.equal(v1, v2);
-                            assert.equal(v1, srcArray[2].toFixed(2));
+                            assert.equal(v1, srcArray.get(2).toFixed(2));
                             float.set(buffer, 0, 0.0);
 
                             v1 = float.get(buffer, 1 * float.size).toFixed(2);
-                            v2 = dstArray[1].toFixed(2);
+                            v2 = dstArray.get(1).toFixed(2);
                             assert.equal(v1, v2);
-                            assert.equal(v1, srcArray[3].toFixed(2));
+                            assert.equal(v1, srcArray.get(3).toFixed(2));
                             float.set(buffer, 1 * float.size, 0.0);
 
                             v1 = float.get(buffer, 2 * float.size).toFixed(2);
-                            v2 = dstArray[2].toFixed(2);
+                            v2 = dstArray.get(2).toFixed(2);
                             assert.equal(v1, v2);
-                            assert.equal(v1, srcArray[4].toFixed(2));
+                            assert.equal(v1, srcArray.get(4).toFixed(2));
                             float.set(buffer, 2 * float.size, 0.0);
 
                             v1 = float.get(buffer, 3 * float.size).toFixed(2);
-                            v2 = dstArray[3].toFixed(2);
+                            v2 = dstArray.get(3).toFixed(2);
                             assert.equal(v1, v2);
                             assert.equal(v1, 0.0);
 

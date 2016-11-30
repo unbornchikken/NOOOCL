@@ -9,8 +9,17 @@ var CLCommandQueue = nooocl.CLCommandQueue;
 var fastcall = require("fastcall");
 var ref = fastcall.ref;
 var testHelpers = require("./testHelpers");
+var scope = nooocl.scope;
 
 describe("CLBuffer", function () {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("can copy contents of two node.js buffer through OpenCL", function (done) {
         testHelpers.doTest(function (env) {
             var host = env.host;

@@ -6,6 +6,7 @@ var nooocl = require("../");
 var CLHost = nooocl.CLHost;
 var _ = require("lodash");
 var CLContext = nooocl.CLContext;
+var scope = nooocl.scope;
 
 function checkContext(context, devices) {
     var formats = context.getSupportedImageFormats(context.cl.defs.CL_MEM_ALLOC_HOST_PTR, context.cl.defs.CL_MEM_OBJECT_IMAGE2D);
@@ -22,17 +23,38 @@ function checkContext(context, devices) {
 }
 
 describe("CLContext", function() {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("should construct from a device", function() {
         var host = CLHost.createV11();
         assert(_.isObject(host));
         var platforms = host.getPlatforms();
         assert(_.isArray(platforms));
         assert.notEqual(platforms.length, 0);
-        var devices = platforms[0].allDevices();
-        assert(_.isArray(devices));
-        assert.notEqual(devices.length, 0);
-        var context = new CLContext(devices);
-        checkContext(context, devices);
+        var lastErr;
+        for (var i = 0; i < platforms.length; i++) {
+            try {
+                lastErr = null;
+                var devices = platforms[i].allDevices();
+                assert(_.isArray(devices));
+                assert.notEqual(devices.length, 0);
+                var context = new CLContext(devices);
+                checkContext(context, devices);
+                break;
+            }
+            catch (err) {
+                lastErr = err;
+            }
+        }
+        if (lastErr) {
+            throw lastErr;
+        }
     });
 
     it("should construct from type", function() {
@@ -41,7 +63,20 @@ describe("CLContext", function() {
         var platforms = host.getPlatforms();
         assert(_.isArray(platforms));
         assert.notEqual(platforms.length, 0);
-        var context = new CLContext(platforms[0], host.cl.defs.CL_DEVICE_TYPE_CPU);
-        checkContext(context);
+        var lastErr;
+        for (var i = 0; i < platforms.length; i++) {
+            try {
+                lastErr = null;
+                var context = new CLContext(platforms[i], host.cl.defs.CL_DEVICE_TYPE_CPU);
+                checkContext(context);
+                break;
+            }
+            catch (err) {
+                lastErr = err;
+            }
+        }
+        if (lastErr) {
+            throw lastErr;
+        }
     });
 });

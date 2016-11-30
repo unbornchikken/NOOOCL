@@ -6,12 +6,21 @@ var nooocl = require("../");
 var CLHost = nooocl.CLHost;
 var _ = require("lodash");
 var testHelpers = require("./testHelpers");
+var scope = nooocl.scope;
 
 var source = "kernel void foo(global float* data) { }";
 
 var badSource = "da shit";
 
 describe("CLContext", function () {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("should build and get kernel from string source", function (done) {
         testHelpers.doTest(function (env) {
             var host = env.host;

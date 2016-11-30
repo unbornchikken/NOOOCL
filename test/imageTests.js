@@ -15,8 +15,17 @@ var cd = __dirname;
 var jpeg = require("jpeg-js");
 var CLImage2D = nooocl.CLImage2D;
 var NDRange = nooocl.NDRange;
+var scope = nooocl.scope;
 
 describe("CLImage2D", function () {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("should convert an image to grayscale", function (done) {
         testHelpers.doTest(function (env) {
             var host = env.host;

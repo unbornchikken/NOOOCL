@@ -5,8 +5,17 @@ var assert = require("assert");
 var nooocl = require("../");
 var CLHost = nooocl.CLHost;
 var _ = require("lodash");
+var scope = nooocl.scope;
 
 describe("CLHost", function () {
+    beforeEach(function () {
+        scope.begin();
+    });
+
+    afterEach(function () {
+        scope.end();
+    });
+
     it("should return platforms and devices", function () {
         var host = CLHost.createV11();
         assert(_.isObject(host));

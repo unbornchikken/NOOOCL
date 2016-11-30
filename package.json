@@ -25,7 +25,7 @@
   "dependencies": {
     "bluebird": "2",
     "lodash": "4",
-    "fastcall": "cmake-js/fastcall#v0.1.2"
+    "fastcall": "cmake-js/fastcall#v0.1.17"
   },
   "devDependencies": {
     "jpeg-js": "*",
