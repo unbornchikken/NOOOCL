@@ -100,6 +100,8 @@ describe("CLHost", function () {
 
                 assert(info.deviceType === host.cl.DEVICE_TYPE_GPU ||
                     info.deviceType === host.cl.DEVICE_TYPE_CPU);
+
+                console.log(info);
             }
         }
     });
