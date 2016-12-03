@@ -1,31 +1,42 @@
+# TOC
+
+<!-- TOC -->
+
+- [TOC](#toc)
+- [v0.12.0: Important Announcement: fastcall!](#v0120-important-announcement-fastcall)
+- [NOOOCL (MIT)](#nooocl-mit)
+    - [About](#about)
+        - [Why OpenCL?](#why-opencl)
+        - [Why not WebCL?](#why-not-webcl)
+        - [Why NOOOCL?](#why-nooocl)
+    - [Install](#install)
+    - [Tutorial](#tutorial)
+        - [1. Basics](#1-basics)
+            - [Host](#host)
+            - [Platforms](#platforms)
+            - [Devices](#devices)
+            - [The Queue](#the-queue)
+        - [2. Memory](#2-memory)
+            - [Allocate](#allocate)
+            - [Copy](#copy)
+            - [Use](#use)
+            - [Images](#images)
+        - [3. Program](#3-program)
+            - [Build](#build)
+            - [Kernel](#kernel)
+    - [API Docs](#api-docs)
+    - [Examples](#examples)
+        - [Vector Addition](#vector-addition)
+        - [Vector Addition ES6](#vector-addition-es6)
+
+<!-- /TOC -->
+
+# v0.12.0: Important Announcement: fastcall!
+
+As of v0.12.0 NOOOCL has switched its core native binding component from [node-ffi](https://github.com/node-ffi/node-ffi) to [fastcall](https://github.com/cmake-js/fastcall). It led to a significant performance increase (see [fastcall becnhmarks](https://github.com/cmake-js/fastcall#benchmarks)). However, **fastcall** uses [CMake.js](https://github.com/cmake-js/cmake-js) as of its build system instead of bundled [node-gyp](https://github.com/nodejs/node-gyp). It means NOOOCL has no Python 2 dependency anymore, but you [gotta have CMake installed](https://github.com/cmake-js/fastcall#requirements).
+
 # NOOOCL (MIT)
 Node.js Object Oriented OpenCL Bindings
-
-[![bitHound Score](https://www.bithound.io/unbornchikken/NOOOCL/badges/score.svg)](https://www.bithound.io/unbornchikken/NOOOCL)
-
-- [About](#about)
-    - [Why OpenCL?](#why-opencl)
-    - [Why not WebCL?](#why-not-webcl)
-    - [Why NOOOCL?](#why-nooocl)
-- [Install](#install)
-- [Tutorial](#tutorial)
-    - [1. Basics](#1-basics)
-        - [Host](#host)
-        - [Platforms](#platforms)
-        - [Devices](#devices)
-        - [The Queue](#the-queue)
-    - [2. Memory](#2-memory)
-        - [Allocate](#allocate)
-        - [Copy](#copy)
-        - [Use](#use)
-        - [Images](#images)
-    - [3. Program](#3-program)
-        - [Build](#build)
-        - [Kernel](#kernel)
-- [API Docs](#api-docs)
-- [Examples](#examples)
-    - [Vector Addition](#vector-addition)
-    - [Vector Addition ES6](#vector-addition-es6)
 
 ## About
 
