@@ -4,30 +4,29 @@
 
 - [TOC](#toc)
 - [v0.12.0: Important Announcement: fastcall!](#v0120-important-announcement-fastcall)
-- [NOOOCL (MIT)](#nooocl-mit)
-    - [About](#about)
-        - [Why OpenCL?](#why-opencl)
-        - [Why not WebCL?](#why-not-webcl)
-        - [Why NOOOCL?](#why-nooocl)
-    - [Install](#install)
-    - [Tutorial](#tutorial)
-        - [1. Basics](#1-basics)
-            - [Host](#host)
-            - [Platforms](#platforms)
-            - [Devices](#devices)
-            - [The Queue](#the-queue)
-        - [2. Memory](#2-memory)
-            - [Allocate](#allocate)
-            - [Copy](#copy)
-            - [Use](#use)
-            - [Images](#images)
-        - [3. Program](#3-program)
-            - [Build](#build)
-            - [Kernel](#kernel)
-    - [API Docs](#api-docs)
-    - [Examples](#examples)
-        - [Vector Addition](#vector-addition)
-        - [Vector Addition ES6](#vector-addition-es6)
+- [About](#about)
+    - [Why OpenCL?](#why-opencl)
+    - [Why not WebCL?](#why-not-webcl)
+    - [Why NOOOCL?](#why-nooocl)
+- [Install](#install)
+- [Tutorial](#tutorial)
+    - [1. Basics](#1-basics)
+        - [Host](#host)
+        - [Platforms](#platforms)
+        - [Devices](#devices)
+        - [The Queue](#the-queue)
+    - [2. Memory](#2-memory)
+        - [Allocate](#allocate)
+        - [Copy](#copy)
+        - [Use](#use)
+        - [Images](#images)
+    - [3. Program](#3-program)
+        - [Build](#build)
+        - [Kernel](#kernel)
+- [API Docs](#api-docs)
+- [Examples](#examples)
+    - [Vector Addition](#vector-addition)
+    - [Vector Addition ES6](#vector-addition-es6)
 
 <!-- /TOC -->
 
@@ -35,12 +34,9 @@
 
 As of v0.12.0 NOOOCL has switched its core native binding component from [node-ffi](https://github.com/node-ffi/node-ffi) to [fastcall](https://github.com/cmake-js/fastcall). It led to a significant performance increase (see [fastcall becnhmarks](https://github.com/cmake-js/fastcall#benchmarks)). However, **fastcall** uses [CMake.js](https://github.com/cmake-js/cmake-js) as of its build system instead of bundled [node-gyp](https://github.com/nodejs/node-gyp). It means NOOOCL has no Python 2 dependency anymore, but you [gotta have CMake installed](https://github.com/cmake-js/fastcall#requirements).
 
-# NOOOCL (MIT)
-Node.js Object Oriented OpenCL Bindings
+# About
 
-## About
-
-### Why OpenCL?
+## Why OpenCL?
 
 In Node.js JavaScript code is synchronous, single threaded. That's mean if you have an algorithm that can spawn a tens of thousand computation operations per second,
 your application will hang while the computation runs. The is no HTTP requests served, the is no event processed, there is nothing.
@@ -61,7 +57,7 @@ OpenCL is perfect to fill the gap. Beside solving the above issues it provides t
 - It's supported by all the mayor GPU and CPU vendors.
 - It's truly cross platform.
 
-### Why not WebCL?
+## Why not WebCL?
 
 WebCL is gonna be the OpenCL for JavaScript (TM) at some time. It will be (should be) supported by all mayor browsers,
 to give web developers a powerful, cross platform computation platform for supporting algorithms like image processing in the client side.
@@ -78,7 +74,7 @@ There is already a [WebCL module for Node.js](https://www.npmjs.com/package/node
 But this module doesn't seem to be maintained for a while, and have strange dependencies for no apparent reason
 (you just **don't need** GLFW, GLEW, AntTweakBar and FreeImage to run OpenCL programs, trust me).
 
-### Why NOOOCL?
+## Why NOOOCL?
 
 It's a full featured OpenCL wrapper library for Node.js. It supports full 1.1 and 1.2 specifications.
 Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref](https://www.npmjs.com/package/ref).
@@ -94,7 +90,7 @@ I'm planning to support OCL 2.0 in the near future, it just depends on demand. O
 
 Those versions are supported as well.
 
-## Install
+# Install
 
 NPM:
 
@@ -119,11 +115,11 @@ var CLImage3D = nooocl.CLImage3D;
 var CLSampler = nooocl.CLSampler;
 ```
 
-## Tutorial
+# Tutorial
 
-### 1. Basics
+## 1. Basics
 
-#### Host
+### Host
 
 The OpenCL goodness is available through a CLHost instance.
 
@@ -162,7 +158,7 @@ var err = host.cl.imports.clEnqueueNDRangeKernel(
     null);
 ```
 
-#### Platforms
+### Platforms
 
 Then you can access to supported platforms:
 
@@ -190,7 +186,7 @@ var info = {
 CLPlatform and all CL* class instances except CLHost share the *handle* property, which holds the value of cl_platform_id, cl_command_queue, cl_kernel, etc, OpenCL native handles.
 These handles will be automatically released during garbage collection, rr they can be released explicitly by calling release method.
 
-#### Devices
+### Devices
 
 You can query available devices:
 
@@ -241,7 +237,7 @@ context = new CLContext(gpusAndCpus);
 context = new CLContext(platform, platform.cl.defs.CL_DEVICE_TYPE_GPU);
 ```
 
-#### The Queue
+### The Queue
 
 The last thing that you need in every OpenCL application is the command queue. you can create a queue for a device by calling CLCommandQueue class' constructor:
 
@@ -278,11 +274,11 @@ queue.waitable().enqueueReadBuffer(
 
 Please note *there is no synchronous operations in NOOOCL*, because those kill the event loop.
 
-### 2. Memory
+## 2. Memory
 
 NOOOCL uses [standard Node.js Buffer](http://nodejs.org/api/buffer.html) for memory pointers. Raw memory operations, like reinterpreting are implemented by using [ref](https://www.npmjs.com/package/ref).
 
-#### Allocate
+### Allocate
 
 OpenCL runtime can allocate memory if requested.
 
@@ -314,7 +310,7 @@ queue.waitable().enqueueReadBuffer(
     });
 ```
 
-#### Copy
+### Copy
 
 OpenCL buffers can be initialized by copying values from an already initialized Node.js Buffer.
 
@@ -344,7 +340,7 @@ queue.waitable().enqueueReadBuffer(
     });
 ```
 
-#### Use
+### Use
 
 OpenCL can use Node.js buffers directly. It is safe to access its content only after a mapping operation.
 
@@ -401,7 +397,7 @@ queue.enqueueMapBuffer(
     });
 ```
 
-#### Images
+### Images
 
 2D and 3D images are also supported in NOOOCL. There is a unit test that shows how you can do OpenCL accelerated image grayscale conversion in NOOOCL,
 please take a look at it there: [NOOOCL/tests/imageTests.js](https://github.com/unbornchikken/NOOOCL/blob/beta-dev/tests/imageTests.js).
@@ -428,9 +424,9 @@ var src = CLImage2D.wrapReadOnly(
 
 Please refer to the API docs for further details.
 
-### 3. Program
+## 3. Program
 
-#### Build
+### Build
 
 OpenCL programs can be compiled from string source code or loaded from precompiled binaries, these methods are supported in NOOOCL.
 
@@ -505,7 +501,7 @@ program.build().then(
     });
 ```
 
-#### Kernel
+### Kernel
 
 You can create kernel by name, or can create all kernels in the program at once.
 
@@ -586,19 +582,19 @@ var func = kernel.bind(
 func(openCLBuffer, {'uint': 55}, 100 * float.size);
 ```
 
-## API Docs
+# API Docs
 
 [In progress.](http://unbornchikken.github.io/NOOOCL/)
 
-## Examples
+# Examples
 
-### Vector Addition
+## Vector Addition
 
 I converted this OpenCL tutorial's C++ code to JavaScript: [OAK RIDGE - OpenCL Vector Addition](https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/).
 
 You can find the example [there](https://github.com/unbornchikken/NOOOCL/tree/master/examples/vector-addition).
 
-### Vector Addition ES6
+## Vector Addition ES6
 
 Slightly modified version of the above Vector Addition example to demonstrate how promise based asynchronous code can look in
 recent version of JavaScript (like synchronous code).
