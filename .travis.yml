@@ -6,13 +6,10 @@ matrix:
       dist: trusty
       node_js: "6"
       compiler:
-        - gcc
-        - c++
         - g++
     - os: osx
       osx_image: xcode7.3
       node_js: "6"
-      compiler:
-        - clang
+
 before_install:
   - ./.travis/setup.sh
