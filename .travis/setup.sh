@@ -9,11 +9,6 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
     sudo apt-get update -qq -y
     sudo apt-get install -qq mesa-common-dev alien libnuma1 opencl-headers
-    sudo apt-get install -qq g++-4.8
-
-    # setup compiler
-    export CXX="g++-4.8"
-    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
 
     # download and unpack base opencl Intel drivers
     wget http://registrationcenter.intel.com/irc_nas/4181/opencl_runtime_14.2_x64_4.5.0.8.tgz
