@@ -4,9 +4,15 @@ matrix:
   include:
     - os: linux
       dist: trusty
+      node_js: "4"
+      node_js: "5"
       node_js: "6"
+      node_js: "7"
     - os: osx
       osx_image: xcode8.2
+      node_js: "4"
+      node_js: "5"
       node_js: "6"
+      node_js: "7"
 before_install:
   - ./.travis/setup.sh
