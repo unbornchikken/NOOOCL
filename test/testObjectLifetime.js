@@ -28,7 +28,7 @@ describe("NOOOCL", function () {
                 var host = CLHost.createV11();
                 var context, buffer;
                 var createStuff = function () {
-                    var env = testHelpers.createEnvironment(host, "gpu");
+                    var env = testHelpers.createEnvironment(host);
                     context = env.context;
                     buffer = new CLBuffer(context, context.cl.defs.CL_MEM_ALLOC_HOST_PTR, 10);
                     assert(testHelpers.getContextRefCount(host, context.handle) > 0);
@@ -60,7 +60,7 @@ describe("NOOOCL", function () {
             var context, buffer;
             var env;
             var createStuff = function () {
-                env = testHelpers.createEnvironment(host, "gpu");
+                env = testHelpers.createEnvironment(host);
                 context = env.context;
                 buffer = new CLBuffer(context, context.cl.defs.CL_MEM_ALLOC_HOST_PTR, 10);
                 assert(testHelpers.getContextRefCount(host, context.handle) > 0);

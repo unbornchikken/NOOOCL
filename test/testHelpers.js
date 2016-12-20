@@ -14,26 +14,23 @@ var gpuWarn = false;
 var testHelpers = {
     doTest: function (testMethod, version) {
         return Bluebird.try(function () {
-            var pm = testMethod;
-            testMethod = function (env) {
-                // console.log("Testing on: " + env.device.name + " - " + env.device.platform.name);
-                return pm(env);
-            };
             version = version || CLHost.supportedVersions.cl11;
             var host = new CLHost(version);
-            var cpuEnv = testHelpers.createEnvironment(host, "cpu");
-            if (cpuEnv) {
-                return testMethod(cpuEnv);
-            }
-            var gpuEnv = testHelpers.createEnvironment(host, "gpu");
-            if (gpuEnv) {
-                return testMethod(gpuEnv);
-            }
-            throw new Error("No OpenCL device available.");
+            return testHelpers.createEnvironment(host);
         });
     },
     createEnvironment: function (host, hardware) {
         assert(_.isObject(host));
+        if (!hardware) {
+            var env = testHelpers.createEnvironment(host, "cpu");
+            if (env) {
+                return env;
+            }
+            env = testHelpers.createEnvironment(host, "gpu");
+            if (env) {
+                return env;
+            }
+        }
         hardware = (hardware || "cpu").toLowerCase();
         var platforms = host.getPlatforms();
         var device;
@@ -47,7 +44,7 @@ var testHelpers = {
             }
         });
         if (!device) {
-            return null;
+            throw new Error("No OpenCL device available.");
         }
         var context = new CLContext(device);
         return {
