@@ -7,12 +7,8 @@ node_js:
 os:
   - linux
   - osx
+dist: trusty
 sudo: required
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-    - os: osx
-      osx_image: xcode8.2
+osx_image: xcode8.2
 before_install:
   - ./.travis/setup.sh
