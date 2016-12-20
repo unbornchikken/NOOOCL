@@ -1,6 +1,6 @@
 {
   "name": "nooocl",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "author": "Gábor Mező aka unbornchikken",
   "description": "NOOOCL: Node.js Object Oriented OpenCL Bindings",
   "homepage": "https://github.com/unbornchikken/nooocl",
@@ -25,7 +25,7 @@
   "dependencies": {
     "bluebird": "2",
     "lodash": "4",
-    "fastcall": "^0.1.29"
+    "fastcall": "^0.2.2"
   },
   "devDependencies": {
     "jpeg-js": "*",
