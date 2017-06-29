@@ -34,34 +34,34 @@
 
 # v0.12.0: Important Announcement: fastcall!
 
-As of v0.12.0 NOOOCL has switched its core native binding component from [node-ffi](https://github.com/node-ffi/node-ffi) to [fastcall](https://github.com/cmake-js/fastcall). It led to a significant performance increase (see [fastcall becnhmarks](https://github.com/cmake-js/fastcall#benchmarks)). However, **fastcall** uses [CMake.js](https://github.com/cmake-js/cmake-js) as of its build system instead of bundled [node-gyp](https://github.com/nodejs/node-gyp). It means NOOOCL has no Python 2 dependency anymore, but you [gotta have CMake installed](https://github.com/cmake-js/fastcall#requirements).
+As of v0.12.0 NOOOCL has switched its core native binding component from [node-ffi](https://github.com/node-ffi/node-ffi) to [fastcall](https://github.com/cmake-js/fastcall). It led to a significant performance increase (see [fastcall becnhmarks](https://github.com/cmake-js/fastcall#benchmarks)). However, **fastcall** uses [CMake.js](https://github.com/cmake-js/cmake-js) as its build system instead of bundled [node-gyp](https://github.com/nodejs/node-gyp). It means NOOOCL has no Python 2 dependency anymore, but you [gotta have CMake installed](https://github.com/cmake-js/fastcall#requirements).
 
 # About
 
 ## Why OpenCL?
 
-In Node.js JavaScript code is synchronous, single threaded. That's mean if you have an algorithm that can spawn a tens of thousand computation operations per second,
-your application will hang while the computation runs. The is no HTTP requests served, the is no event processed, there is nothing.
-You can overcome the above limitation by using some of the available threading modules there (like [Webworker Threads](https://www.npmjs.com/package/webworker-threads)),
+In Node.js JavaScript code is synchronous, single threaded. That means if you have an algorithm that can spawn tens of thousands of computation operations per second,
+your application will hang while the computation runs. No HTTP requests are served, no events are processed, there is nothing.
+You can overcome the above limitation by using some of the available threading modules (like [Webworker Threads](https://www.npmjs.com/package/webworker-threads)),
 but this has some serious limitations:
 
-- There is no synchronization implemented in Node.js, so the inter thread communication is allowed only by using messages.
-That's mean you can only exchange small, JSON serialized data between worker threads, so this is impossible to implement
-parallel algorithms that works on common data reside in memory buffers, like image processing for example.
+- There is no synchronization implemented in Node.js, so the inter-thread communication is allowed only by using messages.
+That means you can only exchange small, JSON serialized data between worker threads, and it is impossible to implement
+parallel algorithms that work on common data residing in memory buffers, like image processing for example.
 - Code JIT-ed by V8 doesn't support SIMD instructions at the same level like that available in advanced C++ compilers.
 So while JavaScript code can be perfect for orchestrating large computation operations, it is not so good for writing them.
 - Data parallelism is very hard to implement from scratch by using a only simple threading module,
-and it requires synchronization constructs that is not available in Node.js.
+and it requires synchronization constructs that are not available in Node.js.
 
-OpenCL is perfect to fill the gap. Beside solving the above issues it provides the following benefits:
+OpenCL is perfect to fill the gap. Besides solving the above issues it provides the following benefits:
 
 - It supports GPU along with CPU based SSE/AVX instructions sets.
-- It's supported by all the mayor GPU and CPU vendors.
+- It's supported by all the major GPU and CPU vendors.
 - It's truly cross platform.
 
 ## Why not WebCL?
 
-WebCL is gonna be the OpenCL for JavaScript (TM) at some time. It will be (should be) supported by all mayor browsers,
+WebCL is gonna be the OpenCL for JavaScript (TM) at some time. It will be (should be) supported by all major browsers,
 to give web developers a powerful, cross platform computation platform for supporting algorithms like image processing in the client side.
 At least that's the plan.
 
@@ -70,10 +70,10 @@ some browsers, but it is far from being a part of the modern web standards.
 
 The problem is WebCL specification is a nerfed version of the OpenCL 1.0 with some support of minor Open CL 1.1 features.
 Right now OpenCL standard stays on version 2.0 which is a huge step forward from the 1.x line. When WebCL will be a released
-technology it will be a toy compared to the mainline.
+technology, it will be a toy compared to the mainline.
 
 There is already a [WebCL module for Node.js](https://www.npmjs.com/package/node-webcl), if you are interested.
-But this module doesn't seem to be maintained for a while, and have strange dependencies for no apparent reason
+But this module doesn't seem to be maintained for a while, and has strange dependencies for no apparent reason
 (you just **don't need** GLFW, GLEW, AntTweakBar and FreeImage to run OpenCL programs, trust me).
 
 ## Why NOOOCL?
@@ -82,7 +82,7 @@ It's a full featured OpenCL wrapper library for Node.js. It supports full 1.1 an
 Despite it's an OOP wrapper, **the whole C API available** by [ffi](https://www.npmjs.com/package/ffi), and can be called by using [ref](https://www.npmjs.com/package/ref).
 
 I know that there are some [other OpenCL modules](https://www.npmjs.com/search?q=opencl),
-but please check them out then decide that if there is a need for yet an other OpenCL module for Node.js or isn't?
+but please check them out and then decide if there is a need for yet another OpenCL module for Node.js or not?
 
 **OpenCL 2.0?**
 
@@ -134,7 +134,7 @@ host = new CLHost(1.2); // for OpenCL 1.2
 
 You will get an exception if there is no compatible OpenCL platform available.
 
-CLHost and all of CL* class instances share this common, important properties:
+CLHost and all of CL* class instances share these common, important properties:
 
 - **cl.version**: version of the OpenCL platform
 - **cl.defs.xxx**: predefined OpenCL values, like: CL_MEM_COPY_HOST_PTR, CL_DEVICE_MAX_COMPUTE_UNITS. See the OpenCL specification or [NOOOCL/lib/cl/clDefines.js](https://github.com/unbornchikken/NOOOCL/blob/master/lib/cl/clDefines.js).
@@ -162,7 +162,7 @@ var err = host.cl.imports.clEnqueueNDRangeKernel(
 
 ### Platforms
 
-Then you can access to supported platforms:
+Then you can have access to the supported platforms:
 
 ```javascript
 var count = host.platformsCount;
@@ -186,7 +186,7 @@ var info = {
 ```
 
 CLPlatform and all CL* class instances except CLHost share the *handle* property, which holds the value of cl_platform_id, cl_command_queue, cl_kernel, etc, OpenCL native handles.
-These handles will be automatically released during garbage collection, rr they can be released explicitly by calling release method.
+These handles will be automatically released during garbage collection, or they can be released explicitly by calling release method.
 
 ### Devices
 
@@ -241,14 +241,14 @@ context = new CLContext(platform, platform.cl.defs.CL_DEVICE_TYPE_GPU);
 
 ### The Queue
 
-The last thing that you need in every OpenCL application is the command queue. you can create a queue for a device by calling CLCommandQueue class' constructor:
+The last thing that you need in every OpenCL application is the command queue. You can create a queue for a device by calling CLCommandQueue class' constructor:
 
 ```javascript
 // The last two parameters are optional, their defaults are false:
 var queue = new CLCommandQueue(context, cpuDevice, isOutOfOrder, isProfilingEnabled);
 ```
 
-CLCommandQueue implements every clEnqueue* method but names modified slightly, like: clEnqueueMarker becomes enqueueMarker, clEnqueueNDRangeKernel becomes enqueueNDRangeKernel, and so on.
+CLCommandQueue implements every clEnqueue* method but the names are modified slightly, like: clEnqueueMarker becomes enqueueMarker, clEnqueueNDRangeKernel becomes enqueueNDRangeKernel, and so on.
 Please see the API docs further details.
 
 The queue has two modes. Waitable and non waitable. A queue initially is non waitable.
@@ -274,7 +274,7 @@ queue.waitable().enqueueReadBuffer(
     });
 ```
 
-Please note *there is no synchronous operations in NOOOCL*, because those kill the event loop.
+Please note *there are no synchronous operations in NOOOCL*, because those kill the event loop.
 
 ## 2. Memory
 
@@ -404,7 +404,7 @@ queue.enqueueMapBuffer(
 2D and 3D images are also supported in NOOOCL. There is a unit test that shows how you can do OpenCL accelerated image grayscale conversion in NOOOCL,
 please take a look at it there: [NOOOCL/tests/imageTests.js](https://github.com/unbornchikken/NOOOCL/blob/beta-dev/tests/imageTests.js).
 
-Fist, you should open the image and access to its raw RGBA data in a Node.js buffer. Any appropriate npm module can be used there (I suggest [lwip](https://github.com/EyalAr/lwip)).
+Fist, you should open the image and get access to its raw RGBA data in a Node.js buffer. Any appropriate npm module can be used for doing that. (I suggest [lwip](https://github.com/EyalAr/lwip)).
 
 Then you can create and OpenCL image from it:
 
@@ -430,7 +430,7 @@ Please refer to the API docs for further details.
 
 ### Build
 
-OpenCL programs can be compiled from string source code or loaded from precompiled binaries, these methods are supported in NOOOCL.
+OpenCL programs can be compiled from string source code or loaded from pre-compiled binaries, these methods are supported in NOOOCL.
 
 ```javascript
 // Creating OpenCL program from string source:
@@ -453,7 +453,7 @@ program.build('-cl-fast-relaxed-math').then(
     });
 ```
 
-After a program builds you can access it's binaries for each device:
+After a program builds, you can access its binaries for each device:
 
 ```javascript
 // This returns an array of CLDevice instances
@@ -479,7 +479,7 @@ var deviceBinaries =
 ```
 
 Binaries could be stored in files for example, so when the application executes next time,
-there slow build from source process won't be necessary.
+the slow **build-from-source** process won't be necessary.
 
 ```javascript
 // Creating program from binaries:
